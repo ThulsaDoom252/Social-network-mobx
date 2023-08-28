@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from "./components/Header";
+import About from "./components/Profile/About";
 
 function App() {
 
@@ -10,8 +11,6 @@ function App() {
     bg-white
     h-screen
     '>
-            <Header/>
-
             <div className='
             mx-auto
             max-w-container
@@ -19,6 +18,8 @@ function App() {
       h-full
       bg-blue-200
       '>
+                <Header/>
+                <About/>
 
 
             </div>

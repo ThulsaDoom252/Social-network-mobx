@@ -6,11 +6,12 @@ const Header = () => {
     return (
         <div className='
         h-60
+        mb-3
         pl-3
         pr-3
         pb-3
         header
-        w-screen
+        w-full
         flex
         flex-col
         bg-blue-400
