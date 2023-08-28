@@ -6,7 +6,6 @@ const Header = () => {
     return (
         <div className='
         h-60
-        mb-3
         pl-3
         pr-3
         pb-3

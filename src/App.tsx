@@ -2,6 +2,8 @@ import React from 'react';
 import Header from "./components/Header";
 import About from "./components/Profile/About";
 import Profile from "./components/Profile/Profile";
+import FriendsList from "./components/Profile/FriendsList";
+import Friends from "./pages/Friends";
 
 function App() {
 
@@ -22,10 +24,11 @@ function App() {
                 <Header/>
                 <div className='
                 flex
+                p-2
+                justify-between
 
                 '>
-                    <About/>
-                    <Profile/>
+                    <Friends/>
 
                 </div>
 

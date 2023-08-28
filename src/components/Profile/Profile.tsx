@@ -5,8 +5,9 @@ import {AiFillFacebook, AiFillGithub, AiFillInstagram, AiFillYoutube} from "reac
 const Profile = () => {
     return (
         <div className='
-        ml-2
         bg-white
+        ml-2
+        mr-2
         p-2
         w-profile
         rounded-md
@@ -17,10 +18,10 @@ const Profile = () => {
             <div className='
             flex
             w-full
-            justify-between
             '>
                 <div className='
                 flex
+                w-60
                 flex-col
                 justify-start
                 items-center
@@ -40,7 +41,7 @@ const Profile = () => {
 
                 <div className='
                 flex
-                w-1/2
+                w-full
                 ml-5
                 flex-col
                 justify-start
