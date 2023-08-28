@@ -5,6 +5,11 @@ module.exports = {
     ],
     theme: {
         extend: {
+            width: {
+                profile: '500px',
+                '60%': '60%',
+                '40%': '40%',
+            },
             maxWidth: {
                 container: '1300px',
             }

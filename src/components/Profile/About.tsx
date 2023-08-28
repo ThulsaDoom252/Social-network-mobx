@@ -19,11 +19,14 @@ const About = () => {
             </div>
             <div className='
             mt-5'>
-                <h4 className='font-bold'>About</h4>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam fugiat nemo nostrum numquam
-                    veritatis? Accusamus beatae fugiat ipsa saepe ullam.
+                <h4 className='font-bold'>Looking for a job</h4>
+            </div>
+            <div className='
+            mt-5'>
+                <h4 className='font-bold'>Skills/job related info</h4>
+                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque dolore dolorem, ipsam labore
+                    laborum perferendis provident quo soluta voluptas voluptate.
                 </div>
-
             </div>
             <div className='
             mt-5
