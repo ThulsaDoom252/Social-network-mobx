@@ -2,27 +2,27 @@ import React from 'react';
 import {testFriends} from "../common";
 import anon from "../public/anon.jpg";
 
-const Friends = () => {
+const Users = () => {
     return (
-        <div
-            className='
+        <div className='
         w-full
         bg-white
+        rounded
+        p-2
         flex
-        rounded-md
         flex-col
         justify-start
         items-center
         '>
             <h4 className='
-            font-bold
-            '>You have 8 friends</h4>
+            w-full text-center font-bold
+            '>Users(8)</h4>
             <div className='
             w-full
-            mt-5
-            p-5
             grid
-            grid-cols-8
+            mt-3
+            p-5
+            grid-cols-4
             grid-rows-2
             gap-1
             '>
@@ -32,6 +32,9 @@ const Friends = () => {
                     flex-col
                     justify-center
                     items-center
+                        border-1
+                rounded
+                border-gray-400
                     '>
                         <div className='
                 max-w-20
@@ -41,14 +44,21 @@ const Friends = () => {
                                  src={anon}
                                  alt={'friend-photo'}/>
                         </div>
-                        <div>Friend name</div>
-                        <div>Looking for a job</div>
-                        <button>Unfollow</button>
+                        <div className='
+                        w-full
+                        text-center
+                        '>
+                            <div>UserName</div>
+                            <div>Looking for a job</div>
+                            <button>Follow</button>
+                        </div>
+
                     </div>
                 )}
+
             </div>
         </div>
     );
 };
 
-export default Friends;
+export default Users;

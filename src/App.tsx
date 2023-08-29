@@ -4,6 +4,8 @@ import About from "./components/Profile/About";
 import Profile from "./components/Profile/Profile";
 import FriendsList from "./components/Profile/FriendsList";
 import Friends from "./pages/Friends";
+import 'bootstrap/dist/css/bootstrap.css';
+import Users from "./pages/Users";
 
 function App() {
 
@@ -28,7 +30,7 @@ function App() {
                 justify-between
 
                 '>
-                    <Friends/>
+                    <Users/>
 
                 </div>
 
