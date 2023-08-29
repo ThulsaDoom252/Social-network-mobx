@@ -6,39 +6,46 @@ import FriendsList from "./components/Profile/FriendsList";
 import Friends from "./pages/Friends";
 import 'bootstrap/dist/css/bootstrap.css';
 import Users from "./pages/Users";
+import Info from "./pages/Info";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
 
 
     return (
-        <div className='
+        <BrowserRouter>
+            <div className='
     w-scren
     bg-white
     h-screen
     '>
-            <div className='
+                <div className='
             mx-auto
             max-w-container
       container
       h-full
       bg-blue-200
       '>
-                <Header/>
-                <div className='
+                    <Header/>
+                    <div className='
                 flex
                 p-2
                 justify-between
 
                 '>
-                    <Users/>
-
+                        <Routes>
+                            <Route path={'/profile'} element={<ProfilePage/>}/>
+                            <Route path={'/friends'} element={<Friends/>}/>
+                            <Route path={'/users'} element={<Users/>}/>
+                            <Route path={'/info'} element={<Info/>}/>
+                        </Routes>
+                    </div>
                 </div>
-
-
             </div>
 
+        </BrowserRouter>
 
-        </div>
     );
 }
 

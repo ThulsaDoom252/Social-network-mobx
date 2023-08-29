@@ -1,14 +1,17 @@
 import React from 'react';
 import {ImProfile} from "react-icons/im";
-import {FaInfo, FaUserFriends, FaUsers} from "react-icons/fa";
-import {BsInfo} from "react-icons/bs";
+import {FaUserFriends, FaUsers} from "react-icons/fa";
 import {FaCircleInfo} from "react-icons/fa6";
+import {NavLink} from "react-router-dom";
 
 interface NavbarProps {
     width?: string,
 }
 
 const Navbar: React.FC<NavbarProps> = ({width}) => {
+    const isActiveStyle: string = `text-black`;
+    const inactiveStyle: string = `text-gray-500 no-underline !important'}`;
+
     return (
         <div className={`       
         flex
@@ -17,40 +20,47 @@ const Navbar: React.FC<NavbarProps> = ({width}) => {
         ${width}
         `
         }
-
         >
             <p className='
             flex
             items-center
             '>
                 <ImProfile/>
-                <button>
+                <NavLink className={navData =>
+                    navData.isActive ? isActiveStyle : inactiveStyle}
+                         to={'/profile'}>
                     Profile
-                </button>
+                </NavLink>
             </p>
             <p className='
             flex
             items-center'>
                 <FaUserFriends/>
-                <button>
+                <NavLink className={navData =>
+                    navData.isActive ? isActiveStyle : inactiveStyle}
+                         to={'/friends'}>
                     Friends
-                </button>
+                </NavLink>
             </p>
             <p className='
             flex
             items-center'>
                 <FaUsers/>
-                <button>
+                <NavLink className={navData =>
+                    navData.isActive ? isActiveStyle : inactiveStyle}
+                         to={'/users'}>
                     Users
-                </button>
+                </NavLink>
             </p>
             <p className='
             flex
             items-center'>
                 <FaCircleInfo/>
-                <button>
+                <NavLink className={navData =>
+                    navData.isActive ? isActiveStyle : inactiveStyle}
+                         to={'/info'}>
                     Info
-                </button>
+                </NavLink>
             </p>
         </div>
     );

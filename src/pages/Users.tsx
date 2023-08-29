@@ -1,19 +1,11 @@
 import React from 'react';
 import {testFriends} from "../common";
 import anon from "../public/anon.jpg";
+import PageContainer from "../components/common/PageContainer";
 
 const Users = () => {
     return (
-        <div className='
-        w-full
-        bg-white
-        rounded
-        p-2
-        flex
-        flex-col
-        justify-start
-        items-center
-        '>
+        <PageContainer>
             <h4 className='
             w-full text-center font-bold
             '>Users(8)</h4>
@@ -57,7 +49,10 @@ const Users = () => {
                 )}
 
             </div>
-        </div>
+        </PageContainer>
+
+
+
     );
 };
 

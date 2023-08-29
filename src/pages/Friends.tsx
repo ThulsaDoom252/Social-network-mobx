@@ -1,19 +1,11 @@
 import React from 'react';
 import {testFriends} from "../common";
 import anon from "../public/anon.jpg";
+import PageContainer from "../components/common/PageContainer";
 
 const Friends = () => {
     return (
-        <div
-            className='
-        w-full
-        bg-white
-        flex
-        rounded-md
-        flex-col
-        justify-start
-        items-center
-        '>
+        <PageContainer>
             <h4 className='
             font-bold
             '>You have 8 friends</h4>
@@ -47,7 +39,8 @@ const Friends = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </PageContainer>
+
     );
 };
 
