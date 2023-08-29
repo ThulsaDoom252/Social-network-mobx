@@ -1,24 +1,29 @@
 import React from 'react';
 import anon from "../../public/anon.jpg"
 import {AiFillFacebook, AiFillGithub, AiFillInstagram, AiFillYoutube} from "react-icons/ai";
+import Navbar from "../Navbar";
 
-const Profile = () => {
+interface ProfileProps {
+    smallScreenMode?: boolean
+}
+
+const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
     return (
-        <div className='
-        bg-white
-        ml-2
-        mr-2
-        p-2
-        w-profile
-        rounded-md
+        <div className={`
+         bg-white
         flex
         flex-col
         justify-start
-        '>
-            <div className='
+        ${!smallScreenMode ? 'ml-2 mr-2 w-profile rounded-md'
+            : 'w-full'}'}
+        `}>
+            <div className={`
             flex
             w-full
-            '>
+            border-t
+            border-black
+            ${smallScreenMode && 'pt-4'}
+            `}>
                 <div className='
                 flex
                 w-60

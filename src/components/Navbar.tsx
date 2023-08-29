@@ -3,12 +3,17 @@ import {ImProfile} from "react-icons/im";
 import {FaUserFriends, FaUsers} from "react-icons/fa";
 import {FaCircleInfo} from "react-icons/fa6";
 import {NavLink} from "react-router-dom";
+import {friendsRoute, infoRoute, profileRoute, usersRoute} from "../common";
 
 interface NavbarProps {
     width?: string,
+    showIcons?: boolean,
 }
 
-const Navbar: React.FC<NavbarProps> = ({width}) => {
+const Navbar: React.FC<NavbarProps> = ({
+                                           showIcons = true,
+                                           width
+                                       }) => {
     const isActiveStyle: string = `text-black`;
     const inactiveStyle: string = `text-gray-500 no-underline !important'}`;
 
@@ -21,44 +26,45 @@ const Navbar: React.FC<NavbarProps> = ({width}) => {
         `
         }
         >
-            <p className='
+            <p className={`
             flex
             items-center
-            '>
-                <ImProfile/>
+            `}>
+                {showIcons && <ImProfile/>}
+
                 <NavLink className={navData =>
                     navData.isActive ? isActiveStyle : inactiveStyle}
-                         to={'/profile'}>
+                         to={profileRoute}>
                     Profile
                 </NavLink>
             </p>
             <p className='
             flex
             items-center'>
-                <FaUserFriends/>
+                {showIcons && <FaUserFriends/>}
                 <NavLink className={navData =>
                     navData.isActive ? isActiveStyle : inactiveStyle}
-                         to={'/friends'}>
+                         to={friendsRoute}>
                     Friends
                 </NavLink>
             </p>
             <p className='
             flex
             items-center'>
-                <FaUsers/>
+                {showIcons && <FaUsers/>}
                 <NavLink className={navData =>
                     navData.isActive ? isActiveStyle : inactiveStyle}
-                         to={'/users'}>
+                         to={usersRoute}>
                     Users
                 </NavLink>
             </p>
             <p className='
             flex
             items-center'>
-                <FaCircleInfo/>
+                {showIcons && <FaCircleInfo/>}
                 <NavLink className={navData =>
                     navData.isActive ? isActiveStyle : inactiveStyle}
-                         to={'/info'}>
+                         to={infoRoute}>
                     Info
                 </NavLink>
             </p>

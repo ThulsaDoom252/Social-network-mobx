@@ -2,20 +2,21 @@ import React from 'react';
 import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
 
-const Header = () => {
+interface HeaderProps {
+    smallScreenMode?: boolean
+}
+
+const Header: React.FC<HeaderProps> = ({smallScreenMode = true}) => {
     return (
-        <div className='
-        h-60
-        pl-3
-        pr-3
-        pb-3
+        <div className={`
         header
         w-full
         flex
         flex-col
         bg-blue-400
         justify-end
-        '>
+        ${smallScreenMode ? 'h-30 pt-5 pl-3 pr-3' : 'h-60 pb-3 pr-3 pl-3'}
+        `}>
             <div className='
               flex
               flex-col
@@ -51,8 +52,9 @@ const Header = () => {
                 justify-center
                 items-center
                 '>
+                    {!smallScreenMode && <Navbar width={'w-80'}/>}
 
-                            <Navbar width={'w-80'}/>
+
                 </div>
             </div>
         </div>

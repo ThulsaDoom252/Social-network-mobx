@@ -3,12 +3,17 @@ import About from "../components/Profile/About";
 import Profile from "../components/Profile/Profile";
 import FriendsList from "../components/Profile/FriendsList";
 
-const ProfilePage = () => {
+interface ProfilePageProps {
+    smallScreenMode?: boolean
+}
+
+const ProfilePage: React.FC<ProfilePageProps> = ({smallScreenMode}) => {
     return (
         <>
-            <About/>
-            <Profile/>
-            <FriendsList/>
+            {!smallScreenMode && <About/>}
+            <Profile smallScreenMode={smallScreenMode}/>
+            {!smallScreenMode && <FriendsList/>}
+
         </>
     );
 };

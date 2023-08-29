@@ -10,6 +10,9 @@ module.exports = {
             },
             maxWidth: {
                 container: '1300px',
+            },
+            inset: {
+                mobileNavbar: '-1.4px'
             }
 
 

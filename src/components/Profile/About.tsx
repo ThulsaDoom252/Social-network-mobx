@@ -4,7 +4,7 @@ const About = () => {
     return (
         <div className='
         bg-white
-        p-5
+        p-3
         rounded-md
         w-60
         flex
@@ -12,24 +12,24 @@ const About = () => {
         justify-start
         items-start
         '>
-            <div className='mt-5 '>
+            <div>
                 <h4 className='font-bold'>Id</h4>
                 <div>123456</div>
 
             </div>
             <div className='
-            mt-5'>
+            mt-3'>
                 <h4 className='font-bold'>Looking for a job</h4>
             </div>
             <div className='
-            mt-5'>
+            mt-4'>
                 <h4 className='font-bold'>Skills/job related info</h4>
                 <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque dolore dolorem, ipsam labore
                     laborum perferendis provident quo soluta voluptas voluptate.
                 </div>
             </div>
             <div className='
-            mt-5
+            mt-4
             '>
                 <h4 className='font-bold'>Email</h4>
                 <div>www.test.com
@@ -37,7 +37,7 @@ const About = () => {
 
             </div>
             <div className='
-            mt-5
+            mt-4
             '>
                 <h4 className='font-bold'>Website</h4>
                 www.test.com
