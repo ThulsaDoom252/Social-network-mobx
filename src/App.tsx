@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Header from "./components/Header";
 import About from "./components/Profile/About";
 import Profile from "./components/Profile/Profile";
@@ -12,10 +12,17 @@ import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
 import MobileNavbar from "./components/MobileNavbar";
 import {friendsRoute, infoRoute, profileRoute, usersRoute} from "./common";
+import EditProfileModal from "./components/EditProfileModal";
 
 function App() {
 
     const smallScreenMode: boolean = true
+
+    const [isModalOpen, setIsIsModalOpen] = useState<boolean>(false)
+
+    const handleCloseModal = () => {
+        isModalOpen && setIsIsModalOpen(false)
+    }
 
 
     return (
@@ -24,7 +31,10 @@ function App() {
     w-scren
     bg-white
     h-screen
-    '>
+    '
+                 onClick={handleCloseModal}
+            >
+                    <EditProfileModal setIsOpen={setIsIsModalOpen} isOpen={isModalOpen}/>
                 <div className={`
                  mx-auto
             max-w-container
@@ -36,7 +46,9 @@ function App() {
                 
                 `}
                 >
-                    <Header smallScreenMode={smallScreenMode}/>
+                    <Header
+                        setIsOpen={setIsIsModalOpen}
+                        smallScreenMode={smallScreenMode}/>
                     <div className={`
                 flex
                 justify-between

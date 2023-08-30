@@ -18,8 +18,8 @@ const Users = () => {
             grid-rows-2
             gap-1
             '>
-                {testFriends.map(friend =>
-                    <div className='
+                {testFriends.map((friend, index) =>
+                    <div key={index} className='
                     flex
                     flex-col
                     justify-center
@@ -50,7 +50,6 @@ const Users = () => {
 
             </div>
         </PageContainer>
-
 
 
     );

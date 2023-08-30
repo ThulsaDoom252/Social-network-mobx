@@ -6,13 +6,16 @@ module.exports = {
     theme: {
         extend: {
             width: {
-                profile: '700px',
+                editModal: '1000px',
             },
             maxWidth: {
                 container: '1300px',
             },
             inset: {
                 mobileNavbar: '-1.4px'
+            },
+            height: {
+                '90vh': '90vh',
             }
 
 

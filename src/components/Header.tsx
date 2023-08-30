@@ -3,10 +3,16 @@ import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
 
 interface HeaderProps {
-    smallScreenMode?: boolean
+    smallScreenMode?: boolean,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: React.FC<HeaderProps> = ({smallScreenMode = true}) => {
+const Header: React.FC<HeaderProps> = ({smallScreenMode = true, setIsOpen}) => {
+    const handleOpenModal = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setIsOpen(true)
+    }
+
     return (
         <div className={`
         header
@@ -40,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({smallScreenMode = true}) => {
                         <div>Jon Doe</div>
 
                     </div>
-                    <button>
+                    <button onClick={handleOpenModal}>
                         Edit profile
                     </button>
 

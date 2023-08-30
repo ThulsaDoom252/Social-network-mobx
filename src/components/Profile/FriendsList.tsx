@@ -21,8 +21,8 @@ const FriendsList = () => {
             grid
             gap-1
             grid-cols-3
-            '>{testFriends.map(friend =>
-                <div className='
+            '>{testFriends.map((friend,index) =>
+                <div key={index} className='
                 w-8
                 h-8
                 '>

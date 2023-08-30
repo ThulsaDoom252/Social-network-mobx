@@ -19,10 +19,10 @@ const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {
             ${!mobileMode && 'grid grid-cols-8  grid-rows-2 gap-1'}
             `}
             >
-                {testFriends.map(() => {
+                {testFriends.map((friend, index) => {
                         if (mobileMode) {
                             return (
-                                <div className='
+                                <div key={index} className='
                     flex
                     mt-2
                     mx-auto
@@ -72,7 +72,7 @@ const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {
 
                         } else {
                             return (
-                                <div className='
+                                <div key={index} className='
                     flex
                     flex-col
                     justify-center

@@ -73,35 +73,37 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                     flex
                     flex-col
                     items-center
-                    justify-start
                     '>
-                        <div className='
+                        <div>
+                            <div className='
                         flex
                         items-center'>
-                            <AiFillYoutube/>
-                            <div>www.youtube.com</div>
+                                <AiFillYoutube/>
+                                <div>www.youtube.com</div>
 
-                        </div>
-                        <div className='
+                            </div>
+                            <div className='
                         flex
                         items-center'>
-                            <AiFillInstagram/>
-                            <div>www.instagram.com</div>
+                                <AiFillInstagram/>
+                                <div>www.instagram.com</div>
 
-                        </div>
-                        <div className='
+                            </div>
+                            <div className='
                         flex
                         items-center'>
-                            <AiFillGithub/>
-                            <div>www.github.com</div>
+                                <AiFillGithub/>
+                                <div>www.github.com</div>
 
-                        </div>
-                        <div className='
+                            </div>
+                            <div className='
                         flex
                         items-center'>
-                            <AiFillFacebook/>
-                            <div>www.facebook.com</div>
+                                <AiFillFacebook/>
+                                <div>www.facebook.com</div>
+                            </div>
                         </div>
+
                     </div>
 
                 </div>
