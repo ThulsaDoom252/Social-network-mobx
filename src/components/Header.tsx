@@ -4,13 +4,22 @@ import Navbar from "./Navbar";
 
 interface HeaderProps {
     smallScreenMode?: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    toggleLogOutStatus: (value: boolean) => void
 }
 
-const Header: React.FC<HeaderProps> = ({smallScreenMode = true, setIsOpen}) => {
+const Header: React.FC<HeaderProps> = ({
+                                           smallScreenMode = true,
+                                           setIsOpen,
+                                           toggleLogOutStatus,
+                                       }) => {
     const handleOpenModal = (e: React.MouseEvent) => {
         e.stopPropagation()
         setIsOpen(true)
+    }
+
+    const handleLogout = () => {
+        toggleLogOutStatus(false)
     }
 
     return (
@@ -18,11 +27,13 @@ const Header: React.FC<HeaderProps> = ({smallScreenMode = true, setIsOpen}) => {
         header
         w-full
         flex
+        relative
         flex-col
         bg-blue-400
         justify-end
         ${smallScreenMode ? 'h-30 pt-5 pl-3 pr-3' : 'h-60 pb-3 pr-3 pl-3'}
         `}>
+            {!smallScreenMode && <div className='absolute top-2 right-2' onClick={handleLogout}>Logout</div>}
             <div className='
               flex
               flex-col

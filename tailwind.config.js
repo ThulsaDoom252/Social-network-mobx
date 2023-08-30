@@ -6,6 +6,8 @@ module.exports = {
     theme: {
         extend: {
             width: {
+                auth: '800px',
+                profile: '880px',
                 editModal: '1000px',
             },
             maxWidth: {
@@ -16,6 +18,7 @@ module.exports = {
             },
             height: {
                 '90vh': '90vh',
+                'auth': '400px'
             }
 
 

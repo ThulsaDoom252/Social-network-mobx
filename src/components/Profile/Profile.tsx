@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import anon from "../../public/anon.jpg"
 import {AiFillFacebook, AiFillGithub, AiFillInstagram, AiFillYoutube} from "react-icons/ai";
 import Navbar from "../Navbar";
@@ -20,6 +20,7 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
             <div className={`
             flex
             w-full
+            p-2
             border-t
             border-black
             ${smallScreenMode && 'pt-4'}
@@ -56,7 +57,6 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                     flex
                     items-center
                    justify-between
-                   p-2
                     '>
                         <div>
                             John Doe
@@ -65,50 +65,92 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                             <button>
                                 Follow
                             </button>
+                        </div>
+                    </div>
+                    {smallScreenMode && <>
+                        <div className={'w-full text-center font-semibold text-lg mb-3 mt-2'}>
+                            looking for a job?
+                        </div>
+                        <div className={'w-full  mb-2'}>
+                            <h4 className={'font-bold'}>Desired job/ work skills</h4>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi commodi dignissimos
+                                eius enim est, excepturi id mollitia numquam quibusdam unde.
+                            </div>
+                        </div>
+                        <div className='
+            w-full
+            flex
+            flex-col
+            items-start
+            justify-start
+            '>
+                            <h4 className='font-bold'>Little about me</h4>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur blanditiis cum
+                                dolore dolorum
+                                ducimus et exercitationem expedita facilis hic ipsam laboriosam magni molestiae
+                                necessitatibus nemo
+                                nihil, nulla numquam obcaecati quae quibusdam quidem quos rem rerum sint voluptas
+                            </div>
 
                         </div>
-
-                    </div>
-                    <div className='
+                        <div className={'w-full flex flex-col items-center justify-center mt-2'}>
+                            <div className={'font-bold'}>Contact me</div>
+                            <div className={`
                     flex
-                    flex-col
-                    items-center
-                    '>
-                        <div>
-                            <div className='
-                        flex
-                        items-center'>
-                                <AiFillYoutube/>
-                                <div>www.youtube.com</div>
-
-                            </div>
-                            <div className='
-                        flex
-                        items-center'>
-                                <AiFillInstagram/>
-                                <div>www.instagram.com</div>
-
-                            </div>
-                            <div className='
-                        flex
-                        items-center'>
-                                <AiFillGithub/>
-                                <div>www.github.com</div>
-
-                            </div>
-                            <div className='
-                        flex
-                        items-center'>
-                                <AiFillFacebook/>
-                                <div>www.facebook.com</div>
+                     p-4
+                     w-full  
+                     justify-center 
+                     h-fit
+                    `}>
+                                <div className={'w-full flex justify-between flex-wrap'}>
+                                    <a href="#"><AiFillYoutube size={25}/></a>
+                                    <a href="#"><AiFillInstagram size={25}/></a>
+                                    <a href="#"> <AiFillGithub size={25}/></a>
+                                    <a href="#"><AiFillFacebook size={25}/></a>
+                                </div>
                             </div>
                         </div>
+                    </>}
+                    {!smallScreenMode &&
+                        <div className={`
+                    flex
+                    flex-col 
+                    items-center
+                    `}>
+                            <div>
+                                <div className='
+                        flex
+                        items-center'>
+                                    <AiFillYoutube/>
+                                    <div>www.youtube.com</div>
 
-                    </div>
+                                </div>
+                                <div className='
+                        flex
+                        items-center'>
+                                    <AiFillInstagram/>
+                                    <div>www.instagram.com</div>
+
+                                </div>
+                                <div className='
+                        flex
+                        items-center'>
+                                    <AiFillGithub/>
+                                    <div>www.github.com</div>
+
+                                </div>
+                                <div className='
+                        flex
+                        items-center'>
+                                    <AiFillFacebook/>
+                                    <div>www.facebook.com</div>
+                                </div>
+                            </div>
+                        </div>}
 
                 </div>
             </div>
-            <div className='
+            {!smallScreenMode && <div className='
             w-full
             flex
             flex-col
@@ -120,14 +162,9 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                     ducimus et exercitationem expedita facilis hic ipsam laboriosam magni molestiae necessitatibus nemo
                     nihil, nulla numquam obcaecati quae quibusdam quidem quos rem rerum sint voluptas voluptates.
                     Accusamus accusantium cum dolore ipsum saepe. Alias delectus est hic illum itaque iusto quibusdam,
-                    sint ullam vel voluptatibus! Accusamus commodi cupiditate debitis dolorum earum fugit hic incidunt
-                    inventore ipsum, labore libero nostrum obcaecati officia officiis quod repudiandae similique
-                    suscipit tempora voluptas voluptatum. Ducimus earum et excepturi explicabo iste laboriosam
-                    laudantium modi ratione reiciendis vero? Atque, commodi cum doloremque laborum molestias nihil
-                    reprehenderit.
                 </div>
 
-            </div>
+            </div>}
 
         </div>
     );

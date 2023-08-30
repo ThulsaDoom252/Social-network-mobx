@@ -12,7 +12,7 @@ interface EditProfileModalProps {
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                                                isOpen,
-                                                               smallScreen = true,
+                                                               smallScreen = false,
                                                                setIsOpen,
                                                            }) => {
     const handleClose = () => setIsOpen(false);
