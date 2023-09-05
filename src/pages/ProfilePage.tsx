@@ -2,9 +2,11 @@ import React from 'react';
 import About from "../components/Profile/About";
 import Profile from "../components/Profile/Profile";
 import FriendsList from "../components/Profile/FriendsList";
+import authHoc from "../hoc/authHoc";
 
 interface ProfilePageProps {
     smallScreenMode?: boolean
+    isLogged: boolean,
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({smallScreenMode}) => {
@@ -18,4 +20,4 @@ const ProfilePage: React.FC<ProfilePageProps> = ({smallScreenMode}) => {
     );
 };
 
-export default ProfilePage;
+export default authHoc(ProfilePage);

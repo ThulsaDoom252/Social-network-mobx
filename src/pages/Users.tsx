@@ -2,8 +2,16 @@ import React from 'react';
 import {testFriends} from "../common";
 import anon from "../public/anon.jpg";
 import PageContainer from "../components/common/PageContainer";
+import {observer} from "mobx-react-lite";
 
-const Users = () => {
+
+interface UsersProps {
+    smallScreenMode?: boolean
+    isLogged: boolean,
+}
+
+
+const Users:React.FC<UsersProps> = observer(({smallScreenMode, isLogged}) => {
     return (
         <PageContainer>
             <h4 className='
@@ -53,6 +61,6 @@ const Users = () => {
 
 
     );
-};
+});
 
 export default Users;

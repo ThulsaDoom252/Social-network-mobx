@@ -1,29 +1,32 @@
 import React from 'react';
 import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
+import authStore from "../mobx/auth/auth"
+import {observer} from "mobx-react-lite";
 
 interface HeaderProps {
     smallScreenMode?: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    toggleLogOutStatus: (value: boolean) => void
 }
 
 const Header: React.FC<HeaderProps> = ({
                                            smallScreenMode = true,
                                            setIsOpen,
-                                           toggleLogOutStatus,
                                        }) => {
     const handleOpenModal = (e: React.MouseEvent) => {
         e.stopPropagation()
         setIsOpen(true)
     }
 
-    const handleLogout = () => {
-        toggleLogOutStatus(false)
+    const handleLogOut = () => {
+        authStore.toggleLoggedStatus(false)
     }
 
+
     return (
-        <div className={`
+        <div
+            hidden={!authStore.isLogged}
+            className={`
         header
         w-full
         flex
@@ -33,7 +36,8 @@ const Header: React.FC<HeaderProps> = ({
         justify-end
         ${smallScreenMode ? 'h-30 pt-5 pl-3 pr-3' : 'h-60 pb-3 pr-3 pl-3'}
         `}>
-            {!smallScreenMode && <div className='absolute top-2 right-2' onClick={handleLogout}>Logout</div>}
+            {!smallScreenMode && <div className='absolute top-2 right-2'
+                                      onClick={handleLogOut}>Logout</div>}
             <div className='
               flex
               flex-col
@@ -70,8 +74,6 @@ const Header: React.FC<HeaderProps> = ({
                 items-center
                 '>
                     {!smallScreenMode && <Navbar width={'w-80'}/>}
-
-
                 </div>
             </div>
         </div>

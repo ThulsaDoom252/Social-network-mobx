@@ -1,11 +1,20 @@
 import React from 'react';
+import authStore from "../../mobx/auth/auth"
+
 
 interface authProps {
     smallScreenMode: boolean,
-    toggleLoggedStatus: (value: boolean) => void
+    register: {},
+    handleSubmit: (onSubmit: (data: FormData) => void) => (event: React.FormEvent<HTMLFormElement>) => void,
+    onSubmit: (data: FormData) => void,
 }
 
-const Auth: React.FC<authProps> = ({smallScreenMode, toggleLoggedStatus}) => {
+const Auth: React.FC<authProps> = ({
+                                       smallScreenMode,
+                                       register,
+                                       handleSubmit,
+
+                                   }) => {
     return (
         <div className={`
         p-3
@@ -51,7 +60,10 @@ const Auth: React.FC<authProps> = ({smallScreenMode, toggleLoggedStatus}) => {
                         rounded-md
                         w-1/2
                         mx-auto"
-                                onClick={() => toggleLoggedStatus(true)}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    authStore.toggleLoggedStatus(true)
+                                }}
                         >
                             Login
                         </button>

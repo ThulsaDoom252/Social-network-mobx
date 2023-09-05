@@ -4,7 +4,8 @@ import anon from "../public/anon.jpg";
 import PageContainer from "../components/common/PageContainer";
 
 interface FriendsPageProps {
-    mobileMode?: boolean
+    mobileMode?: boolean,
+    isLogged: boolean,
 }
 
 const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {

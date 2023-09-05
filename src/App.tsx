@@ -6,14 +6,17 @@ import Info from "./pages/Info";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import MobileNavbar from "./components/MobileNavbar";
-import {friendsRoute, infoRoute, profileRoute, usersRoute} from "./common";
+import {authRoute, friendsRoute, infoRoute, profileRoute, usersRoute} from "./common";
 import EditProfileModal from "./components/EditProfileModal";
-import Auth from "./pages/Auth";
+import authStore from "./mobx/auth/auth"
+import AuthContainer from "./pages/auth/AuthContainer";
+import {observer} from "mobx-react-lite";
 
-function App() {
+const App: React.FC = observer(() => {
     const [smallScreenMode, toggleSmallScreenMode] = useState(false)
-    const [isLogged, toggleLoggedStatus] = useState(false)
     const [isModalOpen, setIsIsModalOpen] = useState<boolean>(false)
+
+    const isLogged = authStore.isLogged
 
     useEffect(() => {
         const handleResize = () => {
@@ -30,21 +33,19 @@ function App() {
     }, []);
 
 
-    if (!isLogged) {
-        return <Auth smallScreenMode={smallScreenMode} toggleLoggedStatus={toggleLoggedStatus}/>
-    }
-
     const handleCloseModal = () => {
         isModalOpen && setIsIsModalOpen(false)
     }
 
-
     return (
         <BrowserRouter>
-            <div className='
-        w-scren
+            <div className={`
+              w-screen
         h-screen
-        '
+        ${!isLogged && 'flex justify-center'}
+            `}
+
+
                  onClick={handleCloseModal}
             >
                 <EditProfileModal
@@ -52,19 +53,19 @@ function App() {
                     setIsOpen={setIsIsModalOpen}
                     isOpen={isModalOpen}/>
                 <div className={`
-                     mx-auto
+                ${isLogged && `  
+                mx-auto
                 max-w-container
           container
             bg-blue-200
           min-h-full
-          overflow-y-scroll
+          overflow-y-scroll`}
                     `}
                 >
-                    <Header
+                    {isLogged && <Header
                         setIsOpen={setIsIsModalOpen}
                         smallScreenMode={smallScreenMode}
-                        toggleLogOutStatus={toggleLoggedStatus}
-                    />
+                    />}
                     <div className={`
                          ${smallScreenMode ? 'p-0' : 'p-1'}
                         `}>
@@ -73,7 +74,7 @@ function App() {
                     justify-between
                     ${smallScreenMode ? 'flex-col' : 'pt-2'}
                     `}>
-                            {smallScreenMode && <div className={`
+                            {isLogged && smallScreenMode && <div className={`
                             relative
                             w-full
                             h-12
@@ -81,13 +82,15 @@ function App() {
 
                                 {smallScreenMode && <MobileNavbar/>}
                             </div>}
-
-
                             <Routes>
-                                <Route path={profileRoute} element={<ProfilePage smallScreenMode={smallScreenMode}/>}/>
-                                <Route path={friendsRoute} element={<Friends mobileMode={smallScreenMode}/>}/>
-                                <Route path={usersRoute} element={<Users/>}/>
-                                <Route path={infoRoute} element={<Info/>}/>
+                                <Route path={authRoute} element={<AuthContainer isLogged={isLogged}
+                                                                                smallScreenMode={smallScreenMode}/>}/>
+                                <Route path={profileRoute}
+                                       element={<ProfilePage isLogged={isLogged} smallScreenMode={smallScreenMode}/>}/>
+                                <Route path={friendsRoute}
+                                       element={<Friends mobileMode={smallScreenMode} isLogged={isLogged}/>}/>
+                                <Route path={usersRoute} element={<Users isLogged={isLogged}/>}/>
+                                <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>
                         </div>
                     </div>
@@ -97,6 +100,6 @@ function App() {
         </BrowserRouter>
 
     );
-}
+})
 
 export default App;
