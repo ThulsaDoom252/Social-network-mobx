@@ -3,19 +3,20 @@ import {Dialog} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
 import {stopPropagation} from "../common";
 import anon from "../public/anon.jpg"
+import appStore from "../mobx/app"
 
 interface EditProfileModalProps {
     isOpen: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    // setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     smallScreen?: boolean,
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                                                isOpen,
                                                                smallScreen = false,
-                                                               setIsOpen,
+                                                               // setIsOpen,
                                                            }) => {
-    const handleClose = () => setIsOpen(false);
+    const handleClose = () => appStore.toggleIsEditProfileModalOpen(false);
 
 
     const mainTitleStyle: string = `bg-gray-200 w-full border-b border-gray-400`
@@ -68,7 +69,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                             `}>
                                 <div className='flex flex-col items-center justify-center'>
                                     <img src={anon} alt="profile-picture" className='rounded-full h-24 w-24'/>
-                                    <div className={`${!smallScreen && 'text-center'}`}>JPG or PNG no larger then 5 MB</div>
+                                    <div className={`${!smallScreen && 'text-center'}`}>JPG or PNG no larger then 5 MB
+                                    </div>
                                     <button type="button"
                                             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
 

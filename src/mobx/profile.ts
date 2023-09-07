@@ -23,6 +23,8 @@ class profileStore {
             large?: string,
         }
     } = {};
+    currentUserAvatar = ''
+
 
     constructor() {
         makeAutoObservable(this)
@@ -30,34 +32,28 @@ class profileStore {
 
     setProfileData(data: object) {
         this.profileData = data
+        // @ts-ignore
+        this.setUserPhoto(data?.photos.large)
+    }
+
+    setUserPhoto(url: string) {
+        this.currentUserAvatar = url
     }
 
     async getProfileData(id: string) {
         const result = await profileApi.getProfileData(id)
         this.setProfileData(result)
     }
+
+    async updateAvatar(photo: File | Blob) {
+        const result = await profileApi.updatePhoto(photo)
+        if (result.data.resultCode === 0) {
+            this.setUserPhoto(result.data.data.photos.large)
+            debugger
+        } else {
+            console.log('some error occured uploading photo...')
+        }
+    }
 }
 
-
 export default new profileStore()
-
-
-// userId: required(integer)
-// lookingForAJob: required(boolean)
-// lookingForAJobDescription: required(string)
-// fullName: required(string)
-// contacts: required(object)
-// github: required(string)
-// vk: required(string)
-// facebook: required(string)
-// instagram: required(string)
-// twitter: required(string)
-// website: required(string)
-// youtube: required(string)
-// mainLink: required(string)
-// photos: required(object)
-// small: (string)
-// URL address of user photo (small size) (null if photo is not uploaded to the server)
-//
-// large: (string)
-// URL address of user pho

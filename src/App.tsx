@@ -10,17 +10,18 @@ import {authRoute, friendsRoute, infoRoute, profileRoute, usersRoute} from "./co
 import EditProfileModal from "./components/EditProfileModal";
 import authStore from "./mobx/auth/auth"
 import profileStore from "./mobx/profile"
+import appStore from "./mobx/app"
 import {observer} from "mobx-react-lite";
 import Auth from "./pages/Auth";
 import {initializeProfile} from "./mobx/initializeProfile";
 
 const App: React.FC = observer(() => {
-    const [smallScreenMode, toggleSmallScreenMode] = useState(false)
-    const [isModalOpen, setIsIsModalOpen] = useState<boolean>(false)
     const isLogged = authStore.isLogged
     const profileData = profileStore.profileData
-    const avatar = profileStore.profileData?.photos?.large
+    const avatar = profileStore.currentUserAvatar
     const currentUsername = profileStore.profileData?.fullName
+    const smallScreenMode = appStore.smallScreen
+    const isModalOpen = appStore.isEditProfileModalOpen
 
     useEffect(() => {
         initializeProfile().then(() => void 0)
@@ -30,7 +31,7 @@ const App: React.FC = observer(() => {
     useEffect(() => {
         const handleResize = () => {
             const screenWidth = window.innerWidth;
-            toggleSmallScreenMode(screenWidth < 1000);
+            appStore.toggleSmallScreen(screenWidth < 1000);
         };
 
         window.addEventListener("resize", handleResize);
@@ -43,7 +44,7 @@ const App: React.FC = observer(() => {
 
 
     const handleCloseModal = () => {
-        isModalOpen && setIsIsModalOpen(false)
+        isModalOpen && appStore.toggleIsEditProfileModalOpen(false)
     }
 
     return (
@@ -59,7 +60,7 @@ const App: React.FC = observer(() => {
             >
                 <EditProfileModal
                     smallScreen={smallScreenMode}
-                    setIsOpen={setIsIsModalOpen}
+                    // setIsOpen={setIsIsModalOpen}
                     isOpen={isModalOpen}/>
                 <div className={`
                 ${isLogged && `  
@@ -72,7 +73,7 @@ const App: React.FC = observer(() => {
                     `}
                 >
                     {isLogged && <Header
-                        setIsOpen={setIsIsModalOpen}
+                        // setIsOpen={setIsIsModalOpen}
                         smallScreenMode={smallScreenMode}
                         avatar={avatar}
                         currentUserName={currentUsername}

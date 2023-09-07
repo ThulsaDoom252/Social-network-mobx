@@ -10,7 +10,16 @@ export const profileApi = {
     getProfileData: (id: string) => {
         return instance.get(`profile/${id}`)
             .then(response => response.data)
-    }
+    },
+    updatePhoto(photo: File | Blob) {
+        const formData = new FormData();
+        formData.append("image", photo);
+        return instance.put("profile/photo/", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+    },
 }
 
 

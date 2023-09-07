@@ -1,31 +1,48 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
 import authStore from "../mobx/auth/auth"
 import {ClipLoader} from "react-spinners";
+import {Button} from "antd";
+import profileStore from "../mobx/profile";
+import appStore from "../mobx/app";
 
 interface HeaderProps {
     smallScreenMode?: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    // setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     avatar?: string,
     currentUserName?: string
 }
 
 const Header: React.FC<HeaderProps> = ({
                                            smallScreenMode = true,
-                                           setIsOpen,
+                                           // setIsOpen,
                                            avatar,
                                            currentUserName,
                                        }) => {
     const handleOpenModal = (e: React.MouseEvent) => {
         e.stopPropagation()
-        setIsOpen(true)
+        appStore.toggleIsEditProfileModalOpen(true)
     }
 
     const handleLogOut = () => {
         authStore.signOut()
     }
+    const hiddenFileInput = useRef<HTMLInputElement>(null);
 
+    const updateAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files && e.target.files[0];
+        if (selectedFile) {
+            profileStore.updateAvatar(selectedFile);
+        }
+    };
+
+    const handleAvatarClick = (event: React.MouseEvent) => hiddenFileInput.current && hiddenFileInput.current.click()
+
+    const [isAvatarHovered, setIsAvatarHovered] = useState(false)
+
+    const handleMouseEnterAvatar = () => setIsAvatarHovered(true)
+    const handleMouseLeaveAvatar = () => setIsAvatarHovered(false)
 
     return (
         <div
@@ -40,8 +57,9 @@ const Header: React.FC<HeaderProps> = ({
         justify-end
         ${smallScreenMode ? 'h-30 pt-5 pl-3 pr-3' : 'h-60 pb-3 pr-3 pl-3'}
         `}>
-            {!smallScreenMode && <div className='absolute top-2 right-2'
-                                      onClick={handleLogOut}>Logout</div>}
+            {!smallScreenMode &&
+                <Button className='absolute top-2 right-2 bg-blue-400 fontLato' type="primary"
+                        onClick={handleLogOut}>Logout</Button>}
             <div className='
               flex
               flex-col
@@ -59,19 +77,27 @@ const Header: React.FC<HeaderProps> = ({
                     h-10
                     '>
                         <img
-                            className='rounded-full h-20 w-20'
+                            onMouseEnter={handleMouseEnterAvatar}
+                            onMouseLeave={handleMouseLeaveAvatar}
+                            onClick={handleAvatarClick}
+                            className={`rounded-full h-20 w-20 cursor-pointer ${isAvatarHovered && 'border-blue-300 border-2 transition-all duration-100'}`}
+                            title={'click to change avatar'}
                             src={avatar || anon}
                             alt="user-photo"/>
+                        <input ref={hiddenFileInput}
+                               hidden={true} type={'file'}
+                               onChange={updateAvatar}/>
                         <div className={`${smallScreenMode && "flex flex-col justify-center items-center"}`}>
-                            <div>{currentUserName || <ClipLoader/>}</div>
+                            <div className={'ml-2 fontLato cursor-default'}>{currentUserName || <ClipLoader/>}</div>
                             {smallScreenMode && <div onClick={handleLogOut}>Logout</div>}
 
                         </div>
 
                     </div>
-                    <button onClick={handleOpenModal}>
-                        Edit profile
-                    </button>
+                    <Button type="primary"
+                            className='bg-blue-400'
+                            disabled={true}
+                            onClick={handleOpenModal}>Edit Profile</Button>
 
                 </div>
                 <div className='
