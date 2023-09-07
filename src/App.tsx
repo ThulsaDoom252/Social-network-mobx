@@ -9,14 +9,23 @@ import MobileNavbar from "./components/MobileNavbar";
 import {authRoute, friendsRoute, infoRoute, profileRoute, usersRoute} from "./common";
 import EditProfileModal from "./components/EditProfileModal";
 import authStore from "./mobx/auth/auth"
-import AuthContainer from "./pages/auth/AuthContainer";
+import profileStore from "./mobx/profile"
 import {observer} from "mobx-react-lite";
+import Auth from "./pages/Auth";
+import {initializeProfile} from "./mobx/initializeProfile";
 
 const App: React.FC = observer(() => {
     const [smallScreenMode, toggleSmallScreenMode] = useState(false)
     const [isModalOpen, setIsIsModalOpen] = useState<boolean>(false)
-
     const isLogged = authStore.isLogged
+    const profileData = profileStore.profileData
+    const avatar = profileStore.profileData?.photos?.large
+    const currentUsername = profileStore.profileData?.fullName
+
+    useEffect(() => {
+        initializeProfile().then(() => void 0)
+    }, []);
+
 
     useEffect(() => {
         const handleResize = () => {
@@ -65,6 +74,8 @@ const App: React.FC = observer(() => {
                     {isLogged && <Header
                         setIsOpen={setIsIsModalOpen}
                         smallScreenMode={smallScreenMode}
+                        avatar={avatar}
+                        currentUserName={currentUsername}
                     />}
                     <div className={`
                          ${smallScreenMode ? 'p-0' : 'p-1'}
@@ -83,8 +94,8 @@ const App: React.FC = observer(() => {
                                 {smallScreenMode && <MobileNavbar/>}
                             </div>}
                             <Routes>
-                                <Route path={authRoute} element={<AuthContainer isLogged={isLogged}
-                                                                                smallScreenMode={smallScreenMode}/>}/>
+                                <Route path={authRoute} element={<Auth isLogged={isLogged}
+                                                                       smallScreenMode={smallScreenMode}/>}/>
                                 <Route path={profileRoute}
                                        element={<ProfilePage isLogged={isLogged} smallScreenMode={smallScreenMode}/>}/>
                                 <Route path={friendsRoute}

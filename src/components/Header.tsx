@@ -2,16 +2,20 @@ import React from 'react';
 import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
 import authStore from "../mobx/auth/auth"
-import {observer} from "mobx-react-lite";
+import {ClipLoader} from "react-spinners";
 
 interface HeaderProps {
     smallScreenMode?: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    avatar?: string,
+    currentUserName?: string
 }
 
 const Header: React.FC<HeaderProps> = ({
                                            smallScreenMode = true,
                                            setIsOpen,
+                                           avatar,
+                                           currentUserName,
                                        }) => {
     const handleOpenModal = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -19,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     const handleLogOut = () => {
-        authStore.toggleLoggedStatus(false)
+        authStore.signOut()
     }
 
 
@@ -56,9 +60,13 @@ const Header: React.FC<HeaderProps> = ({
                     '>
                         <img
                             className='rounded-full h-20 w-20'
-                            src={anon}
+                            src={avatar || anon}
                             alt="user-photo"/>
-                        <div>Jon Doe</div>
+                        <div className={`${smallScreenMode && "flex flex-col justify-center items-center"}`}>
+                            <div>{currentUserName || <ClipLoader/>}</div>
+                            {smallScreenMode && <div onClick={handleLogOut}>Logout</div>}
+
+                        </div>
 
                     </div>
                     <button onClick={handleOpenModal}>

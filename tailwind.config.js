@@ -14,11 +14,14 @@ module.exports = {
                 container: '1300px',
             },
             inset: {
-                mobileNavbar: '-1.4px'
+                mobileNavbar: '-1px',
+                inputError: '-21px',
+                captchaBlock: '-70px'
             },
             height: {
                 '90vh': '90vh',
-                'auth': '400px'
+                'auth': '400px',
+                'authRightBlock': '500px',
             }
 
 
