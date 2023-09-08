@@ -3,48 +3,41 @@ import {authApi} from "../../api/api";
 
 class AuthStore {
     isLogged: boolean = false
-    id: string = ''
-    email: string = ''
-    login: string = ''
-    fetchAuthData: boolean = false
-    authErrorText = ''
-    isCaptchaRequired = false
-    captchaUrl = ''
-
+    id:string = ''
+    email:string = ''
+    login:string = ''
+    fetchAuthData:boolean = false
+    authErrorText:string= ''
+    isCaptchaRequired:boolean = false
+    captchaUrl:string = ''
     constructor() {
         makeAutoObservable(this)
     }
-
-    toggleLoggedStatus(toggle: boolean) {
+    toggleLoggedStatus(toggle:boolean) {
         this.isLogged = toggle
     }
-
-    setUserData(id: string,
-                email: string,
-                login: string) {
+    setUserData(id:string,
+                email:string,
+                login:string) {
         this.email = email
         this.id = id
         this.login = login
     }
 
-    toggleAuthDataFetch(toggle: boolean) {
+    toggleAuthDataFetch(toggle:boolean) {
         this.fetchAuthData = toggle
     }
-
-    toggleAuthErrorText(text: string) {
+    toggleAuthErrorText(text:string) {
         this.authErrorText = text
     }
-
     toggleCaptcha(toggle: boolean) {
         this.isCaptchaRequired = true
     }
-
     setCaptchaUrl(url: string) {
         this.captchaUrl = url
     }
-
-    async signIn(email: string,
-                 password: string,
+    async signIn(email:string,
+                 password:string,
                  rememberMe?: boolean,
                  captchaSymbols?: 'string') {
         this.toggleAuthDataFetch(true)

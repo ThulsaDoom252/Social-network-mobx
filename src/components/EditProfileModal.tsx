@@ -1,29 +1,163 @@
-import React from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {Dialog} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
 import {stopPropagation} from "../common";
 import anon from "../public/anon.jpg"
 import appStore from "../mobx/app"
+import {ProfileData} from "../types";
+import {Button, Form, Input, Select} from "antd";
+import profileStore from "../mobx/profile";
+import TextArea from "antd/es/input/TextArea";
+import {useSnackbar} from "notistack";
+import usersStore from "../mobx/users";
 
 interface EditProfileModalProps {
     isOpen: boolean,
+    currentUserProfileData: Partial<ProfileData>
     // setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     smallScreen?: boolean,
+    isAvatarUpdating: boolean,
+    isUserDataUpdating: boolean,
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                                                isOpen,
                                                                smallScreen = false,
+                                                               isAvatarUpdating,
                                                                // setIsOpen,
+                                                               isUserDataUpdating,
+                                                               currentUserProfileData,
                                                            }) => {
+
+    //Destructuring props
+    const {
+        fullName,
+        contacts,
+        aboutMe,
+        lookingForAJobDescription,
+        lookingForAJob,
+        userId,
+        photos: {large: largePhoto}
+    } = currentUserProfileData as ProfileData
+
+    const {github, twitter, facebook, mainLink, website, youtube, instagram} = contacts
+
+
+    // Using snackbar
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar()
+
+    //Setting looking for a job value - to be changeable in form
+    const [lookingForAJobValue, setIsLookingForAJobValue] = useState<('Yes' | 'No') | undefined>(lookingForAJob ? 'Yes' : 'No');
+
+    //Contacts array for mapping
+    const contactsArray = [
+        {
+            label: 'Instagram',
+            url: instagram,
+            contactType: "instagram"
+        },
+        {
+            label: 'Youtube',
+            url: youtube,
+            contactType: "youtube"
+        },
+        {
+            label: 'Github',
+            url: github,
+            contactType: "github"
+        },
+        {
+            label: 'Facebook',
+            url: facebook,
+            contactType: "facebook"
+        },
+        {
+            label: 'Twitter',
+            url: twitter,
+            contactType: "twitter"
+        },
+        {
+            label: 'Website',
+            url: website,
+            contactType: "website"
+        },
+    ]
+
+    //Modal styles
+    const mainTitleStyle: string = `bg-gray-200 w-full border-b border-gray-400`
+    const titlesStyle: string = `font-semibold mt-2 cursor-default`
+
+    //Close modal on empty space or close btn click
     const handleClose = () => appStore.toggleIsEditProfileModalOpen(false);
 
+    //Avatar upload logic
+    const hiddenFileInput = useRef<HTMLInputElement>(null);
 
-    const mainTitleStyle: string = `bg-gray-200 w-full border-b border-gray-400`
+    const updateAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files && e.target.files[0];
+        if (selectedFile) {
+            profileStore.updateAvatar(selectedFile).then(() => enqueueSnackbar('Avatar updated'));
+        }
+    };
+    const handleAvatarClick = () => hiddenFileInput.current && hiddenFileInput.current.click()
 
-    const titlesStyle: string = `font-semibold mt-2`
+    // Ant design native form
 
-    const errorStyle: string = 'text-red-600'
+    //Setting props values in form values
+    const [form] = Form.useForm();
+    form.setFieldsValue({
+        fullName,
+        aboutMe,
+        lookingForAJob: lookingForAJobValue,
+        lookingForAJobDescription,
+        github,
+        twitter,
+        facebook,
+        instagram,
+        website,
+        youtube,
+        mainLink,
+    })
+
+    //Handle submit form
+    const onFinish = async (values: any) => {
+        // Refreshing mobx state depending on form values
+        await profileStore.updateUserData(
+            userId.toString(),
+            values.aboutMe,
+            lookingForAJobValue === 'Yes',
+            values.lookingForAJobDescription,
+            values.fullName,
+            values.github,
+            values.vk,
+            values.twitter,
+            values.facebook,
+            values.instagram,
+            values.website,
+            values.youtube,
+            values.mainLink
+        );
+    };
+
+    //Input change handler
+    const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+        const fieldName = e.target.name
+        const fieldValue = e.target.value
+        form.setFieldsValue({[fieldName]: fieldValue})
+    }
+
+    //Textarea change handler
+    const handleChangeTextArea = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        const fieldName = e.target.name
+        const fieldValue = e.target.value
+        form.setFieldsValue({[fieldName]: fieldValue})
+    }
+
+    //Dropdown handler
+    const handleSelectChange = (value: 'Yes' | 'No') => {
+        setIsLookingForAJobValue(value);
+    };
+
 
     return (
         <Dialog
@@ -68,14 +202,19 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                ${!smallScreen && 'p-1'}
                             `}>
                                 <div className='flex flex-col items-center justify-center'>
-                                    <img src={anon} alt="profile-picture" className='rounded-full h-24 w-24'/>
+                                    <img src={largePhoto || anon} alt="profile-picture"
+                                         className='rounded-full h-24 w-24'/>
                                     <div className={`${!smallScreen && 'text-center'}`}>JPG or PNG no larger then 5 MB
                                     </div>
-                                    <button type="button"
-                                            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-
-                                        Upload new image
-                                    </button>
+                                    <input ref={hiddenFileInput}
+                                           hidden={true} type={'file'}
+                                           onChange={updateAvatar}/>
+                                    <Button disabled={isAvatarUpdating}
+                                            loading={isAvatarUpdating}
+                                            onClick={handleAvatarClick} type={'primary'}
+                                            className="mt-4 bg-blue-500 ">
+                                        {isAvatarUpdating ? 'Loading..' : 'Upload new image'}
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +229,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                         relative
                         ${!smallScreen ? 'w-full h-full' : 'mt-3'}
                         `}>
-                            <div className={'w-full'}>
+                            <Form className={'w-full'} form={form} onFinish={onFinish} disabled={isUserDataUpdating}>
                                 <h5 className={mainTitleStyle}>Your Personal Data</h5>
                                 {/*Personal/work info flex container (desktop only)*/}
                                 <div className={`
@@ -100,20 +239,48 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                     <div className="mb-4">
                                         <h6 className={titlesStyle}>About You</h6>
                                         <div>
-                                            <label htmlFor="username">Username*:</label>
-                                            <input
-                                                type="text"
-                                                id="username"
-                                                className="border w-full p-1"
-                                            />
+                                            <label htmlFor="fullName">Username*:</label>
+                                            <Form.Item name={"fullName"}
+                                                       rules={[
+                                                           {
+                                                               required: true,
+                                                               message: 'Full Name is required',
+                                                           },
+                                                           {
+                                                               min: 6,
+                                                               message: 'Full Name must be at least 6 characters',
+                                                           },
+                                                       ]}
+                                                       validateTrigger="onBlur"
+
+                                            >
+                                                <Input
+                                                    onChange={handleChangeInput}
+                                                    type="text"
+                                                    className="border w-full p-1"
+                                                />
+                                            </Form.Item>
                                         </div>
                                         <div>
                                             <label htmlFor="about">About:</label>
-                                            <textarea
-                                                id="about"
-                                                rows={4}
-                                                className="border w-full p-1 resize-none"
-                                            ></textarea>
+                                            <Form.Item name={'aboutMe'}
+                                                       rules={[
+                                                           {
+                                                               min: 20,
+                                                               message: 'Info about you must be at least 20 characters',
+                                                           },
+                                                       ]}
+                                                       validateTrigger="onBlur"
+
+
+                                            >
+                                                <TextArea
+                                                    onChange={handleChangeTextArea}
+                                                    placeholder="Little info about yourself "
+                                                    autoSize={{minRows: 3, maxRows: 5}}
+                                                />
+                                            </Form.Item>
+
                                         </div>
                                     </div>
                                     {/*Work info*/}
@@ -121,62 +288,62 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                         <h6 className={titlesStyle}>Work Information</h6>
                                         <div>
                                             <label htmlFor="lookingForJob">Are you looking for a job?</label>
-                                            <select id="lookingForJob" className="border w-full p-1">
-                                                <option value="yes">Yes</option>
-                                                <option value="no">No</option>
-                                            </select>
+                                            <Form.Item name={'lookingForAJob'}>
+                                                <Select value={lookingForAJobValue} onChange={handleSelectChange}>
+                                                    <Select.Option value="Yes">Yes</Select.Option>
+                                                    <Select.Option value="No">No</Select.Option>
+                                                </Select>
+                                            </Form.Item>
                                         </div>
                                         <div>
                                             <label htmlFor="workInfo">Work/ Skills info*:</label>
-                                            <textarea id="workInfo" rows={4}
-                                                      className="border w-full p-1 resize-none"></textarea>
+                                            <Form.Item name={"lookingForAJobDescription"}
+                                                       rules={[
+                                                           {
+                                                               required: true,
+                                                               message: 'Required field'
+                                                           },
+                                                           {
+                                                               min: 20,
+                                                               message: 'Info about you must be at least 20 characters',
+                                                           },
+                                                       ]}
+                                                       validateTrigger="onBlur"
+
+                                            >
+                                                <TextArea onChange={handleChangeTextArea}
+                                                          autoSize={{minRows: 3, maxRows: 5}}
+                                                          value={lookingForAJobDescription}/>
+                                            </Form.Item>
+
                                         </div>
                                     </div>
                                 </div>
                                 {/*Contacts info*/}
                                 <div className="mb-8">
                                     <h6 className={mainTitleStyle}>Contacts</h6>
-                                    <div>
-                                        <label htmlFor="instagram">Instagram:</label>
-                                        <input type="text" id="instagram" className="border w-full p-1"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="twitter">Twitter:</label>
-                                        <input type="text" id="twitter" className="border w-full p-1"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="youtube">Youtube:</label>
-                                        <input type="text" id="youtube" className="border w-full p-1"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="github">Github:</label>
-                                        <input type="text" id="github" className="border w-full p-1"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="facebook">Facebook:</label>
-                                        <input type="text" id="facebook" className="border w-full p-1"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="website">Website:</label>
-                                        <input type="text" id="website" className="border w-full p-1"/>
-                                    </div>
-                                </div>
-                                <div
-                                    className={'absolute bottom-0 flex h-20 flex-col inset-x-1/2 translate-x-1/2 items-center justify-start'}>
-                                    <div className={errorStyle}>Error</div>
-                                    <div className={errorStyle}>Error</div>
-                                    <div className={errorStyle}>Error</div>
-                                </div>
+                                    {contactsArray.map((contact, index) => <div key={index}>
+                                        <label>{contact.label}</label>
+                                        <Form.Item name={contact.contactType} rules={[{
+                                            pattern: /^(https?|ftp):\/\/[^\s/$.?#].\S*$/,
+                                            message: 'Please enter a valid URL'
 
-                                <div className="absolute right-2 bottom-2">
-                                    <button
-                                        type="button"
-                                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Update Data
-                                    </button>
+                                        }]} validateTrigger="onBlur">
+                                            <Input onChange={handleChangeInput} className="border w-full p-1"/>
+                                        </Form.Item>
+                                    </div>)}
                                 </div>
-                            </div>
+                                <div className="absolute right-2 bottom-2">
+                                    <Button
+                                        loading={isUserDataUpdating}
+                                        htmlType={'submit'}
+                                        type="primary"
+                                        className="bg-blue-500"
+                                    >
+                                        {isUserDataUpdating ? 'Updating...' : 'Update Profile'}
+                                    </Button>
+                                </div>
+                            </Form>
                         </div>
                     </div>
                 </div>

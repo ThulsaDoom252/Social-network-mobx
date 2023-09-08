@@ -5,8 +5,10 @@ export const testFriends = [1, 2, 3, 4, 5, 6, 7, 8]
 
 
 // Routes
+
+export const rootRoute:string = '/'
 export const authRoute: string = '/auth'
-export const profileRoute = '/'
+export const profileRoute = '/profile'
 export const friendsRoute: string = '/friends'
 export const usersRoute: string = '/users'
 export const infoRoute: string = '/info'

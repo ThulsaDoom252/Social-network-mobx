@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Header from "./components/Header";
 import Friends from "./pages/Friends";
-import Users from "./pages/Users";
+import Users from "./pages/users/Users";
 import Info from "./pages/Info";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import MobileNavbar from "./components/MobileNavbar";
-import {authRoute, friendsRoute, infoRoute, profileRoute, usersRoute} from "./common";
+import {authRoute, friendsRoute, infoRoute, profileRoute, rootRoute, usersRoute} from "./common";
 import EditProfileModal from "./components/EditProfileModal";
 import authStore from "./mobx/auth/auth"
 import profileStore from "./mobx/profile"
@@ -14,20 +14,38 @@ import appStore from "./mobx/app"
 import {observer} from "mobx-react-lite";
 import Auth from "./pages/Auth";
 import {initializeProfile} from "./mobx/initializeProfile";
+import UsersContainer from "./pages/users/UsersContainer";
+import Initialize from "./components/initialize";
 
 const App: React.FC = observer(() => {
     const isLogged = authStore.isLogged
     const profileData = profileStore.profileData
-    const avatar = profileStore.currentUserAvatar
-    const currentUsername = profileStore.profileData?.fullName
+    const isAvatarUpdating = profileStore.isAvatarUpdating
+    const isUserDataUpdating = profileStore.isUserDataUpdating
+
+    const currentUserId = authStore.id
+    const userId = profileStore.userId
+
     const smallScreenMode = appStore.smallScreen
     const isModalOpen = appStore.isEditProfileModalOpen
+    const currentUserEmail = authStore.email
+    const isProfileDataLoaded = profileStore.isProfileDataLoaded
+    const currentUserStatus = profileStore.currentUserStatus
+    const currentUserProfileData = profileStore.currentUserProfileData
 
+    // @ts-ignore
+    const currentUsername = profileStore.currentUserProfileData?.fullName
+    // @ts-ignore
+    const currentUserAvatar = profileStore.currentUserProfileData?.photos?.large
+
+
+    //Проверяем авторизацию пользователя, получаем данные пользователя если он авторизирован
     useEffect(() => {
         initializeProfile().then(() => void 0)
     }, []);
 
 
+    //Подписуемся на изменения размеров экрана, переключая переменную smallScreen
     useEffect(() => {
         const handleResize = () => {
             const screenWidth = window.innerWidth;
@@ -43,8 +61,13 @@ const App: React.FC = observer(() => {
     }, []);
 
 
+    // Закрываем модульное окно для редактирования данных
     const handleCloseModal = () => {
         isModalOpen && appStore.toggleIsEditProfileModalOpen(false)
+    }
+
+    if (!appStore.isInitialized) {
+        return <Initialize/>
     }
 
     return (
@@ -59,6 +82,9 @@ const App: React.FC = observer(() => {
                  onClick={handleCloseModal}
             >
                 <EditProfileModal
+                    isAvatarUpdating={isAvatarUpdating}
+                    isUserDataUpdating={isUserDataUpdating}
+                    currentUserProfileData={currentUserProfileData}
                     smallScreen={smallScreenMode}
                     // setIsOpen={setIsIsModalOpen}
                     isOpen={isModalOpen}/>
@@ -74,8 +100,9 @@ const App: React.FC = observer(() => {
                 >
                     {isLogged && <Header
                         // setIsOpen={setIsIsModalOpen}
+                        userId={userId}
                         smallScreenMode={smallScreenMode}
-                        avatar={avatar}
+                        avatar={currentUserAvatar}
                         currentUserName={currentUsername}
                     />}
                     <div className={`
@@ -95,13 +122,22 @@ const App: React.FC = observer(() => {
                                 {smallScreenMode && <MobileNavbar/>}
                             </div>}
                             <Routes>
+                                <Route path={rootRoute} element={<Navigate to={`/profile/${currentUserId}`}/>}/>
                                 <Route path={authRoute} element={<Auth isLogged={isLogged}
                                                                        smallScreenMode={smallScreenMode}/>}/>
-                                <Route path={profileRoute}
-                                       element={<ProfilePage isLogged={isLogged} smallScreenMode={smallScreenMode}/>}/>
+                                <Route path={`/profile/:userid?`}
+                                       element={<ProfilePage
+                                           loadedUserId={userId}
+                                           isLogged={isLogged}
+                                           isProfileDataLoaded={isProfileDataLoaded}
+                                           smallScreenMode={smallScreenMode}
+                                           profileData={profileData}
+                                           currentUserEmail={currentUserEmail}
+                                           currentUserStatus={currentUserStatus}
+                                       />}/>
                                 <Route path={friendsRoute}
                                        element={<Friends mobileMode={smallScreenMode} isLogged={isLogged}/>}/>
-                                <Route path={usersRoute} element={<Users isLogged={isLogged}/>}/>
+                                <Route path={usersRoute} element={<UsersContainer isLogged={isLogged}/>}/>
                                 <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>
                         </div>

@@ -3,6 +3,8 @@ import authHoc from "../hoc/authHoc";
 import {Controller, FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import authStore from "../mobx/auth/auth";
 import {Button, Input} from "antd";
+import {Navigate} from "react-router-dom";
+import {profileRoute} from "../common";
 
 interface authContainerProps {
     smallScreenMode: boolean;
@@ -11,7 +13,6 @@ interface authContainerProps {
 
 const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
     const {
-        register,
         handleSubmit,
         formState: {errors},
         control,
@@ -33,6 +34,10 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
     const isAuthError: boolean = authError !== "";
     const isCaptchaRequired = authStore.isCaptchaRequired
     const captchaUrl: string = authStore.captchaUrl
+
+    if (isLogged) {
+        return <Navigate to={profileRoute}/>
+    }
 
     return (
         <div
@@ -185,4 +190,4 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
     );
 };
 
-export default authHoc(Auth);
+export default Auth;

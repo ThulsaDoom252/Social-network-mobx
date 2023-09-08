@@ -8,11 +8,13 @@ import {friendsRoute, infoRoute, profileRoute, usersRoute} from "../common";
 interface NavbarProps {
     width?: string,
     showIcons?: boolean,
+    userId: number
 }
 
 const Navbar: React.FC<NavbarProps> = ({
                                            showIcons = true,
-                                           width
+                                           width,
+                                           userId,
                                        }) => {
     const isActiveStyle: string = `text-black`;
     const inactiveStyle: string = `text-gray-500 no-underline !important'}`;
@@ -34,7 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
                 <NavLink className={navData =>
                     navData.isActive ? isActiveStyle : inactiveStyle}
-                         to={profileRoute}>
+                         to={`/profile/${userId}`}>
                     Profile
                 </NavLink>
             </p>

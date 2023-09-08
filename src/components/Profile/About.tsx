@@ -1,6 +1,13 @@
 import React from 'react';
 
-const About = () => {
+
+interface AboutProps {
+    aboutProps: any
+
+}
+
+const About: React.FC<AboutProps> = ({aboutProps}) => {
+    const [userId, lookingForAJobDescription, isLookingForAJob, website, currentUserEmail] = aboutProps
     return (
         <div className='
         bg-white
@@ -14,25 +21,24 @@ const About = () => {
         '>
             <div>
                 <h4 className='font-bold'>Id</h4>
-                <div>123456</div>
+                <div>{userId}</div>
 
             </div>
             <div className='
             mt-3'>
-                <h4 className='font-bold'>Looking for a job</h4>
+                <h4 className='font-bold'>{isLookingForAJob ? 'Looking for a job' : 'Not looking for a job'}</h4>
             </div>
             <div className='
             mt-4'>
                 <h4 className='font-bold'>Skills/job related info</h4>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque dolore dolorem, ipsam labore
-                    laborum perferendis provident quo soluta voluptas voluptate.
+                <div>{lookingForAJobDescription}
                 </div>
             </div>
             <div className='
             mt-4
             '>
                 <h4 className='font-bold'>Email</h4>
-                <div>www.test.com
+                <div>{currentUserEmail}
                 </div>
 
             </div>
@@ -40,7 +46,7 @@ const About = () => {
             mt-4
             '>
                 <h4 className='font-bold'>Website</h4>
-                www.test.com
+                {website}
 
             </div>
 

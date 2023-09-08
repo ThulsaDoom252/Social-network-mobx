@@ -1,13 +1,16 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import anon from "../../public/anon.jpg"
-import {AiFillFacebook, AiFillGithub, AiFillInstagram, AiFillYoutube} from "react-icons/ai";
-import Navbar from "../Navbar";
+import {AiFillFacebook, AiFillGithub, AiFillInstagram, AiFillTwitterCircle, AiFillYoutube} from "react-icons/ai";
 
 interface ProfileProps {
     smallScreenMode?: boolean
+    profileProps: any,
+    currentUserStatus: string,
 }
 
-const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
+const Profile: React.FC<ProfileProps> = ({smallScreenMode, profileProps, currentUserStatus}) => {
+    const [github, facebook, instagram, twitter, youtube,
+        aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos] = profileProps
     return (
         <div className={`
          bg-white
@@ -37,10 +40,10 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                         w-40
                         h-40
                         '
-                        src={anon}
+                        src={photos?.large || anon}
                         alt={'user-photo'}/>
                     <div>
-                        User status here
+                        {currentUserStatus}
                     </div>
 
                 </div>
@@ -59,7 +62,7 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                    justify-between
                     '>
                         <div>
-                            John Doe
+                            {fullName}
                         </div>
                         <div>
                             <button>
@@ -69,12 +72,11 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                     </div>
                     {smallScreenMode && <>
                         <div className={'w-full text-center font-semibold text-lg mb-3 mt-2'}>
-                            looking for a job?
+                            {isLookingForAJob ? 'Looking for a job' : 'Not looking for a job'}
                         </div>
                         <div className={'w-full  mb-2'}>
                             <h4 className={'font-bold'}>Desired job/ work skills</h4>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi commodi dignissimos
-                                eius enim est, excepturi id mollitia numquam quibusdam unde.
+                            <div>{lookingForAJobDescription}
                             </div>
                         </div>
                         <div className='
@@ -85,11 +87,7 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
             justify-start
             '>
                             <h4 className='font-bold'>Little about me</h4>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur blanditiis cum
-                                dolore dolorum
-                                ducimus et exercitationem expedita facilis hic ipsam laboriosam magni molestiae
-                                necessitatibus nemo
-                                nihil, nulla numquam obcaecati quae quibusdam quidem quos rem rerum sint voluptas
+                            <div>{aboutMe}
                             </div>
 
                         </div>
@@ -106,6 +104,7 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                                     <a href="#"><AiFillYoutube size={25}/></a>
                                     <a href="#"><AiFillInstagram size={25}/></a>
                                     <a href="#"> <AiFillGithub size={25}/></a>
+                                    <a href="#"> <AiFillTwitterCircle size={25}/></a>
                                     <a href="#"><AiFillFacebook size={25}/></a>
                                 </div>
                             </div>
@@ -122,28 +121,35 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
                         flex
                         items-center'>
                                     <AiFillYoutube/>
-                                    <div>www.youtube.com</div>
+                                    <div>{youtube}</div>
 
                                 </div>
                                 <div className='
                         flex
                         items-center'>
                                     <AiFillInstagram/>
-                                    <div>www.instagram.com</div>
+                                    <div>{instagram}</div>
 
                                 </div>
                                 <div className='
                         flex
                         items-center'>
                                     <AiFillGithub/>
-                                    <div>www.github.com</div>
+                                    <div>{github}</div>
+
+                                </div>
+                                <div className='
+                        flex
+                        items-center'>
+                                    <AiFillTwitterCircle/>
+                                    <div>{twitter}</div>
 
                                 </div>
                                 <div className='
                         flex
                         items-center'>
                                     <AiFillFacebook/>
-                                    <div>www.facebook.com</div>
+                                    <div>{facebook}</div>
                                 </div>
                             </div>
                         </div>}
@@ -158,10 +164,7 @@ const Profile: React.FC<ProfileProps> = ({smallScreenMode}) => {
             justify-start
             '>
                 <h4 className='font-bold'>Little about me</h4>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur blanditiis cum dolore dolorum
-                    ducimus et exercitationem expedita facilis hic ipsam laboriosam magni molestiae necessitatibus nemo
-                    nihil, nulla numquam obcaecati quae quibusdam quidem quos rem rerum sint voluptas voluptates.
-                    Accusamus accusantium cum dolore ipsum saepe. Alias delectus est hic illum itaque iusto quibusdam,
+                <div>{aboutMe}
                 </div>
 
             </div>}

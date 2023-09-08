@@ -9,17 +9,11 @@ interface AuthHocProps {
 const authHoc = <P extends AuthHocProps>(Component: React.ComponentType<P>) => {
     return (props: P) => {
         if (props.isLogged) {
-            return (
-                <>
-                    <Navigate to={profileRoute}/>.
-                    <Component {...props} />;
-                </>
-            )
+            return <Component {...props} />;
         } else {
-            return (<>
+            return <>
                 <Navigate to={authRoute}/>.
-                <Component {...props} />
-            </>)
+            </>
         }
     };
 };
