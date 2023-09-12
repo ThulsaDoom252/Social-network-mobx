@@ -14,6 +14,7 @@ class UsersStore {
     searchResults: [] | User[] = []
     users: [] | User[] = [];
     isUsersLoaded: boolean = false
+    fetchingUserIds: number[] = []
 
     constructor() {
         makeAutoObservable(this)
@@ -61,6 +62,22 @@ class UsersStore {
         this.isUsersLoaded = toggle
     }
 
+
+    async followUser(userId: number) {
+        this.fetchingUserIds.push(userId)
+        await usersApi.followUser(userId)
+        this.users = this.users.map(user => user.id === userId ? {...user, followed: true} : user)
+        this.fetchingUserIds = this.fetchingUserIds.filter(id => id !== userId);
+    }
+
+    async unfollowUser(userId: number) {
+        this.fetchingUserIds.push(userId)
+        await usersApi.unFollowUser(userId)
+        this.users = this.users.map(user => user.id === userId ? {...user, followed: false} : user)
+        this.fetchingUserIds.filter(id => id !== userId)
+
+    }
+
     async getUsers(count?: number, page?: number, quarry?: string) {
         this.toggleUsersIsLoaded(false)
         const result = await usersApi.getUsers(count, page, quarry)
@@ -68,23 +85,17 @@ class UsersStore {
         let filteredUsers: User[] = result.items
 
         if (this.filterByStatusMode !== defaultStatusFilterMode) {
-            debugger
             if (this.filterByStatusMode === withStatus) {
-                debugger
                 filteredUsers = filteredUsers.filter((user: User) => user.status)
             } else {
-                debugger
                 filteredUsers = filteredUsers.filter((user: User) => !user.status)
             }
         }
 
         if (this.filterByPhotoMode !== defaultPhotoFilterMode) {
-            debugger
             if (this.filterByPhotoMode === withPhoto) {
-                debugger
                 filteredUsers = filteredUsers.filter((user: User) => user.photos.small)
             } else {
-                debugger
                 filteredUsers = filteredUsers.filter((user: User) => !user.photos.small)
             }
         }

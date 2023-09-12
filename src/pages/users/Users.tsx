@@ -12,12 +12,14 @@ interface UsersProps {
     smallScreenMode?: boolean
     usersToShow: User[]
     isUsersLoaded: boolean,
+    followUserHandler: (isFollowed: boolean, userId: number) => void
 }
 
 const Users: React.FC<UsersProps> = observer(({
                                                   smallScreenMode,
                                                   usersToShow,
                                                   isUsersLoaded,
+                                                  followUserHandler,
                                               }) => {
 
     const testUserCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -25,7 +27,7 @@ const Users: React.FC<UsersProps> = observer(({
 
     // @ts-ignore
     return (
-       <>
+        <>
             <div className='
             w-full
             bg-gray-200
@@ -65,11 +67,15 @@ const Users: React.FC<UsersProps> = observer(({
                         '>
                             {user.name && <div>{truncate(user.name, 10)}</div>}
                             <div>{user.status ? truncate(user.status, 10) : 'no status'}</div>
-                            <Button shape={"round"} size={'small'} className={'bg-blue-400 absolute top-0 right-0'}
-                                    type="primary">Follow</Button>
+                            <Button
+                                onClick={() => followUserHandler(user.followed || false, user.id || 0)}
+                                shape={"round"}
+                                size={'small'}
+                                className={'bg-blue-400 absolute top-0 right-0'}
+                                type="primary">{user.followed ? 'Unfollow' : 'Follow'}</Button>
                         </div>
                     </div>
-                ) : testUserCount.map((dummy, index) =>
+                ) : testUserCount.map((index) =>
                     <div key={index}>
                         <SkeletonLoader>
                             <rect x="0" y="88" rx="3" ry="3" width="178" height="6"/>

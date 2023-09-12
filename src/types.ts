@@ -45,7 +45,7 @@ export type User = {
     };
     status?: string;
     uniqueUrlName?: string;
-    followed?: false;
+    followed?: boolean;
 };
 
 export type HandleSearchRequestType = (e: ChangeEvent<HTMLInputElement>) => void;

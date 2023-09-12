@@ -32,6 +32,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
     const totalUsersCount = usersStore.totalUserCount
     const filterByStatusMode = usersStore.filterByStatusMode
     const filterByPhotoMode = usersStore.filterByPhotoMode
+    const fetchingUserId = usersStore.fetchingUserIds
 
     const [isSearchMenuOpen,
         toggleSearchMenu] = useState(false)
@@ -41,6 +42,18 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
 
     const handleFilterByStatusMode = (value: string) => usersStore.changeFilterByStatusMode(value)
     const handleFilterByPhotoMode = (value: string) => usersStore.changeFilterByPhotoMode(value)
+
+    const followUser = (userId:number) => usersStore.followUser(userId)
+    const unfollowUser = (userId:number) => usersStore.unfollowUser(userId)
+
+
+    const followUserHandler = async (isFollowed:boolean, userId:number) => {
+        if (isFollowed) {
+            unfollowUser(userId)
+        } else {
+            followUser(userId)
+        }
+    }
 
     const setSearchRequest = (value: string) => {
         usersStore.setSearchRequest(value)
@@ -109,6 +122,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     handleChangePage={handleChangePage}
                 />
                 <Users
+                    followUserHandler={followUserHandler}
                     usersToShow={usersToShow}
                     smallScreenMode={smallScreenMode}
                     isUsersLoaded={isUsersLoaded}

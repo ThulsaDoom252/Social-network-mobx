@@ -5,11 +5,19 @@ export const instance = axios.create({
     baseURL: "https://social-network.samuraijs.com/api/1.0/",
 });
 
-
 export const usersApi = {
     getUsers: (count: number = 10, page: number = 1, querry?: string) => {
         return instance.get(`users?page=${page}&count=${count}`).then(response => response.data)
+    },
+
+    followUser: (userId: number) => {
+        return instance.post(`follow/${userId}`, {}).then(response => response.data)
+    },
+
+    unFollowUser: (userId: number) => {
+        return instance.delete(`follow/${userId}`).then(response => response.data)
     }
+
 }
 
 export const profileApi = {
@@ -17,9 +25,11 @@ export const profileApi = {
         return instance.get(`profile/${id}`)
             .then(response => response.data)
     },
+
     getUserStatus: (id: string) => {
         return instance.get(`/profile/status/${id}`).then(response => response.data)
     },
+
     updatePhoto(photo: File | Blob) {
         const formData = new FormData();
         formData.append("image", photo);
@@ -29,6 +39,7 @@ export const profileApi = {
             },
         });
     },
+
     updateUserData(userId: string,
                    aboutMe: string,
                    lookingForAJob: boolean,
@@ -56,21 +67,25 @@ export const profileApi = {
 
 
 export const authApi = {
+
     checkAuth: () => {
         return instance.get("auth/me").then(response => {
             return response.data;
         });
     },
+
     signIn: (email: string, password: string, rememberMe?: boolean, captchaSymbols?: string) => {
         return instance.post("auth/login", {
             email, password, rememberMe, captcha: captchaSymbols
         }).then(response => response.data)
     },
+
     signOut: () => {
         return instance.delete("auth/login/").then(response => {
             return response.data;
         });
     },
+
     getCaptcha: () => {
         return instance.get("security/get-captcha-url").then(response => {
             return response.data
