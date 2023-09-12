@@ -2,7 +2,12 @@ import React from 'react';
 import {NavLink} from "react-router-dom";
 import {friendsRoute, infoRoute, profileRoute, usersRoute} from "../common";
 
-const MobileNavbar = () => {
+
+interface mobileNavbarProps {
+    currentUserId: string
+}
+
+const MobileNavbar: React.FC<mobileNavbarProps> = ({currentUserId}) => {
     const commonStyle: string = 'flex no-underline text-black p-2 border-t-2 border-gray-600'
     const isActiveStyle: string = `bg-white  border-t-2 border-t-blue-600 z-10 h-11`;
     const inactiveStyle: string = `bg-gray-400  border-b border-b-black border-t-black'}`;
@@ -19,7 +24,7 @@ const MobileNavbar = () => {
         justify-start
         z-10
         `}>
-            <NavLink to={profileRoute}
+            <NavLink to={`${profileRoute}/${currentUserId}`}
                      className={navData =>
                          `border-r-2 border-l-2 ${commonStyle} ${navData.isActive ? isActiveStyle : inactiveStyle}`}>
                 Profile

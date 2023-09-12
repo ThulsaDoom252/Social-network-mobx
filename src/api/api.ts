@@ -7,7 +7,7 @@ export const instance = axios.create({
 
 
 export const usersApi = {
-    getUsers: (count: number = 10, page: number = 1) => {
+    getUsers: (count: number = 10, page: number = 1, querry?: string) => {
         return instance.get(`users?page=${page}&count=${count}`).then(response => response.data)
     }
 }
@@ -65,7 +65,6 @@ export const authApi = {
         return instance.post("auth/login", {
             email, password, rememberMe, captcha: captchaSymbols
         }).then(response => response.data)
-        debugger
     },
     signOut: () => {
         return instance.delete("auth/login/").then(response => {

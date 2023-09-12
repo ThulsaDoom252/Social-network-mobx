@@ -7,6 +7,8 @@ class profileStore {
     userId: number = 0
     isAvatarUpdating: boolean = false
     isProfileDataLoaded: boolean = false
+    isCurrentUserDataLoaded: boolean = false
+    isStatusLoading: boolean = false
     currentUserStatus: string = ''
     currentUserProfileData: Partial<ProfileData> = {};
     profileData: Partial<ProfileData> = {};
@@ -20,6 +22,18 @@ class profileStore {
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data
         this.isCurrentUserProfileDataLoaded = true
+    }
+
+    toggleIsProfileDataLoaded(toggle: boolean) {
+        this.isProfileDataLoaded = toggle
+    }
+
+    toggleIsCurrentUserDataLoaded(toggle: boolean) {
+        this.isCurrentUserDataLoaded = toggle
+    }
+
+    toggleIsStatusLoading(toggle: boolean) {
+        this.isStatusLoading = toggle
     }
 
     setUserId(id: number) {
@@ -88,14 +102,30 @@ class profileStore {
     }
 
     async getCurrentUserData(id: string) {
+        this.toggleIsCurrentUserDataLoaded(false)
         const responseData = await profileApi.getProfileData(id)
         this.setCurrentUserProfileData(responseData)
         this.setUserId(responseData.userId)
+        this.toggleIsCurrentUserDataLoaded(true)
     }
 
     async getProfileData(id: string) {
         const responseData = await profileApi.getProfileData(id)
         this.setProfileData(responseData)
+    }
+
+    async initializeProfile(id: string) {
+        this.toggleIsProfileDataLoaded(false)
+        await this.getProfileData(id)
+        await this.getCurrentUserStatus(id)
+        this.toggleIsProfileDataLoaded(true)
+    }
+
+    async getCurrentUserStatus(id: string) {
+        this.toggleIsStatusLoading(true)
+        const statusResponseData = await profileApi.getUserStatus(id)
+        this.setCurrentUserStatus(statusResponseData)
+        this.toggleIsStatusLoading(false)
     }
 
     async updateAvatar(photo: File | Blob) {
@@ -109,7 +139,6 @@ class profileStore {
                     large: updateAvatarResponse.data.data.photos.large
                 }
             });
-            debugger
         } else {
             console.log('some error occured uploading photo...')
         }

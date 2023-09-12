@@ -7,7 +7,8 @@ interface AboutProps {
 }
 
 const About: React.FC<AboutProps> = ({aboutProps}) => {
-    const [userId, lookingForAJobDescription, isLookingForAJob, website, currentUserEmail] = aboutProps
+    const [userId, lookingForAJobDescription, isLookingForAJob, website, currentUserEmail, isCurrentUser] = aboutProps
+
     return (
         <div className='
         bg-white
@@ -30,24 +31,29 @@ const About: React.FC<AboutProps> = ({aboutProps}) => {
             </div>
             <div className='
             mt-4'>
-                <h4 className='font-bold'>Skills/job related info</h4>
+                <h4 className='font-bold'>{lookingForAJobDescription ? 'Skills/job related info' : 'No Skills/job related info'}</h4>
                 <div>{lookingForAJobDescription}
                 </div>
             </div>
             <div className='
             mt-4
             '>
-                <h4 className='font-bold'>Email</h4>
-                <div>{currentUserEmail}
-                </div>
-
+                {isCurrentUser &&
+                    <>
+                        <h4 className={'font-bold'}>Email</h4>
+                        <div>{currentUserEmail}
+                        </div>
+                    </>}
             </div>
             <div className='
             mt-4
             '>
-                <h4 className='font-bold'>Website</h4>
-                {website}
-
+                {website ?
+                    <>
+                        <h4 className={'font-bold'}>Website</h4>
+                        <p>{website}</p>
+                    </> : <h4 className={'font-bold'}>No website</h4>
+                }
             </div>
 
         </div>

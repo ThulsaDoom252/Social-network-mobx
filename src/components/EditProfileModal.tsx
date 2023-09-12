@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useRef, useState} from 'react';
 import {Dialog} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
 import {stopPropagation} from "../common";
@@ -9,7 +9,6 @@ import {Button, Form, Input, Select} from "antd";
 import profileStore from "../mobx/profile";
 import TextArea from "antd/es/input/TextArea";
 import {useSnackbar} from "notistack";
-import usersStore from "../mobx/users";
 
 interface EditProfileModalProps {
     isOpen: boolean,
@@ -18,9 +17,11 @@ interface EditProfileModalProps {
     smallScreen?: boolean,
     isAvatarUpdating: boolean,
     isUserDataUpdating: boolean,
+    isCurrentUserDataLoaded: boolean,
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
+                                                               isCurrentUserDataLoaded,
                                                                isOpen,
                                                                smallScreen = false,
                                                                isAvatarUpdating,
@@ -37,17 +38,27 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         lookingForAJobDescription,
         lookingForAJob,
         userId,
-        photos: {large: largePhoto}
+        photos,
     } = currentUserProfileData as ProfileData
 
-    const {github, twitter, facebook, mainLink, website, youtube, instagram} = contacts
-
-
     // Using snackbar
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar()
+    const {enqueueSnackbar} = useSnackbar()
 
     //Setting looking for a job value - to be changeable in form
     const [lookingForAJobValue, setIsLookingForAJobValue] = useState<('Yes' | 'No') | undefined>(lookingForAJob ? 'Yes' : 'No');
+
+    //Using ant desing native form
+    const [form] = Form.useForm();
+
+    //Ref for hidden file input
+    const hiddenFileInput = useRef<HTMLInputElement>(null);
+
+    if (!isCurrentUserDataLoaded) {
+        return <div>Loading...</div>
+    }
+
+    const {github, twitter, facebook, mainLink, website, youtube, instagram} = contacts
+    const {large: largePhoto} = photos
 
     //Contacts array for mapping
     const contactsArray = [
@@ -91,8 +102,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     const handleClose = () => appStore.toggleIsEditProfileModalOpen(false);
 
     //Avatar upload logic
-    const hiddenFileInput = useRef<HTMLInputElement>(null);
-
     const updateAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files && e.target.files[0];
         if (selectedFile) {
@@ -101,10 +110,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     };
     const handleAvatarClick = () => hiddenFileInput.current && hiddenFileInput.current.click()
 
-    // Ant design native form
-
     //Setting props values in form values
-    const [form] = Form.useForm();
     form.setFieldsValue({
         fullName,
         aboutMe,
@@ -165,7 +171,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             onClose={handleClose}
             className="fixed inset-0 z-10 overflow-y-auto"
         >
-            <div className="flex items-center justify-center min-h-screen">
+             <div className="flex items-center justify-center min-h-screen">
                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-30"/>
                 {/*********************Main container*/}
                 <div style={{background: 'rgb(191,191,218)'}}

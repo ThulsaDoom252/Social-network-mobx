@@ -1,4 +1,14 @@
-type Contacts = {
+import {ChangeEvent} from "react";
+import {
+    defaultPhotoFilterMode,
+    defaultStatusFilterMode,
+    withoutPhoto,
+    withoutStatus,
+    withPhoto,
+    withStatus
+} from "./components/users/filterModes";
+
+export type Contacts = {
     github: string;
     vk: string;
     facebook: string;
@@ -26,7 +36,6 @@ export type ProfileData = {
 };
 
 
-
 export type User = {
     id?: number;
     name?: string;
@@ -38,3 +47,9 @@ export type User = {
     uniqueUrlName?: string;
     followed?: false;
 };
+
+export type HandleSearchRequestType = (e: ChangeEvent<HTMLInputElement>) => void;
+
+export type FilterStatusModeTypes = typeof withStatus | typeof withoutStatus | typeof defaultStatusFilterMode;
+
+export type FilterPhotoModeTypes = typeof  withPhoto | typeof withoutPhoto | typeof defaultPhotoFilterMode

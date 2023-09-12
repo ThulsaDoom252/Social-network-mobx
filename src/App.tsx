@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import Header from "./components/Header";
 import Friends from "./pages/Friends";
-import Users from "./pages/users/Users";
 import Info from "./pages/Info";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import MobileNavbar from "./components/MobileNavbar";
-import {authRoute, friendsRoute, infoRoute, profileRoute, rootRoute, usersRoute} from "./common";
+import {authRoute, friendsRoute, infoRoute, rootRoute, usersRoute} from "./common";
 import EditProfileModal from "./components/EditProfileModal";
 import authStore from "./mobx/auth/auth"
 import profileStore from "./mobx/profile"
@@ -22,6 +21,7 @@ const App: React.FC = observer(() => {
     const profileData = profileStore.profileData
     const isAvatarUpdating = profileStore.isAvatarUpdating
     const isUserDataUpdating = profileStore.isUserDataUpdating
+    const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded
 
     const currentUserId = authStore.id
     const userId = profileStore.userId
@@ -82,6 +82,7 @@ const App: React.FC = observer(() => {
                  onClick={handleCloseModal}
             >
                 <EditProfileModal
+                    isCurrentUserDataLoaded={isCurrentUserDataLoaded}
                     isAvatarUpdating={isAvatarUpdating}
                     isUserDataUpdating={isUserDataUpdating}
                     currentUserProfileData={currentUserProfileData}
@@ -119,7 +120,7 @@ const App: React.FC = observer(() => {
                             h-12
                             `}>
 
-                                {smallScreenMode && <MobileNavbar/>}
+                                {smallScreenMode && <MobileNavbar currentUserId={currentUserId}/>}
                             </div>}
                             <Routes>
                                 <Route path={rootRoute} element={<Navigate to={`/profile/${currentUserId}`}/>}/>
@@ -127,11 +128,11 @@ const App: React.FC = observer(() => {
                                                                        smallScreenMode={smallScreenMode}/>}/>
                                 <Route path={`/profile/:userid?`}
                                        element={<ProfilePage
-                                           loadedUserId={userId}
                                            isLogged={isLogged}
                                            isProfileDataLoaded={isProfileDataLoaded}
                                            smallScreenMode={smallScreenMode}
                                            profileData={profileData}
+                                           currentUserId = {currentUserId}
                                            currentUserEmail={currentUserEmail}
                                            currentUserStatus={currentUserStatus}
                                        />}/>

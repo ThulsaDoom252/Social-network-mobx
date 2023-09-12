@@ -1,74 +1,83 @@
 import React from 'react';
-import {testFriends} from "../../common";
+import {profileRoute} from "../../common";
 import anon from "../../public/anon.jpg";
-import PageContainer from "../../components/common/PageContainer";
 import {observer} from "mobx-react-lite";
 import {User} from "../../types";
-import {Navigate, useNavigate} from "react-router-dom";
-
+import {NavLink} from "react-router-dom";
+import SkeletonLoader from "../../components/context/SkeletonLoader";
+import {truncate} from "../../common/commonFuncs";
+import Button from 'antd/es/button';
 
 interface UsersProps {
     smallScreenMode?: boolean
-    users: User[]
+    usersToShow: User[]
+    isUsersLoaded: boolean,
 }
 
+const Users: React.FC<UsersProps> = observer(({
+                                                  smallScreenMode,
+                                                  usersToShow,
+                                                  isUsersLoaded,
+                                              }) => {
 
-const Users: React.FC<UsersProps> = observer(({smallScreenMode, users}) => {
-
-    const navigate = useNavigate()
-    const handleUserClick = (id: any) => {
-        navigate(`profile${id}`)
-    }
+    const testUserCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
     // @ts-ignore
     return (
-        <PageContainer>
-            <h4 className='
-            w-full text-center font-bold
-            '>Users({users.length})</h4>
+       <>
             <div className='
             w-full
+            bg-gray-200
             grid
             mt-3
             p-5
             grid-cols-8
             grid-rows-2
-            gap-1
+            gap-3
             '>
-                {users.map((user, index) =>
+                {isUsersLoaded ? usersToShow.map((user, index) =>
                     <div key={index} className='
                     flex
+                    relative
                     flex-col
                     justify-center
                     items-center
-                        border-1
-                rounded
+                    border
+                rounded-md
+                p-5
                 border-gray-400
                     '>
                         <div className='
                 max-w-20
                 max-h-20
                 '>
-                            <img className='w-full h-full cursor-pointer'
-                                 onClick={() => handleUserClick(user.id)}
-                                 src={user.photos.small || anon}
-                                 alt={'friend-photo'}/>
+                            <NavLink to={`${profileRoute}/${user.id}`}>
+                                <img className='w-full h-full cursor-pointer rounded-full'
+                                     src={user.photos.small || anon}
+                                     alt={'friend-photo'}/>
+                            </NavLink>
+
                         </div>
                         <div className='
                         w-full
                         text-center
                         '>
-                            <div>{user.name}</div>
-                            <div>{user.status || 'no status'}</div>
-                            <button>Follow</button>
+                            {user.name && <div>{truncate(user.name, 10)}</div>}
+                            <div>{user.status ? truncate(user.status, 10) : 'no status'}</div>
+                            <Button shape={"round"} size={'small'} className={'bg-blue-400 absolute top-0 right-0'}
+                                    type="primary">Follow</Button>
                         </div>
-
                     </div>
-                )}
-
+                ) : testUserCount.map((dummy, index) =>
+                    <div key={index}>
+                        <SkeletonLoader>
+                            <rect x="0" y="88" rx="3" ry="3" width="178" height="6"/>
+                            <circle cx="20" cy="20" r="20"/>
+                        </SkeletonLoader>
+                    </div>)}
             </div>
-        </PageContainer>
+        </>
 
 
     );

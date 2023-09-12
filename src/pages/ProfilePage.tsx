@@ -4,51 +4,66 @@ import Profile from "../components/Profile/Profile";
 import FriendsList from "../components/Profile/FriendsList";
 import authHoc from "../hoc/authHoc";
 import profileStore from "../mobx/profile"
-import {ClipLoader} from "react-spinners";
-import {Simulate} from "react-dom/test-utils";
+import {ProfileData} from "../types";
+import {useParams} from "react-router-dom";
 
 interface ProfilePageProps {
     smallScreenMode?: boolean
     isLogged: boolean,
-    profileData: any,
+    profileData: Partial<ProfileData>,
     currentUserEmail: string,
-    isProfileDataLoaded?: boolean,
+    isProfileDataLoaded: boolean,
     currentUserStatus: string,
-    loadedUserId: number,
+    currentUserId: string,
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      smallScreenMode,
+                                                     currentUserId,
                                                      profileData, currentUserEmail,
-                                                     currentUserStatus,
-                                                     isProfileDataLoaded,
-                                                     loadedUserId,
+                                                     currentUserStatus, isProfileDataLoaded,
+
                                                  }) => {
 
+    const {userid} = useParams();
+
+    //Is current user check
+    const isCurrentUser = currentUserId.toString() === userid
+
+
     useEffect(() => {
-        if (loadedUserId !== 0) {
-            const loadedUserIdString = loadedUserId.toString()
-            profileStore.getProfileData(loadedUserIdString)
+        if (userid) {
+            profileStore.initializeProfile(userid).then(() => void 0)
         }
 
-    }, [loadedUserId]);
+    }, [userid]);
 
-    if (!isProfileDataLoaded) {
-        debugger
-        return <ClipLoader/>
-    }
+    // if (!isProfileDataLoaded) {
+    //     return <ClipLoader/>
+    // }
 
-    const {userId, fullName, aboutMe, isLookingForAJob, lookingForAJobDescription, contacts, photos} = profileData
-    const {github, facebook, instagram, twitter, website, youtube} = contacts
-    const aboutProps = [userId, lookingForAJobDescription, isLookingForAJob, website, currentUserEmail]
+    const {
+        userId,
+        fullName,
+        aboutMe,
+        lookingForAJob,
+        lookingForAJobDescription,
+        contacts,
+        photos
+    } = profileData as ProfileData || {}
+    const {github, facebook, instagram, twitter, website, youtube} = contacts || {}
+    const aboutProps = [userId, lookingForAJobDescription, lookingForAJob, website, currentUserEmail,
+        isCurrentUser, isProfileDataLoaded]
     const profileProps = [github, facebook, instagram, twitter, youtube, aboutMe,
-        lookingForAJobDescription, isLookingForAJob, fullName, photos]
+        lookingForAJobDescription, lookingForAJob, fullName, photos]
 
     return (
         <>
             {!smallScreenMode && <About aboutProps={aboutProps}/>}
-            <Profile smallScreenMode={smallScreenMode} profileProps={profileProps}
-                     currentUserStatus={currentUserStatus}/>
+            <Profile smallScreenMode={smallScreenMode}
+                     profileProps={profileProps}
+                     currentUserStatus={currentUserStatus}
+                     isProfileDataLoaded={isProfileDataLoaded}/>
             {!smallScreenMode && <FriendsList/>}
 
         </>
