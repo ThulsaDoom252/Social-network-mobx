@@ -1,12 +1,12 @@
 import React, {ChangeEvent, useRef, useState} from 'react';
 import {Dialog} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
-import {stopPropagation} from "../common";
-import anon from "../public/anon.jpg"
-import appStore from "../mobx/app"
-import {ProfileData} from "../types";
+import {stopPropagation} from "../../common";
+import anon from "../../public/anon.jpg"
+import appStore from "../../mobx/app"
+import {ProfileData} from "../../types";
 import {Button, Form, Input, Select} from "antd";
-import profileStore from "../mobx/profile";
+import profileStore from "../../mobx/profile";
 import TextArea from "antd/es/input/TextArea";
 import {useSnackbar} from "notistack";
 

@@ -30,6 +30,10 @@ export const profileApi = {
         return instance.get(`/profile/status/${id}`).then(response => response.data)
     },
 
+    updateUserStatus: (status: string) => {
+        return instance.put(`profile/status`, {status}).then(response => response.data)
+    },
+
     updatePhoto(photo: File | Blob) {
         const formData = new FormData();
         formData.append("image", photo);

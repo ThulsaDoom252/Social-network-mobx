@@ -6,7 +6,7 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import MobileNavbar from "./components/MobileNavbar";
 import {authRoute, friendsRoute, infoRoute, rootRoute, usersRoute} from "./common";
-import EditProfileModal from "./components/EditProfileModal";
+import EditProfileModal from "./components/Profile/EditProfileModal";
 import authStore from "./mobx/auth/auth"
 import profileStore from "./mobx/profile"
 import appStore from "./mobx/app"
@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import {initializeProfile} from "./mobx/initializeProfile";
 import UsersContainer from "./pages/users/UsersContainer";
 import Initialize from "./components/initialize";
+import StatusModal from "./components/Profile/StatusModal";
 
 const App: React.FC = observer(() => {
     const isLogged = authStore.isLogged
@@ -27,11 +28,21 @@ const App: React.FC = observer(() => {
     const userId = profileStore.userId
 
     const smallScreenMode = appStore.smallScreen
-    const isModalOpen = appStore.isEditProfileModalOpen
+    const isEditDataModalOpen = appStore.isEditProfileModalOpen
     const currentUserEmail = authStore.email
     const isProfileDataLoaded = profileStore.isProfileDataLoaded
     const currentUserStatus = profileStore.currentUserStatus
     const currentUserProfileData = profileStore.currentUserProfileData
+    const isStatusModalOpen = profileStore.isStatusModalOpen
+
+
+    const handleCloseStatusModal = () => {
+        profileStore.toggleStatusModal(false)
+    }
+    const handleChangeStatus = (status: string) => {
+        profileStore.updateStatus(status).finally(() => void 0)
+        debugger
+    }
 
     // @ts-ignore
     const currentUsername = profileStore.currentUserProfileData?.fullName
@@ -63,7 +74,7 @@ const App: React.FC = observer(() => {
 
     // Закрываем модульное окно для редактирования данных
     const handleCloseModal = () => {
-        isModalOpen && appStore.toggleIsEditProfileModalOpen(false)
+        isEditDataModalOpen && appStore.toggleIsEditProfileModalOpen(false)
     }
 
     if (!appStore.isInitialized) {
@@ -88,7 +99,11 @@ const App: React.FC = observer(() => {
                     currentUserProfileData={currentUserProfileData}
                     smallScreen={smallScreenMode}
                     // setIsOpen={setIsIsModalOpen}
-                    isOpen={isModalOpen}/>
+                    isOpen={isEditDataModalOpen}/>
+                <StatusModal visible={isStatusModalOpen}
+                             currentUserStatus={currentUserStatus}
+                             onClose={handleCloseStatusModal}
+                             handleChangeStatus={handleChangeStatus}/>
                 <div className={`
                 ${isLogged && `  
                 mx-auto
@@ -132,7 +147,7 @@ const App: React.FC = observer(() => {
                                            isProfileDataLoaded={isProfileDataLoaded}
                                            smallScreenMode={smallScreenMode}
                                            profileData={profileData}
-                                           currentUserId = {currentUserId}
+                                           currentUserId={currentUserId}
                                            currentUserEmail={currentUserEmail}
                                            currentUserStatus={currentUserStatus}
                                        />}/>

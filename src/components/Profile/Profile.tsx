@@ -1,7 +1,14 @@
 import React from 'react';
 import anon from "../../public/anon.jpg"
-import {AiFillFacebook, AiFillGithub, AiFillInstagram, AiFillTwitterCircle, AiFillYoutube} from "react-icons/ai";
+import {
+    AiFillFacebook,
+    AiFillGithub,
+    AiFillInstagram,
+    AiFillTwitterSquare,
+    AiFillYoutube
+} from "react-icons/ai";
 import SkeletonLoader from "../context/SkeletonLoader";
+import profileStore from "../../mobx/profile"
 
 interface ProfileProps {
     smallScreenMode?: boolean
@@ -16,18 +23,30 @@ const Profile: React.FC<ProfileProps> = ({
                                              isProfileDataLoaded,
                                              currentUserStatus
                                          }) => {
+
+
     const [github, facebook, instagram, twitter, youtube,
-        aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos] = profileProps
+        aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser] = profileProps
+
+    const contacts = [
+        {icon: <AiFillYoutube size={20}/>, src: youtube, color: 'text-red-400'},
+        {icon: <AiFillInstagram size={20}/>, src: instagram, color: 'text-yellow-800'},
+        {icon: <AiFillFacebook size={20}/>, src: facebook, color: 'text-blue-600'},
+        {icon: <AiFillGithub size={20}/>, src: github, color: 'text-green-600'},
+        {icon: <AiFillTwitterSquare size={20}/>, src: twitter, color: 'text-blue-300'},
+    ]
+
+
     return (
         <div className={`
          bg-white
         flex
         flex-col
-        ${isProfileDataLoaded ? 'justify-center items-center' : ' justify-start'}
+        ${!isProfileDataLoaded ? 'justify-center items-center' : ' justify-start'}
         ${!smallScreenMode ? 'ml-2 mr-2 w-profile rounded-md'
             : 'w-full'}'}
         `}>
-            {!isProfileDataLoaded ? <>
+            {isProfileDataLoaded ? <>
                 <div className={`
             flex
             w-full
@@ -50,7 +69,8 @@ const Profile: React.FC<ProfileProps> = ({
                         '
                             src={photos?.large || anon}
                             alt={'user-photo'}/>
-                        <div>
+                        <div onClick={isCurrentUser ? handleOpenStatusModal : void 0}
+                             className={`${isCurrentUser && 'hover:cursor-pointer'}`}>
                             {currentUserStatus || 'No status'}
                         </div>
 
@@ -78,104 +98,50 @@ const Profile: React.FC<ProfileProps> = ({
                                 </button>
                             </div>
                         </div>
-                        {smallScreenMode && <>
-                            <div className={'w-full text-center font-semibold text-lg mb-3 mt-2'}>
-                                {isLookingForAJob ? 'Looking for a job' : 'Not looking for a job'}
-                            </div>
+                        <div className={'w-full text-center font-semibold text-lg mb-3 mt-2'}>
+                            {isLookingForAJob ? 'Looking for a job' : 'Not looking for a job'}
+                        </div>
+                        {smallScreenMode &&
                             <div className={'w-full  mb-2'}>
                                 <h4 className={'font-bold'}>Desired job/ work skills</h4>
                                 <div>{lookingForAJobDescription}
                                 </div>
-                            </div>
-                            <div className='
+                            </div>}
+                        <div className='
             w-full
             flex
             flex-col
             items-start
             justify-start
+            p-2
             '>
-                                <h4 className='font-bold'>{aboutMe ? 'Little about me' : 'No info'}</h4>
-                                <div>{aboutMe}
-                                </div>
-
+                            <h4 className='font-bold'>{aboutMe ? 'Little about me' : 'No info'}</h4>
+                            <div>{aboutMe}
                             </div>
-                            <div className={'w-full flex flex-col items-center justify-center mt-2'}>
-                                <div className={'font-bold'}>Contact me</div>
-                                <div className={`
+
+                        </div>
+                        <div className={'w-full flex flex-col items-center justify-center mt-2'}>
+                            <div className={'font-bold'}>Contact me</div>
+                            <div className={`
                     flex
                      p-4
                      w-full  
                      justify-center 
                      h-fit
                     `}>
-                                    <div className={'w-full flex justify-between flex-wrap'}>
-                                        <a href="#"><AiFillYoutube size={25}/></a>
-                                        <a href="#"><AiFillInstagram size={25}/></a>
-                                        <a href="#"> <AiFillGithub size={25}/></a>
-                                        <a href="#"> <AiFillTwitterCircle size={25}/></a>
-                                        <a href="#"><AiFillFacebook size={25}/></a>
-                                    </div>
+                                <div className={'w-1/2 flex justify-between flex-wrap '}>
+                                    {contacts.map((contact) => <a title={contact.src || 'No info'}
+                                                                  className={`${contact.src ? contact.color : 'text-gray-500'}`}
+                                                                  href={contact.src || '#'}
+                                                                  target={'_blank'}
+                                    >{contact.icon}</a>)}
                                 </div>
                             </div>
-                        </>}
-                        {!smallScreenMode &&
-                            <div className={`
-                    flex
-                    flex-col 
-                    items-center
-                    `}>
-                                <div>
-                                    <div className='
-                        flex
-                        items-center'>
-                                        <AiFillYoutube/>
-                                        <div>{youtube}</div>
-
-                                    </div>
-                                    <div className='
-                        flex
-                        items-center'>
-                                        <AiFillInstagram/>
-                                        <div>{instagram}</div>
-
-                                    </div>
-                                    <div className='
-                        flex
-                        items-center'>
-                                        <AiFillGithub/>
-                                        <div>{github}</div>
-
-                                    </div>
-                                    <div className='
-                        flex
-                        items-center'>
-                                        <AiFillTwitterCircle/>
-                                        <div>{twitter}</div>
-
-                                    </div>
-                                    <div className='
-                        flex
-                        items-center'>
-                                        <AiFillFacebook/>
-                                        <div>{facebook}</div>
-                                    </div>
-                                </div>
-                            </div>}
+                        </div>
 
                     </div>
                 </div>
-                {!smallScreenMode && <div className='
-            w-full
-            flex
-            flex-col
-            items-start
-            justify-start
-            '>
-                    <h4 className='font-bold'>{aboutMe ? 'Little about me' : 'No info'}</h4>
-                    <div>{aboutMe}
-                    </div>
-
-                </div>} </> : <SkeletonLoader>
+            </> : <SkeletonLoader>
                 <rect x="48" y="8" rx="3" ry="3" width="50%" height="6"/>
                 <rect x="48" y="26" rx="3" ry="3" width="70%" height="6"/>
                 <rect x="0" y="56" rx="3" ry="3" width="80%" height="6"/>

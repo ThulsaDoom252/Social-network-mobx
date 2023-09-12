@@ -14,6 +14,7 @@ class profileStore {
     profileData: Partial<ProfileData> = {};
     isUserDataUpdating: boolean = false
     isCurrentUserProfileDataLoaded: boolean = false
+    isStatusModalOpen: boolean = false
 
     constructor() {
         makeAutoObservable(this)
@@ -22,6 +23,10 @@ class profileStore {
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data
         this.isCurrentUserProfileDataLoaded = true
+    }
+
+    toggleStatusModal(toggle: boolean) {
+        this.isStatusModalOpen = toggle
     }
 
     toggleIsProfileDataLoaded(toggle: boolean) {
@@ -125,6 +130,21 @@ class profileStore {
         this.toggleIsStatusLoading(true)
         const statusResponseData = await profileApi.getUserStatus(id)
         this.setCurrentUserStatus(statusResponseData)
+        this.toggleIsStatusLoading(false)
+    }
+
+    async updateStatus(status: string) {
+        this.toggleIsStatusLoading(true)
+        const response = await profileApi.updateUserStatus(status)
+        if (response.resultCode === 0) {
+            debugger
+            alert('status updated!')
+            this.setCurrentUserStatus(status)
+        } else {
+            debugger
+            alert('smth goes wrong...')
+        }
+        debugger
         this.toggleIsStatusLoading(false)
     }
 

@@ -27,6 +27,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     const {userid} = useParams();
 
+    const handleOpenStatusModal = () => {
+        profileStore.toggleStatusModal(true)
+    }
+
     //Is current user check
     const isCurrentUser = currentUserId.toString() === userid
 
@@ -38,10 +42,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     }, [userid]);
 
-    // if (!isProfileDataLoaded) {
-    //     return <ClipLoader/>
-    // }
-
     const {
         userId,
         fullName,
@@ -52,10 +52,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         photos
     } = profileData as ProfileData || {}
     const {github, facebook, instagram, twitter, website, youtube} = contacts || {}
-    const aboutProps = [userId, lookingForAJobDescription, lookingForAJob, website, currentUserEmail,
+    const aboutProps = [userId, lookingForAJobDescription, website, currentUserEmail,
         isCurrentUser, isProfileDataLoaded]
     const profileProps = [github, facebook, instagram, twitter, youtube, aboutMe,
-        lookingForAJobDescription, lookingForAJob, fullName, photos]
+        lookingForAJobDescription, lookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser]
 
     return (
         <>
