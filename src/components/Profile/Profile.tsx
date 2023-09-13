@@ -15,13 +15,15 @@ interface ProfileProps {
     profileProps: any,
     currentUserStatus: string,
     isProfileDataLoaded: boolean,
+    isUserFollowed: boolean,
 }
 
 const Profile: React.FC<ProfileProps> = ({
                                              smallScreenMode,
                                              profileProps,
                                              isProfileDataLoaded,
-                                             currentUserStatus
+                                             currentUserStatus,
+                                             isUserFollowed,
                                          }) => {
 
 
@@ -104,7 +106,7 @@ const Profile: React.FC<ProfileProps> = ({
                             </div>
                             <div hidden={isCurrentUser}>
                                 <Button size={'small'} type={'primary'} className={'bg-blue-400'}>
-                                    Follow
+                                    {isUserFollowed ? 'Unfollow' : 'Follow'}
                                 </Button>
                             </div>
                         </div>

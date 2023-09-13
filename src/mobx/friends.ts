@@ -3,6 +3,7 @@ import {makeAutoObservable} from "mobx";
 import {usersApi} from "../api/api";
 
 class FriendsStore {
+    isFriendsLoaded: boolean = false
     fetchFriends: boolean = false
     friends: User[] = []
 
@@ -14,12 +15,20 @@ class FriendsStore {
         this.friends = friends
     }
 
-    filterFriends(friendId: number) {
+    deleteFriendFromList(friendId: number) {
         this.friends = this.friends.filter(friend => friend.id !== friendId)
+    }
+
+    addFriendToList(friend: User) {
+        this.friends.push(friend)
     }
 
     toggleFetchFriends(toggle: boolean) {
         this.fetchFriends = toggle
+    }
+
+    setIsFriendsLoaded(isLoaded: boolean) {
+        this.isFriendsLoaded = isLoaded
     }
 
 
@@ -27,12 +36,11 @@ class FriendsStore {
         this.toggleFetchFriends(true)
         await usersApi.getFriends()
             .then((res) => {
-                console.log(res)
                 this.setFriends(res.items)
+                this.setIsFriendsLoaded(true)
             })
             .catch((e) => {
                 alert(e)
-                console.log(e)
 
             })
             .finally(() => this.toggleFetchFriends(false))
@@ -40,7 +48,7 @@ class FriendsStore {
 
     async unFollowFriend(friendId: number) {
         await usersApi.unFollowUser(friendId)
-            .then(() => this.filterFriends(friendId))
+            .then(() => this.deleteFriendFromList(friendId))
             .catch(() => alert('something went wrong'))
     }
 }

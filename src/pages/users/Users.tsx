@@ -12,7 +12,7 @@ interface UsersProps {
     smallScreenMode?: boolean
     usersToShow: User[]
     isUsersLoaded: boolean,
-    followUserHandler: (isFollowed: boolean, userId: number) => void
+    followUserHandler: (isFollowed: boolean, userId: number, user: User) => void
 }
 
 const Users: React.FC<UsersProps> = observer(({
@@ -68,7 +68,9 @@ const Users: React.FC<UsersProps> = observer(({
                             {user.name && <div>{truncate(user.name, 10)}</div>}
                             <div>{user.status ? truncate(user.status, 10) : 'no status'}</div>
                             <Button
-                                onClick={() => followUserHandler(user.followed || false, user.id || 0)}
+                                onClick={() => followUserHandler(user.followed || false, user.id || 0,
+                                    {...user}
+                                   )}
                                 shape={"round"}
                                 size={'small'}
                                 className={'bg-blue-400 absolute top-0 right-0'}

@@ -6,13 +6,17 @@ export const instance = axios.create({
 });
 
 export const usersApi = {
-    getUsers: (count: number = 10, page: number = 1, querry?: string) => {
+    getUsers: (count: number = 10, page: number = 1, quarry?: string) => {
         return instance.get(`users?page=${page}&count=${count}`).then(response => response.data)
     },
 
     getFriends: (count: number = 100) => {
-        debugger
         return instance.get(`users?friend=true&count=${count}`).then(response => response.data)
+    },
+
+    getIsUserFollowedInfo: (userId: number) => {
+        return instance.get(`follow/${userId}`).then(response => response.data)
+
     },
 
     followUser: (userId: number) => {
@@ -25,12 +29,12 @@ export const usersApi = {
 }
 
 export const profileApi = {
-    getProfileData: (id: string) => {
+    getProfileData: (id: number) => {
         return instance.get(`profile/${id}`)
             .then(response => response.data)
     },
 
-    getUserStatus: (id: string) => {
+    getUserStatus: (id: number) => {
         return instance.get(`/profile/status/${id}`).then(response => response.data)
     },
 

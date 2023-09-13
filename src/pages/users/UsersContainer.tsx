@@ -4,7 +4,6 @@ import authHoc from "../../hoc/authHoc";
 import {useSnackbar} from "notistack";
 import usersStore from "../../mobx/users"
 import {HandleSearchRequestType, User} from "../../types";
-import {ClipLoader} from "react-spinners";
 import {observer} from "mobx-react-lite";
 import ContentLoader from "react-content-loader";
 import PageContainer from "../../components/common/PageContainer";
@@ -19,7 +18,6 @@ interface UsersContainerProps {
 
 const UsersContainer: React.FC<UsersContainerProps> = observer(({
                                                                     smallScreenMode,
-                                                                    isLogged
                                                                 }) => {
     const users: User[] = usersStore.users; // Убедитесь, что тип данных соответствует User[]
     const isUsersLoaded = usersStore.isUsersLoaded
@@ -43,15 +41,15 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
     const handleFilterByStatusMode = (value: string) => usersStore.changeFilterByStatusMode(value)
     const handleFilterByPhotoMode = (value: string) => usersStore.changeFilterByPhotoMode(value)
 
-    const followUser = (userId:number) => usersStore.followUser(userId)
+    const followUser = (userId:number, user: User) => usersStore.followUser(userId, user)
     const unfollowUser = (userId:number) => usersStore.unfollowUser(userId)
 
 
-    const followUserHandler = async (isFollowed:boolean, userId:number) => {
+    const followUserHandler = async (isFollowed:boolean, userId:number, user: User) => {
         if (isFollowed) {
             unfollowUser(userId)
         } else {
-            followUser(userId)
+            followUser(userId, user)
         }
     }
 
@@ -130,8 +128,6 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
             </PageContainer>
         </>
     )
-
-
 });
 
 export default authHoc(UsersContainer);

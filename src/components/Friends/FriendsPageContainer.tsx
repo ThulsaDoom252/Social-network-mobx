@@ -14,19 +14,18 @@ interface FriendsContainerProps {
 const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileMode, isLogged}) => {
 
     const friends = friendsStore.friends
-
     const fetchFriends = friendsStore.fetchFriends
-
+    const isFriendsLoaded = friendsStore.isFriendsLoaded
 
     const handleUnfollowFriend = (id: number) => {
         friendsStore.unFollowFriend(id).then(() => void 0)
     }
 
     useEffect(() => {
-        friendsStore.getFriends().finally(() => void 0)
-        debugger
+        if (!isFriendsLoaded) {
+            friendsStore.getFriends().finally(() => void 0)
+        }
     }, []);
-
 
     if (fetchFriends) {
         return <ClipLoader/>

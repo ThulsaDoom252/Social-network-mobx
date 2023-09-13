@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {profileApi} from "../api/api";
+import {profileApi, usersApi} from "../api/api";
 import profile from "../components/Profile/Profile";
 import {ProfileData} from "../types";
 
@@ -7,6 +7,7 @@ class profileStore {
     userId: number = 0
     isAvatarUpdating: boolean = false
     isProfileDataLoaded: boolean = false
+    isUserFollowed: boolean = false
     isCurrentUserDataLoaded: boolean = false
     isStatusLoading: boolean = false
     currentUserStatus: string = ''
@@ -23,6 +24,10 @@ class profileStore {
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data
         this.isCurrentUserProfileDataLoaded = true
+    }
+
+    setIsUserFollowed(isFollowed: boolean) {
+        this.isUserFollowed = isFollowed
     }
 
     toggleStatusModal(toggle: boolean) {
@@ -106,7 +111,7 @@ class profileStore {
         this.toggleIsUserDataUpdating(false)
     }
 
-    async getCurrentUserData(id: string) {
+    async getCurrentUserData(id: number) {
         this.toggleIsCurrentUserDataLoaded(false)
         const responseData = await profileApi.getProfileData(id)
         this.setCurrentUserProfileData(responseData)
@@ -114,19 +119,25 @@ class profileStore {
         this.toggleIsCurrentUserDataLoaded(true)
     }
 
-    async getProfileData(id: string) {
+    async getProfileData(id: number) {
         const responseData = await profileApi.getProfileData(id)
         this.setProfileData(responseData)
     }
 
-    async initializeProfile(id: string) {
+    async initializeProfile(id: number) {
         this.toggleIsProfileDataLoaded(false)
         await this.getProfileData(id)
         await this.getCurrentUserStatus(id)
+        await this.getIsUserFollowedInfo(id)
         this.toggleIsProfileDataLoaded(true)
     }
 
-    async getCurrentUserStatus(id: string) {
+    async getIsUserFollowedInfo(id: number) {
+        const isFollowedResponse = await usersApi.getIsUserFollowedInfo(id)
+        this.setIsUserFollowed(isFollowedResponse)
+    }
+
+    async getCurrentUserStatus(id: number) {
         this.toggleIsStatusLoading(true)
         const statusResponseData = await profileApi.getUserStatus(id)
         this.setCurrentUserStatus(statusResponseData)
@@ -137,14 +148,11 @@ class profileStore {
         this.toggleIsStatusLoading(true)
         const response = await profileApi.updateUserStatus(status)
         if (response.resultCode === 0) {
-            debugger
             alert('status updated!')
             this.setCurrentUserStatus(status)
         } else {
-            debugger
             alert('smth goes wrong...')
         }
-        debugger
         this.toggleIsStatusLoading(false)
     }
 

@@ -22,10 +22,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      currentUserId,
                                                      profileData, currentUserEmail,
                                                      currentUserStatus, isProfileDataLoaded,
-
                                                  }) => {
 
     const {userid} = useParams();
+
+    const isUserFollowed = profileStore.isUserFollowed
 
     const handleOpenStatusModal = () => {
         profileStore.toggleStatusModal(true)
@@ -41,7 +42,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     useEffect(() => {
         if (userid) {
-            profileStore.initializeProfile(userid).then(() => void 0)
+            profileStore.initializeProfile(parseInt(userid)).then(() => void 0)
         }
 
     }, [userid]);
@@ -66,6 +67,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             {!smallScreenMode && <About aboutProps={aboutProps}/>}
             <Profile smallScreenMode={smallScreenMode}
                      profileProps={profileProps}
+                     isUserFollowed = {isUserFollowed}
                      currentUserStatus={currentUserStatus}
                      isProfileDataLoaded={isProfileDataLoaded}/>
             {!smallScreenMode && <FriendsList/>}

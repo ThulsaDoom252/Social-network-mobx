@@ -2,6 +2,8 @@ import {makeAutoObservable} from "mobx";
 import {usersApi} from "../api/api";
 import {User} from "../types";
 import {defaultPhotoFilterMode, defaultStatusFilterMode, withPhoto, withStatus} from "../components/users/filterModes";
+import {setLocalStorageData} from "../common/commonFuncs";
+import friendsStore from "./friends"
 
 class UsersStore {
     usersCount: number = 20
@@ -63,9 +65,12 @@ class UsersStore {
     }
 
 
-    async followUser(userId: number) {
+    async followUser(userId: number, user: User) {
         this.fetchingUserIds.push(userId)
         await usersApi.followUser(userId)
+        friendsStore.isFriendsLoaded && friendsStore.addFriendToList(user)
+        debugger
+        // setLocalStorageData(userId.toString(), 'following')
         this.users = this.users.map(user => user.id === userId ? {...user, followed: true} : user)
         this.fetchingUserIds = this.fetchingUserIds.filter(id => id !== userId);
     }
@@ -73,6 +78,8 @@ class UsersStore {
     async unfollowUser(userId: number) {
         this.fetchingUserIds.push(userId)
         await usersApi.unFollowUser(userId)
+        // setLocalStorageData(userId.toString(), 'notFollowing')
+        friendsStore.isFriendsLoaded && friendsStore.deleteFriendFromList(userId)
         this.users = this.users.map(user => user.id === userId ? {...user, followed: false} : user)
         this.fetchingUserIds.filter(id => id !== userId)
 
@@ -101,7 +108,6 @@ class UsersStore {
         }
 
         this.setUsers(filteredUsers)
-        debugger
         this.toggleUsersIsLoaded(true)
     }
 }

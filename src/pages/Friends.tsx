@@ -24,8 +24,7 @@ const Friends: React.FC<FriendsPageProps> = ({
             '>You have {friends.length} friends</h4>
             <div className={`
               w-full
-            ${mobileMode ? 'mt-3' : 'mt-5 p-5'}
-            ${!mobileMode && 'grid grid-cols-8  grid-rows-2 gap-1'}
+            ${mobileMode ? 'mt-3' : 'mt-5 p-5 grid grid-cols-8 grid-rows-2 gap-1'}
             `}
             >
                 {friends.length !== 0 && friends.map((friend, index) => {
@@ -99,9 +98,11 @@ const Friends: React.FC<FriendsPageProps> = ({
                 max-w-20
                 max-h-20
                 '>
+                                        <NavLink to={`${profileRoute}/${friend.id}`}>
                                         <img className='w-full h-full'
                                              src={friend.photos.small || anon}
                                              alt={'friend-photo'}/>
+                                        </NavLink>
                                     </div>
                                     <div>{friend.name}</div>
                                     <Button className='bg-blue-400' type={'primary'} size={'small'}>

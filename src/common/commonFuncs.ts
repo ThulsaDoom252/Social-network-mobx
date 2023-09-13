@@ -1,4 +1,4 @@
-export const truncate = (text:string, maxCharacters = 15) => {
+export const truncate = (text: string, maxCharacters = 15) => {
     const maxNumber = maxCharacters
     const mediaLength = text.length
     if (mediaLength > maxNumber) {
@@ -8,3 +8,6 @@ export const truncate = (text:string, maxCharacters = 15) => {
         return text
     }
 }
+
+
+export const setLocalStorageData = (key: string, data: string) => localStorage.setItem(key, data)
