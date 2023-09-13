@@ -1,11 +1,9 @@
 import React from 'react';
 
-
 interface AboutProps {
     aboutProps: any
 
 }
-
 const About: React.FC<AboutProps> = ({aboutProps}) => {
     const [userId, lookingForAJobDescription,  website, currentUserEmail, isCurrentUser] = aboutProps
 
@@ -17,7 +15,7 @@ const About: React.FC<AboutProps> = ({aboutProps}) => {
         w-60
         flex
         flex-col
-        justify-start
+        justify-center
         items-start
         '>
             <div>

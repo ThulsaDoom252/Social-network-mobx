@@ -1,26 +1,34 @@
 import React from 'react';
-import {testFriends} from "../common";
+import {profileRoute, testFriends} from "../common";
 import anon from "../public/anon.jpg";
 import PageContainer from "../components/common/PageContainer";
+import {User} from "../types";
+import {Button} from "antd";
+import {NavLink} from "react-router-dom";
 
 interface FriendsPageProps {
-    mobileMode?: boolean,
-    isLogged: boolean,
+    mobileMode: boolean,
+    friends: User[],
+    handleUnfollowFriend: (id: number) => void
 }
 
-const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {
+const Friends: React.FC<FriendsPageProps> = ({
+                                                 mobileMode = true,
+                                                 friends,
+                                                 handleUnfollowFriend,
+                                             }) => {
     return (
         <PageContainer>
             <h4 className='
             font-bold
-            '>You have 8 friends</h4>
+            '>You have {friends.length} friends</h4>
             <div className={`
               w-full
             ${mobileMode ? 'mt-3' : 'mt-5 p-5'}
             ${!mobileMode && 'grid grid-cols-8  grid-rows-2 gap-1'}
             `}
             >
-                {testFriends.map((friend, index) => {
+                {friends.length !== 0 && friends.map((friend, index) => {
                         if (mobileMode) {
                             return (
                                 <div key={index} className='
@@ -34,18 +42,22 @@ const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {
                     justify-center
                     items-center
                     '>
-                                    <div className='
+                                    <div className={'w-full flex  justify-between items-center'}>
+                                        <div className={'flex'}>
+
+                                            <div className='
                 w-20
                 h-20
-                '>
-                                        <img className='
+                '><NavLink to={`${profileRoute}/${friend.id}`}>
+                                                <img className='
                                         rounded-full
                                         w-full
                                         h-full'
-                                             src={anon}
-                                             alt={'friend-photo'}/>
-                                    </div>
-                                    <div className='
+                                                     src={friend.photos.large || anon}
+                                                     alt={'friend-photo'}/>
+                                            </NavLink>
+                                            </div>
+                                            <div className='
                                     flex
                                     ml-5
                                     flex-column
@@ -53,20 +65,24 @@ const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {
                                     h-full
                                     items-start
                                     '>
-                                        <div>
-                                            <div className='
+                                                <div>
+                                                    <div className='
                                             font-bold
-                                        '>Friend name
+                                        '>{friend.name}
+                                                    </div>
+                                                    <div className={'text-gray-400'}>{friend.id}</div>
+                                                </div>
                                             </div>
-                                            <div className={'text-gray-400'}>Id 12345</div>
                                         </div>
                                         <div>
-                                            <div>Looking for a job</div>
-                                            <button>Unfollow</button>
+                                            <Button
+                                                onClick={() => handleUnfollowFriend(friend.id || 0)}
+                                                type={'primary'}
+
+                                                className={'bg-blue-400'}>Unfollow</Button>
                                         </div>
-
-
                                     </div>
+
 
                                 </div>
                             )
@@ -84,12 +100,14 @@ const Friends: React.FC<FriendsPageProps> = ({mobileMode = true}) => {
                 max-h-20
                 '>
                                         <img className='w-full h-full'
-                                             src={anon}
+                                             src={friend.photos.small || anon}
                                              alt={'friend-photo'}/>
                                     </div>
-                                    <div>Friend name</div>
-                                    <div>Looking for a job</div>
-                                    <button>Unfollow</button>
+                                    <div>{friend.name}</div>
+                                    <Button className='bg-blue-400' type={'primary'} size={'small'}>
+                                        Unfollow
+
+                                    </Button>
                                 </div>
 
                             )

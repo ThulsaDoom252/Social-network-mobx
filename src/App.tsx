@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import Header from "./components/Header";
-import Friends from "./pages/Friends";
 import Info from "./pages/Info";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
@@ -16,6 +15,7 @@ import {initializeProfile} from "./mobx/initializeProfile";
 import UsersContainer from "./pages/users/UsersContainer";
 import Initialize from "./components/initialize";
 import StatusModal from "./components/Profile/StatusModal";
+import FriendsPageContainer from "./components/Friends/FriendsPageContainer";
 
 const App: React.FC = observer(() => {
     const isLogged = authStore.isLogged
@@ -41,7 +41,6 @@ const App: React.FC = observer(() => {
     }
     const handleChangeStatus = (status: string) => {
         profileStore.updateStatus(status).finally(() => void 0)
-        debugger
     }
 
     // @ts-ignore
@@ -152,7 +151,8 @@ const App: React.FC = observer(() => {
                                            currentUserStatus={currentUserStatus}
                                        />}/>
                                 <Route path={friendsRoute}
-                                       element={<Friends mobileMode={smallScreenMode} isLogged={isLogged}/>}/>
+                                       element={<FriendsPageContainer mobileMode={smallScreenMode}
+                                                                      isLogged={isLogged}/>}/>
                                 <Route path={usersRoute} element={<UsersContainer isLogged={isLogged}/>}/>
                                 <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>

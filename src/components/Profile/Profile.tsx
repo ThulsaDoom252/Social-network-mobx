@@ -8,7 +8,7 @@ import {
     AiFillYoutube
 } from "react-icons/ai";
 import SkeletonLoader from "../context/SkeletonLoader";
-import profileStore from "../../mobx/profile"
+import {Button} from "antd";
 
 interface ProfileProps {
     smallScreenMode?: boolean
@@ -42,6 +42,8 @@ const Profile: React.FC<ProfileProps> = ({
          bg-white
         flex
         flex-col
+        h-96
+        overflow-y-auto
         ${!isProfileDataLoaded ? 'justify-center items-center' : ' justify-start'}
         ${!smallScreenMode ? 'ml-2 mr-2 w-profile rounded-md'
             : 'w-full'}'}
@@ -70,7 +72,15 @@ const Profile: React.FC<ProfileProps> = ({
                             src={photos?.large || anon}
                             alt={'user-photo'}/>
                         <div onClick={isCurrentUser ? handleOpenStatusModal : void 0}
-                             className={`${isCurrentUser && 'hover:cursor-pointer'}`}>
+                             className={`
+                             mt-1
+                             w-40
+                             h-20
+                             whitespace-normal
+                             break-words
+                             text-center
+                             ${isCurrentUser && 'hover:cursor-pointer'}
+                             `}>
                             {currentUserStatus || 'No status'}
                         </div>
 
@@ -92,10 +102,10 @@ const Profile: React.FC<ProfileProps> = ({
                             <div>
                                 {fullName}
                             </div>
-                            <div>
-                                <button>
+                            <div hidden={isCurrentUser}>
+                                <Button size={'small'} type={'primary'} className={'bg-blue-400'}>
                                     Follow
-                                </button>
+                                </Button>
                             </div>
                         </div>
                         <div className={'w-full text-center font-semibold text-lg mb-3 mt-2'}>

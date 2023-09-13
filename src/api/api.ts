@@ -10,6 +10,11 @@ export const usersApi = {
         return instance.get(`users?page=${page}&count=${count}`).then(response => response.data)
     },
 
+    getFriends: (count: number = 100) => {
+        debugger
+        return instance.get(`users?friend=true&count=${count}`).then(response => response.data)
+    },
+
     followUser: (userId: number) => {
         return instance.post(`follow/${userId}`, {}).then(response => response.data)
     },
@@ -17,7 +22,6 @@ export const usersApi = {
     unFollowUser: (userId: number) => {
         return instance.delete(`follow/${userId}`).then(response => response.data)
     }
-
 }
 
 export const profileApi = {

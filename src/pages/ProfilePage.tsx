@@ -34,6 +34,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     //Is current user check
     const isCurrentUser = currentUserId.toString() === userid
 
+    const handleFollowUser = () => {
+
+    }
+
 
     useEffect(() => {
         if (userid) {
