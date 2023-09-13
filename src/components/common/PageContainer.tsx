@@ -21,6 +21,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
         flex-col
         justify-start
         items-center
+        min-h-pageContainer
         ${height}
         ${smallScreenMode && 'border-t-2 border-gray-400'}
         `}>

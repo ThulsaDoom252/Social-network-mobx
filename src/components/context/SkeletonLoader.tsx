@@ -4,7 +4,7 @@ import ContentLoader from "react-content-loader";
 
 interface SkeletonLoader {
     speed?: number,
-    width?: number,
+    width?: string,
     height?: number,
     viewBox?: string,
     bgColor?: string,

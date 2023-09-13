@@ -22,6 +22,9 @@ module.exports = {
                 '90vh': '90vh',
                 'auth': '400px',
                 'authRightBlock': '500px',
+            },
+            minHeight: {
+              pageContainer: '500px',
             }
 
 

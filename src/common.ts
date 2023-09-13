@@ -1,7 +1,7 @@
 import anon from './public/anon.jpg'
 import React from "react";
 
-export const testFriends = [1, 2, 3, 4, 5, 6, 7, 8]
+export const testFriends = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 
 // Routes

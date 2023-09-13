@@ -31,7 +31,11 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         return <ClipLoader/>
     }
 
-    return <Friends mobileMode={mobileMode} friends={friends} handleUnfollowFriend={handleUnfollowFriend}/>
+    return <Friends smallScreen={mobileMode}
+                    friends={friends}
+                    handleUnfollowFriend={handleUnfollowFriend}
+                    isFriendsLoaded={isFriendsLoaded}
+    />
 });
 
 export default authHoc(FriendsPageContainer);
