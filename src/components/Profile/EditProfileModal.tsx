@@ -54,7 +54,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     const hiddenFileInput = useRef<HTMLInputElement>(null);
 
     if (!isCurrentUserDataLoaded) {
-        return <div>Loading...</div>
+        return <></>
     }
 
     const {github, twitter, facebook, mainLink, website, youtube, instagram} = contacts
@@ -171,7 +171,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             onClose={handleClose}
             className="fixed inset-0 z-10 overflow-y-auto"
         >
-             <div className="flex items-center justify-center min-h-screen">
+            <div className="flex items-center justify-center min-h-screen">
                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-30"/>
                 {/*********************Main container*/}
                 <div style={{background: 'rgb(191,191,218)'}}

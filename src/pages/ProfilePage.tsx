@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import About from "../components/Profile/About";
 import Profile from "../components/Profile/Profile";
 import FriendsList from "../components/Profile/FriendsList";
@@ -35,11 +35,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     //Is current user check
     const isCurrentUser = currentUserId.toString() === userid
 
-    const handleFollowUser = () => {
-
-    }
-
-
+    // Initialize profile depending on user id param
     useEffect(() => {
         if (userid) {
             profileStore.initializeProfile(parseInt(userid)).then(() => void 0)
@@ -47,6 +43,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     }, [userid]);
 
+    //Destructuring props
     const {
         userId,
         fullName,
@@ -67,7 +64,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             {!smallScreenMode && <About aboutProps={aboutProps}/>}
             <Profile smallScreenMode={smallScreenMode}
                      profileProps={profileProps}
-                     isUserFollowed = {isUserFollowed}
+                     isUserFollowed={isUserFollowed}
                      currentUserStatus={currentUserStatus}
                      isProfileDataLoaded={isProfileDataLoaded}/>
             {!smallScreenMode && <FriendsList/>}

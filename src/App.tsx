@@ -153,7 +153,7 @@ const App: React.FC = observer(() => {
                                 <Route path={friendsRoute}
                                        element={<FriendsPageContainer mobileMode={smallScreenMode}
                                                                       isLogged={isLogged}/>}/>
-                                <Route path={usersRoute} element={<UsersContainer isLogged={isLogged}/>}/>
+                                <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode} isLogged={isLogged}/>}/>
                                 <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>
                         </div>

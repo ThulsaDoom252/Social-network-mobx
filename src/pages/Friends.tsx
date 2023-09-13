@@ -1,5 +1,5 @@
 import React from 'react';
-import {profileRoute, testFriends} from "../common";
+import {profileRoute, dummyUsers} from "../common";
 import anon from "../public/anon.jpg";
 import PageContainer from "../components/common/PageContainer";
 import {User} from "../types";
@@ -138,7 +138,7 @@ const Friends: React.FC<FriendsPageProps> = ({
                             )
                         }
                     }
-                ) : testFriends.map(() => {
+                ) : dummyUsers.map(() => {
                     {
                         return (
                             <div className={'w-full h-29 mt-2 flex justify-center items-center'}>

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import authHoc from "../hoc/authHoc";
 import {Controller, FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import authStore from "../mobx/auth/auth";
 import {Button, Input} from "antd";

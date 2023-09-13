@@ -1,6 +1,6 @@
 import React from 'react';
 import anon from "../../public/anon.jpg"
-import {testFriends} from "../../common";
+import {dummyUsers} from "../../common";
 
 const FriendsList = () => {
     return (
@@ -21,7 +21,7 @@ const FriendsList = () => {
             grid
             gap-1
             grid-cols-3
-            '>{testFriends.map((friend,index) =>
+            '>{dummyUsers.map((friend, index) =>
                 <div key={index} className='
                 w-8
                 h-8

@@ -4,7 +4,6 @@ import {usersApi} from "../api/api";
 
 class FriendsStore {
     isFriendsLoaded: boolean = false
-    fetchFriends: boolean = false
     friends: User[] = []
 
     constructor() {
@@ -23,17 +22,11 @@ class FriendsStore {
         this.friends.push(friend)
     }
 
-    toggleFetchFriends(toggle: boolean) {
-        this.fetchFriends = toggle
-    }
-
     setIsFriendsLoaded(isLoaded: boolean) {
         this.isFriendsLoaded = isLoaded
     }
 
-
     async getFriends() {
-        this.toggleFetchFriends(true)
         await usersApi.getFriends()
             .then((res) => {
                 this.setFriends(res.items)
@@ -41,9 +34,8 @@ class FriendsStore {
             })
             .catch((e) => {
                 alert(e)
-
             })
-            .finally(() => this.toggleFetchFriends(false))
+
     }
 
     async unFollowFriend(friendId: number) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import PageContainer from "../components/common/PageContainer";
+import AuthHoc from "../hoc/authHoc";
 
 
 interface infoProps {
@@ -15,4 +16,4 @@ const Info: React.FC<infoProps> = ({smallScreenMode, isLogged}) => {
     );
 };
 
-export default Info;
+export default AuthHoc(Info);

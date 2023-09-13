@@ -31,11 +31,11 @@ const Profile: React.FC<ProfileProps> = ({
         aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser] = profileProps
 
     const contacts = [
-        {icon: <AiFillYoutube size={20}/>, src: youtube, color: 'text-red-400'},
-        {icon: <AiFillInstagram size={20}/>, src: instagram, color: 'text-yellow-800'},
-        {icon: <AiFillFacebook size={20}/>, src: facebook, color: 'text-blue-600'},
-        {icon: <AiFillGithub size={20}/>, src: github, color: 'text-green-600'},
-        {icon: <AiFillTwitterSquare size={20}/>, src: twitter, color: 'text-blue-300'},
+        {icon: <AiFillYoutube size={25}/>, src: youtube, color: 'text-red-400'},
+        {icon: <AiFillInstagram size={25}/>, src: instagram, color: 'text-yellow-800'},
+        {icon: <AiFillFacebook size={25}/>, src: facebook, color: 'text-blue-600'},
+        {icon: <AiFillGithub size={25}/>, src: github, color: 'text-green-600'},
+        {icon: <AiFillTwitterSquare size={25}/>, src: twitter, color: 'text-blue-300'},
     ]
 
 
@@ -46,7 +46,7 @@ const Profile: React.FC<ProfileProps> = ({
         flex-col
         h-96
         overflow-y-auto
-        ${!isProfileDataLoaded ? 'justify-center items-center' : ' justify-start'}
+        justify-start
         ${!smallScreenMode ? 'ml-2 mr-2 w-profile rounded-md'
             : 'w-full'}'}
         `}>
@@ -142,24 +142,24 @@ const Profile: React.FC<ProfileProps> = ({
                      h-fit
                     `}>
                                 <div className={'w-1/2 flex justify-between flex-wrap '}>
-                                    {contacts.map((contact) => <a title={contact.src || 'No info'}
-                                                                  className={`${contact.src ? contact.color : 'text-gray-500'}`}
-                                                                  href={contact.src || '#'}
-                                                                  target={'_blank'}
-                                    >{contact.icon}</a>)}
+                                    {contacts.map((contact) => contact.src !== null ? <a title={contact.src}
+                                                                                       className={`${contact.color}`}
+                                                                                       href={contact.src}
+                                                                                       target={'_blank'}
+                                    >{contact.icon}</a> : void 0)}
                                 </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-            </> : <SkeletonLoader>
-                <rect x="48" y="8" rx="3" ry="3" width="50%" height="6"/>
-                <rect x="48" y="26" rx="3" ry="3" width="70%" height="6"/>
-                <rect x="0" y="56" rx="3" ry="3" width="80%" height="6"/>
-                <rect x="0" y="72" rx="3" ry="3" width="90%" height="6"/>
-                <rect x="0" y="88" rx="3" ry="3" width="100%" height="6"/>
-                <circle cx="20" cy="20" r="20"/>
+            </> : <SkeletonLoader width={'100%'}>
+                <rect x="140" y="20" rx="3" ry="3" width="30%" height="10"/>
+                <rect x="140" y="50" rx="3" ry="3" width="70%" height="10"/>
+                <rect x="140" y="100" rx="3" ry="3" width="30%" height="10"/>
+                <rect x="140" y="120" rx="3" ry="3" width="70%" height="8"/>
+                <rect x="140" y="140" rx="3" ry="3" width="70%" height="8"/>
+                <rect x='10' y={'20'} ry='60' width='100' height='100'/>
 
             </SkeletonLoader>}
 

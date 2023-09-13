@@ -1,12 +1,12 @@
 import React from 'react';
 import {Pagination} from "antd";
 
-
 interface PaginatorProps {
     totalItems: number,
     itemsPerPage: number
+    smallScreenMode: boolean
     currentPage: number
-    handleChangePage: (value:number) => void
+    handleChangePage: (value: number) => void
 }
 
 const Paginator: React.FC<PaginatorProps> = ({
@@ -14,8 +14,17 @@ const Paginator: React.FC<PaginatorProps> = ({
                                                  itemsPerPage,
                                                  currentPage,
                                                  handleChangePage,
+                                                 smallScreenMode,
                                              }) => {
 
+
+    // Change Pagination params depend on screenMode
+    const paginatorParams =
+        {
+            showSizeChanger: !smallScreenMode, showQuickJumper: !smallScreenMode, showTotal: !smallScreenMode
+                ? (total: number) => `Total ${total} items`
+                : undefined
+        }
 
     return (
         <Pagination
@@ -24,9 +33,7 @@ const Paginator: React.FC<PaginatorProps> = ({
             current={currentPage}
             onChange={handleChangePage}
             total={totalItems}
-            showSizeChanger
-            showQuickJumper
-            showTotal={(total) => `Total ${total} items`}
+            {...paginatorParams}
         />
     );
 };

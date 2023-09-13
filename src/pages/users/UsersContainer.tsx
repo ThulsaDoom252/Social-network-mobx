@@ -12,7 +12,7 @@ import Paginator from "../../components/paginator/Paginator";
 import SearchMenuCloseOverlay from "../../components/users/SearchMenuCloseOverlay";
 
 interface UsersContainerProps {
-    smallScreenMode?: boolean
+    smallScreenMode: boolean
     isLogged: boolean,
 }
 
@@ -41,11 +41,11 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
     const handleFilterByStatusMode = (value: string) => usersStore.changeFilterByStatusMode(value)
     const handleFilterByPhotoMode = (value: string) => usersStore.changeFilterByPhotoMode(value)
 
-    const followUser = (userId:number, user: User) => usersStore.followUser(userId, user)
-    const unfollowUser = (userId:number) => usersStore.unfollowUser(userId)
+    const followUser = (userId: number, user: User) => usersStore.followUser(userId, user)
+    const unfollowUser = (userId: number) => usersStore.unfollowUser(userId)
 
 
-    const followUserHandler = async (isFollowed:boolean, userId:number, user: User) => {
+    const followUserHandler = async (isFollowed: boolean, userId: number, user: User) => {
         if (isFollowed) {
             unfollowUser(userId)
         } else {
@@ -118,6 +118,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     totalItems={totalUsersCount}
                     itemsPerPage={usersPerPage}
                     handleChangePage={handleChangePage}
+                    smallScreenMode={smallScreenMode}
                 />
                 <Users
                     followUserHandler={followUserHandler}
