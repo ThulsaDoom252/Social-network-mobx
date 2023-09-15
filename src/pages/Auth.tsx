@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {Controller, FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import authStore from "../mobx/auth/auth";
-import {Button, Input} from "antd";
+import {Button, Checkbox, Form, Input} from "antd";
 import {Navigate} from "react-router-dom";
 import {profileRoute} from "../common";
 
@@ -11,43 +10,56 @@ interface authContainerProps {
 }
 
 const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
-    const {
-        handleSubmit,
-        formState: {errors},
-        control,
-    } = useForm();
 
-    const [isFormDisabled, setIsFormDisabled] = useState(false)
 
-    const errorStyle = 'text-red-500  text-sm w-full text-center'
-
-    const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        setIsFormDisabled(true)
-        authStore.signIn(data.email, data.password, true, data.captcha).finally(() => {
-            setIsFormDisabled(false)
-        });
+    type FieldType = {
+        email?: string;
+        password?: string;
+        remember?: string;
+        captcha?: string;
     };
 
-    // const isFormDisabled: boolean = authStore.fetchAuthData;
+    const onFinish = (values: any) => {
+        debugger
+        setIsFormDisabled(true);
+        authStore.signIn(values.email, values.password, values.remember, values.captcha)
+            .finally(() => {
+                setIsFormDisabled(false);
+                setIsErrorVisible(true); // Показываем ошибку
+            });
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
+
+
+    const [isFormDisabled, setIsFormDisabled] = useState(false);
+    const [isErrorVisible, setIsErrorVisible] = useState(false); // Добавляем состояние для видимости ошибки
+
+
     const authError: string = authStore.authErrorText;
     const isAuthError: boolean = authError !== "";
-    const isCaptchaRequired = authStore.isCaptchaRequired
-    const captchaUrl: string = authStore.captchaUrl
+    const isCaptchaRequired = authStore.isCaptchaRequired;
+    const captchaUrl: string = authStore.captchaUrl;
 
     if (isLogged) {
-        return <Navigate to={profileRoute}/>
+        return <Navigate to={profileRoute}/>;
     }
 
     return (
+        //Main block
         <div
             className={`
         flex 
+        h-auto
         items-center 
         justify-center
         ${smallScreenMode ? "h-screen w-screen"
                 : "w-auth translate-y-1/2 h-auth container mx-auto p-3"}
       `}
         >
+            {/*//Left sign up block*/}
             {!smallScreenMode && (
                 <div className="
             bg-blue-300
@@ -74,17 +86,21 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
                     </Button>
                 </div>
             )}
+            {/*Right sign in block*/}
             <div
                 className={`
             relative
             w-full 
             flex 
+            justify-center
+            items-center
             rounded-r-md
             flex-col 
             bg-white
             ${smallScreenMode ? "rounded-l-md h-1/2 justify-center" : "bg-white h-full justify-start "}
             `}
             >
+                {/*//Sign in title*/}
                 <h2 className={`text-3xl font-bold text-center ${!smallScreenMode && 'mb-8 mt-10'}`}>Sign in</h2>
                 {isAuthError && (
                     <p className={`
@@ -92,98 +108,78 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
                     text-red-500 
                     w-full             
                     text-center              
+                    transition-all duration-500
                     `}>{authError}</p>
                 )}
-                <form className="flex flex-col mt-10" onSubmit={handleSubmit(onSubmit)}>
-                    <div className={'w-1/2 flex flex-col mx-auto'}>
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                    message: 'Not email format',
-                                },
-                            }}
-                            render={({field}) => (
-                                <div>
-                                    <Input
-                                        status={errors.email ? 'error' : ''}
-                                        className={'mb-1'}
-                                        disabled={isFormDisabled}
-                                        {...field}
-                                        placeholder="Email"
-                                    />
-                                    {errors.email && (
-                                        <p className={errorStyle}>{errors.email.message as string}</p>
-                                    )}
-                                </div>
-                            )}
-                        />
-                        <Controller
-                            name="password"
-                            control={control}
-                            rules={{
-                                required: 'Password is required',
-                                minLength: {
-                                    value: 6,
-                                    message: 'Password must contain more than 5 symbols',
-                                },
-                            }}
-                            render={({field}) => (
-                                <div>
-                                    <Input
-                                        status={errors.password ? 'error' : ''}
-                                        className={'mb-1'}
-                                        disabled={isFormDisabled}
-                                        {...field}
-                                        placeholder="Password"
-                                    />
-                                    {errors.password && (
-                                        <p className={errorStyle}>{errors.password.message as string}</p>
-                                    )}
-                                </div>
-                            )}
-                        />
-                        {isCaptchaRequired && <div className={`
-                        flex 
-                        flex-col 
-                        justify-center 
-                        items-center                        
-                        `}>
-                            <img src={captchaUrl} alt={'captcha-image'}/>
-                            <Controller
-                                name="captcha"
-                                control={control}
-                                rules={{
-                                    required: 'enter symbols!',
-                                }}
-                                render={({field}) => (
-                                    <div className="relative">
-                                        <Input
-                                            status={errors.captcha ? 'error' : ''}
-                                            className={'mb-4'}
-                                            disabled={isFormDisabled}
-                                            {...field}
-                                            placeholder="Enter antibot symbols"
-                                        />
-                                        {errors.captcha && (
-                                            <p className={errorStyle}>{errors.captcha.message as string}</p>
-                                        )}
-                                    </div>
-                                )}
-                            />
-                        </div>}
-                        <Button
-                            disabled={isFormDisabled}
-                            className={'bg-blue-300 mt-2'}
-                            type="primary"
-                            htmlType={'submit'}>
-                            {isFormDisabled ? 'Please wait..' : 'Login'}
+                {isCaptchaRequired && (
+                    <p className={`
+                    mt-1
+                    text-red-500 
+                    w-full             
+                    text-center              
+                    transition-all duration-500
+                    `}>{'Too many incorrect login attempts, please solve captcha to continue'}</p>
+                )}
+                {/*// From*/}
+                <Form
+                    name="basic"
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 16}}
+                    style={{maxWidth: 600}}
+                    initialValues={{remember: true}}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    {/*Email block*/}
+                    <Form.Item<FieldType>
+                        label="Email"
+                        name="email"
+                        rules={[{required: true, message: 'email required!'}, {
+                            pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            message: 'Invalid email format!',
+                        },]}
+                    >
+                        <Input/>
+                    </Form.Item>
+                    {/*Password block*/}
+                    <Form.Item<FieldType>
+                        label="Password"
+                        name="password"
+                        rules={[{required: true, message: 'password required!'}]}
+                    >
+                        <Input.Password/>
+                    </Form.Item>
+                    {/*//Captcha block*/}
+                    {isCaptchaRequired && <>
+                        <div className={'w-full flex justify-center'}>
+                            <img className={'h-20'}
+                                 src={captchaUrl}
+                                 alt="captcha url"/>
+                        </div>
+                        <Form.Item
+                            name="captcha"
+                            label={'Captcha'}
+                            rules={[{required: true, message: 'Please input the captcha you got!'}]}
+                        >
+                            <Input/>
+                        </Form.Item>
+                    </>}
+                    {/*//Remember me block*/}
+                    <Form.Item<FieldType>
+                        name="remember"
+                        valuePropName="checked"
+                        wrapperCol={{offset: 8, span: 16}}
+                    >
+                        <Checkbox>Remember me</Checkbox>
+                    </Form.Item>
+                    {/*//Submit button*/}
+                    <Form.Item wrapperCol={{offset: 8, span: 16}}>
+                        <Button type="primary" className={'bg-blue-400'} htmlType="submit">
+                            Submit
                         </Button>
-                    </div>
-                </form>
+                    </Form.Item>
+                </Form>
             </div>
         </div>
     );
