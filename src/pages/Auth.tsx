@@ -11,7 +11,6 @@ interface authContainerProps {
 
 const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
 
-
     type FieldType = {
         email?: string;
         password?: string;
@@ -25,7 +24,6 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
         authStore.signIn(values.email, values.password, values.remember, values.captcha)
             .finally(() => {
                 setIsFormDisabled(false);
-                setIsErrorVisible(true); // Показываем ошибку
             });
     };
 
@@ -33,18 +31,16 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
         console.log('Failed:', errorInfo);
     };
 
-
     const [isFormDisabled, setIsFormDisabled] = useState(false);
-    const [isErrorVisible, setIsErrorVisible] = useState(false); // Добавляем состояние для видимости ошибки
-
 
     const authError: string = authStore.authErrorText;
     const isAuthError: boolean = authError !== "";
     const isCaptchaRequired = authStore.isCaptchaRequired;
     const captchaUrl: string = authStore.captchaUrl;
+    const currentUserId: string = authStore.id
 
     if (isLogged) {
-        return <Navigate to={profileRoute}/>;
+        return <Navigate to={`${profileRoute}/${currentUserId}`}/>
     }
 
     return (
@@ -129,6 +125,7 @@ const Auth: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
                     initialValues={{remember: true}}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
+                    disabled={isFormDisabled}
                     autoComplete="off"
                 >
                     {/*Email block*/}

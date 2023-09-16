@@ -45,7 +45,9 @@ const Header: React.FC<HeaderProps> = ({
         ${smallScreenMode ? 'h-30 pt-5 pl-3 pr-3' : 'h-60 pb-3 pr-3 pl-3'}
         `}>
             {!smallScreenMode &&
-                <Button className='absolute top-2 right-2 bg-blue-400 fontLato' type="primary"
+                <Button className='absolute top-2 right-2 bg-blue-400 fontLato'
+                        size={'middle'}
+                        type="primary"
                         onClick={handleLogOut}>Logout</Button>}
             <div className='
               flex
@@ -64,14 +66,13 @@ const Header: React.FC<HeaderProps> = ({
                     h-10
                     '>
                         <img
-                            className={`rounded-full h-20 w-20 cursor-pointer`}
-                            title={'click to change avatar'}
+                            className={`rounded-full h-20 w-20`}
                             src={avatar || anon}
                             alt="user-photo"/>
                         <div className={`${smallScreenMode && "flex flex-col justify-center items-center"}`}>
                             <div className={'ml-2 fontLato cursor-default'}>{currentUserName ||
                                 <ClipLoader/>}</div>
-                            {smallScreenMode && <div onClick={handleLogOut}>Logout</div>}
+                            {smallScreenMode && <Button className={'bg-blue-400'} size={'small'} type={'primary'} onClick={handleLogOut}>Logout</Button>}
 
                         </div>
 

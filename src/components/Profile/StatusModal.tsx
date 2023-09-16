@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, Input, Button} from 'antd';
 import {CheckCircleOutlined} from '@ant-design/icons';
 
@@ -17,8 +17,12 @@ const StatusModal: React.FC<StatusModalProps> = ({
                                                      handleChangeStatus,
                                                      currentUserStatus,
                                                  }) => {
-    const [status, setStatus] = useState<string>(currentUserStatus)
+    const [status, setStatus] = useState<string | null>(currentUserStatus)
     const [statusError, setStatusError] = useState<string | null>(null);
+
+    useEffect(() => {
+        setStatus(currentUserStatus)
+    }, [currentUserStatus]);
 
     const handleStatusChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
@@ -32,8 +36,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
 
     const handleUpdateStatus = () => {
         // Добавьте здесь логику обновления статуса
-        handleChangeStatus(status)
-        debugger
+        handleChangeStatus(status ? status : '')
         onClose();
     };
 
@@ -51,7 +54,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                     key="update"
                     type="primary"
                     onClick={handleUpdateStatus}
-                    disabled={statusError !== null || status.length === 0}
+                    disabled={statusError !== null || status === null || status.length === 0}
                 >
                     Update
                 </Button>,
@@ -62,7 +65,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                     style={{resize: 'none'}}
                     rows={4}
                     placeholder="My status"
-                    value={status}
+                    value={status ? status : ''}
                     onChange={handleStatusChange}
                 />
                 {statusError && <div className="status-error">{statusError}</div>}

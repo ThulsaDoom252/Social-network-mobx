@@ -5,16 +5,18 @@ import ContentLoader from "react-content-loader";
 interface SkeletonLoader {
     speed?: number,
     width?: string,
-    height?: number,
+    height?: string,
     viewBox?: string,
     bgColor?: string,
     foreGroundColor?: string,
     children: ReactNode,
+    className?: string
 }
 
 const SkeletonLoader: React.FC<SkeletonLoader> = (props) => {
     return (
         <ContentLoader
+            className={props.className}
             speed={props.speed || 1}
             width={props.width || '400'}
             height={props.height || '160'}

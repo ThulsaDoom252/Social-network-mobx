@@ -1,8 +1,17 @@
 import React from 'react';
 import anon from "../../public/anon.jpg"
-import {dummyUsers} from "../../common";
+import {dummyUsers, friendsRoute, profileRoute} from "../../common";
+import {User} from "../../types";
+import SkeletonLoader from "../context/SkeletonLoader";
+import {Button} from "antd";
+import {NavLink} from "react-router-dom";
 
-const FriendsList = () => {
+interface friendsListProps {
+    friends: User[],
+    isFriendsLoaded: boolean,
+}
+
+const FriendsList: React.FC<friendsListProps> = ({friends, isFriendsLoaded}) => {
     return (
         <div className='
         flex
@@ -15,21 +24,32 @@ const FriendsList = () => {
         items-start
         justify-start
         '>
-            <div>Friends list</div>
+            {isFriendsLoaded && <div>{friends.length !== 0 ? `Friends(${friends.length})` : 'No friends yet'}</div>}
             <div className='
             w-full
             grid
             gap-1
             grid-cols-3
-            '>{dummyUsers.map((friend, index) =>
+            '>{!isFriendsLoaded ? dummyUsers.map((friend, index) =>
                 <div key={index} className='
                 w-8
                 h-8
+                m-1
                 '>
-                    <img className='w-full h-full m-2'
-                         src={anon}
-                         alt={'friend-photo'}/>
+                    <SkeletonLoader>
+                        <rect x="0" y="-20" rx="0" ry="0" width="40" height={'60'}/>
+                    </SkeletonLoader>
                 </div>
+            ) : friends.map((friend, index) => index <= 11 ?
+                <div key={index} className={`
+            w-8
+            h-8
+            `}>
+                    <NavLink to={`${profileRoute}/${friend.id}`}>
+                        <img className={'w-full h-full m-2'} src={friend.photos.small || anon} alt="friend-photo"/>
+                    </NavLink>
+
+                </div> : void 0
             )}</div>
             <hr className='
             mt-5
@@ -44,10 +64,11 @@ const FriendsList = () => {
              items-center
              justify-center
              '>
-                <button>Show all</button>
-
+                {friends.length !== 0 &&
+                    <NavLink to={friendsRoute}>
+                        <Button type={'primary'} size={'small'} className={'bg-blue-400'}>Go to list</Button>
+                    </NavLink>}
             </div>
-
         </div>
     );
 };

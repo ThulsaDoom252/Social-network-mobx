@@ -5,6 +5,7 @@ import {ProfileData} from "../types";
 
 class profileStore {
     userId: number = 0
+    isCurrentUserProfile: boolean = false
     isAvatarUpdating: boolean = false
     isProfileDataLoaded: boolean = false
     isUserFollowed: boolean = false
@@ -24,6 +25,10 @@ class profileStore {
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data
         this.isCurrentUserProfileDataLoaded = true
+    }
+
+    setIsCurrentUserProfile(isCurrentProfile: boolean) {
+        this.isCurrentUserProfile = isCurrentProfile
     }
 
     setIsUserFollowed(isFollowed: boolean) {
@@ -104,6 +109,7 @@ class profileStore {
                 fullName, github, vk, facebook, instagram, twitter,
                 website, youtube, mainLink
             })
+            this.isCurrentUserProfile ? await this.getProfileData(parseInt(userId)) : void 0
 
         } else {
             console.log('there was an error updating data...')

@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useRef, useState} from 'react';
-import {Dialog} from '@headlessui/react';
+import {Transition} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
 import {stopPropagation} from "../../common";
 import anon from "../../public/anon.jpg"
@@ -57,7 +57,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         return <></>
     }
 
-    const {github, twitter, facebook, mainLink, website, youtube, instagram} = contacts
+    const {
+        github, twitter,
+        facebook, mainLink, website,
+        youtube, instagram
+    } = contacts
     const {large: largePhoto} = photos
 
     //Contacts array for mapping
@@ -143,6 +147,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             values.youtube,
             values.mainLink
         );
+        enqueueSnackbar('Data successfully updated')
+        handleClose()
     };
 
     //Input change handler
@@ -164,18 +170,25 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         setIsLookingForAJobValue(value);
     };
 
-
     return (
-        <Dialog
-            open={isOpen}
-            onClose={handleClose}
-            className="fixed inset-0 z-10 overflow-y-auto"
+        <Transition
+            show={isOpen}
+            enter={'transition ease-out duration-300'}
+            enterFrom={"opacity-0"}
+            enterTo={"opacity-100"}
+            leave={"transition ease-in duration-200"}
+            leaveFrom={"opacity-100"}
+            leaveTo={"opacity-0"}
+            className={'fixed inset-0 z-10 overflow-y-auto'}
         >
+
+
             <div className="flex items-center justify-center min-h-screen">
-                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30"/>
+
+                <div className="fixed inset-0 bg-black opacity-30"/>
                 {/*********************Main container*/}
                 <div style={{background: 'rgb(191,191,218)'}}
-                     className={` w-editModal ${smallScreen ? 'm-1' : 'h-fit p-4'} 
+                     className={` w-editModal relative ${smallScreen ? 'm-1' : 'h-fit p-4'} 
                      rounded-lg  
                      overflow-y-auto 
                      z-20 
@@ -184,10 +197,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                      onClick={stopPropagation}
                 >
                     <div
-                        className="mr-2 hover:cursor-pointer transition absolute right-2"
                         onClick={handleClose}
-                    >
-                        <IoClose/>
+                        className={'text-gray-500 absolute top-0 right-1 cursor-pointer'}>
+                        <IoClose size={18}/>
                     </div>
                     {/**Inner flex block Desktop only*/}
                     <div className={`${!smallScreen && 'flex'}`}>
@@ -355,7 +367,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 </div>
 
             </div>
-        </Dialog>
+        </Transition>
     );
 };
 

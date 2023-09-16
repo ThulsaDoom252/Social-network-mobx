@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import Header from "./components/Header";
 import Info from "./pages/Info";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/ProfileContainer";
 import MobileNavbar from "./components/MobileNavbar";
 import {authRoute, friendsRoute, infoRoute, rootRoute, usersRoute} from "./common";
 import EditProfileModal from "./components/Profile/EditProfileModal";
@@ -59,7 +59,7 @@ const App: React.FC = observer(() => {
     useEffect(() => {
         const handleResize = () => {
             const screenWidth = window.innerWidth;
-            appStore.toggleSmallScreen(screenWidth < 1000);
+            appStore.toggleSmallScreen(screenWidth < 3);
         };
 
         window.addEventListener("resize", handleResize);
