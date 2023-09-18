@@ -50,7 +50,7 @@ const Profile: React.FC<ProfileProps> = ({
         ${!smallScreenMode ? 'ml-2 mr-2 w-profile rounded-md'
             : 'w-full'}'}
         `}>
-            {isProfileDataLoaded ? <>
+            {!isProfileDataLoaded ? <>
                     <div className={`
             flex
             w-full
@@ -155,22 +155,40 @@ const Profile: React.FC<ProfileProps> = ({
                     </div>
                 </> :
                 <div className={'w-full flex p-10'}>
-                    <div className={'w-full'}>
-                        <SkeletonLoader>
-                            <rect x='-0' y={'20'} ry="5" width='100' height='100'/>
-                            <rect x='110' y={'20'}  width='100' height='10'/>
-                        </SkeletonLoader>
-                    </div>
-                    <div>
-                        <SkeletonLoader className={'w-full'}>
-                            <rect x="-100" y="20" rx="3" ry="3" width="100%" height="10"/>
-                            <rect x="140" y="50" rx="3" ry="3" width="70%" height="10"/>
-                            <rect x="140" y="100" rx="3" ry="3" width="30%" height="10"/>
-                            <rect x="140" y="120" rx="3" ry="3" width="70%" height="8"/>
-                            <rect x="140" y="140" rx="3" ry="3" width="70%" height="8"/>
-
-                        </SkeletonLoader>
-                    </div>
+                    {smallScreenMode ?
+                        <SkeletonLoader width={'100%'} height={'290'}
+                                        viewBox={'0 0 100% 100%'}>
+                            <rect x="0" y="0" rx="3" ry="3" height="150" width={'20%'}/>
+                            <rect x="190" y="0" rx="3" ry="3" height="15" width={'20%'}/>
+                            <rect x="380" y="35" rx="3" ry="3" height="15" width={'30%'}/>
+                            <rect x="180" y="78" rx="3" ry="3" height="15" width={'25%'}/>
+                            <rect x="180" y="105" rx="3" ry="3" height="15" width={'50%'}/>
+                            <rect x="190" y="130" rx="3" ry="3" height="15" width={'25%'}/>
+                            <rect x="190" y="155" rx="3" ry="3" height="15" width={'50%'}/>
+                            <rect x="40" y="160" rx="3" ry="3" height="15" width={'10%'}/>
+                            <rect x="450" y="200" rx="3" ry="3" height="15" width={'20%'}/>
+                            <rect x="400" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="450" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="500" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="550" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="600" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                        </SkeletonLoader> :
+                        <SkeletonLoader height={'290'}
+                                        viewBox={'0 0 100% 100%'}>
+                            <rect x="0" y="0" rx="3" ry="3" height="150" width={'30%'}/>
+                            <rect x="170" y="0" rx="3" ry="3" height="15" width={'20%'}/>
+                            <rect x="280" y="35" rx="3" ry="3" height="15" width={'30%'}/>
+                            <rect x="180" y="80" rx="3" ry="3" height="15" width={'25%'}/>
+                            <rect x="180" y="105" rx="3" ry="3" height="15" width={'50%'}/>
+                            <rect x="180" y="130" rx="3" ry="3" height="15" width={'50%'}/>
+                            <rect x="25" y="160" rx="3" ry="3" height="15" width={'20%'}/>
+                            <rect x="296" y="200" rx="3" ry="3" height="15" width={'20%'}/>
+                            <rect x="250" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="290" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="330" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="370" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                            <rect x="410" y="230" rx="3" ry="3" height="20" width={'5%'}/>
+                        </SkeletonLoader>}
                 </div>
             }
 

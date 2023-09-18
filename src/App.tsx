@@ -59,7 +59,7 @@ const App: React.FC = observer(() => {
     useEffect(() => {
         const handleResize = () => {
             const screenWidth = window.innerWidth;
-            appStore.toggleSmallScreen(screenWidth < 3);
+            appStore.toggleSmallScreen(screenWidth < 1000);
         };
 
         window.addEventListener("resize", handleResize);
