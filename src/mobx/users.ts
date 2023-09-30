@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {usersApi} from "../api/api";
 import {User} from "../types";
-import {defaultPhotoFilterMode, defaultStatusFilterMode, withPhoto, withStatus} from "../components/users/filterModes";
+import {defaultPhotoFilterMode, defaultStatusFilterMode, withPhoto, withStatus} from "../context/filterModes";
 import {setLocalStorageData} from "../common/commonFuncs";
 import friendsStore from "./friends"
 

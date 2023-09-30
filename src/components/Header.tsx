@@ -12,6 +12,7 @@ interface HeaderProps {
     userId: number,
     tinyScreenMode: boolean,
     isCurrentUserDataLoaded: boolean
+    handleOpenModal: (e: React.MouseEvent) => void
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -22,12 +23,8 @@ const Header: React.FC<HeaderProps> = ({
                                            userId,
                                            tinyScreenMode,
                                            isCurrentUserDataLoaded,
+                                           handleOpenModal,
                                        }) => {
-
-    const handleOpenModal = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        appStore.toggleIsEditProfileModalOpen(true)
-    }
 
     const handleLogOut = () => {
         authStore.signOut()

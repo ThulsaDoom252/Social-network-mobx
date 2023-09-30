@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {SnackbarProvider} from "notistack";
+import {SearchContextProvider} from "./context/SearchContext";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -11,7 +12,9 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <SnackbarProvider autoHideDuration={1000}>
-            <App/>
+            <SearchContextProvider>
+                <App/>
+            </SearchContextProvider>
         </SnackbarProvider>
     </React.StrictMode>
 );

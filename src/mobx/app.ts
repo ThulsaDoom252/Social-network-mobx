@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 
 class AppStore {
+    currentPath: string = ''
     smallScreen = false
     tinyScreen = false
     isEditProfileModalOpen = false
@@ -9,6 +10,10 @@ class AppStore {
 
     constructor() {
         makeAutoObservable(this)
+    }
+
+    setCurrentPath(value:string) {
+        this.currentPath = value
     }
 
     toggleSmallScreen(toggle: boolean) {

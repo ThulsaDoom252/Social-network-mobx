@@ -6,7 +6,8 @@ import {
     withoutStatus,
     withPhoto,
     withStatus
-} from "./components/users/filterModes";
+} from "./context/filterModes";
+import {byNameAlphabet, byNameReverse, byNoPhoto, byPhoto} from "./context/sortModes";
 
 export type Contacts = {
     github: string;
@@ -53,3 +54,4 @@ export type HandleSearchRequestType = (e: ChangeEvent<HTMLInputElement>) => void
 export type FilterStatusModeTypes = typeof withStatus | typeof withoutStatus | typeof defaultStatusFilterMode;
 
 export type FilterPhotoModeTypes = typeof  withPhoto | typeof withoutPhoto | typeof defaultPhotoFilterMode
+

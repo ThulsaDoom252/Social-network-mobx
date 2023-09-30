@@ -7,6 +7,7 @@ import profileStore from "../mobx/profile"
 import friendsStore from "../mobx/friends"
 import {ProfileData} from "../types";
 import {useParams} from "react-router-dom";
+import appStore from "../mobx/app"
 
 interface ProfilePageProps {
     smallScreenMode?: boolean
@@ -17,6 +18,8 @@ interface ProfilePageProps {
     isProfileDataLoaded: boolean,
     currentUserStatus: string,
     currentUserId: string,
+    handleOpenModal: (e: React.MouseEvent) => void
+
 }
 
 const ProfileContainer: React.FC<ProfilePageProps> = ({
@@ -25,12 +28,14 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
                                                           profileData, currentUserEmail,
                                                           currentUserStatus, isProfileDataLoaded,
                                                           tinyScreenMode,
+                                                           handleOpenModal,
                                                       }) => {
 
     const {userid} = useParams();
 
     const [noContacts, setIsNoContacts] = useState<boolean>(false)
     const [emptyContacts, setEmptyContacts] = useState<number>(0)
+    const currentPath = appStore.currentPath
 
     const isUserFollowed = profileStore.isUserFollowed
     const isCurrentUserProfile = profileStore.isCurrentUserProfile
@@ -58,6 +63,7 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
         } else {
             isCurrentUserProfile ? setIsCurrentUserProfile(false) : void 0
         }
+        currentPath !== 'users' && appStore.setCurrentPath('users')
 
     }, [userid]);
 
@@ -120,6 +126,7 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
                      isProfileDataLoaded={isProfileDataLoaded}
                      tinyScreenMode={tinyScreenMode}
                      noContacts={noContacts}
+                     handleOpenModal={handleOpenModal}
             />
             {!smallScreenMode && <FriendsList friends={friends} isFriendsLoaded={isFriendsLoaded}/>}
 

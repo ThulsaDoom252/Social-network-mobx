@@ -5,7 +5,6 @@ import {useSnackbar} from "notistack";
 import usersStore from "../../mobx/users"
 import {HandleSearchRequestType, User} from "../../types";
 import {observer} from "mobx-react-lite";
-import ContentLoader from "react-content-loader";
 import PageContainer from "../../components/common/PageContainer";
 import Paginator from "../../components/paginator/Paginator";
 import SearchMenuCloseOverlay from "../../components/search/SearchMenuCloseOverlay";
@@ -33,8 +32,35 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
     const filterByPhotoMode = usersStore.filterByPhotoMode
     const fetchingUserId = usersStore.fetchingUserIds
 
-    const [isSearchMenuOpen,
+    const [isActive, setIsActive] = useState(false);
+
+
+    const [isSearchMenuActive,
         toggleSearchMenu] = useState(false)
+
+    useEffect(() => {
+        if (isSearchMenuActive) {
+            setIsActive(true);
+        } else {
+            // Задержите исчезновение компонента, чтобы анимация завершилась
+            setTimeout(() => setIsActive(false), 300);
+        }
+    }, [isSearchMenuActive]);
+
+    useEffect(() => {
+        usersStore.getUsers(usersPerPage, currentPage)
+        // enqueueSnackbar('Users loaded')
+        debugger
+    }, [usersPerPage, currentPage, filterByPhotoMode, filterByStatusMode]);
+
+    useEffect(() => {
+        if (searchRequest === '') {
+            searchMode && toggleSearchMode(false)
+        } else {
+            !searchMode && toggleSearchMode(true)
+        }
+        searchUsers(searchRequest)
+    }, [searchRequest]);
 
 
     const handleUsersPerPage = (value: number) => usersStore.setUsersPerPage(value)
@@ -72,20 +98,6 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
 
     // const {enqueueSnackbar, closeSnackbar} = useSnackbar()
 
-    useEffect(() => {
-        usersStore.getUsers(usersPerPage, currentPage)
-        // enqueueSnackbar('Users loaded')
-        debugger
-    }, [usersPerPage, currentPage, filterByPhotoMode, filterByStatusMode]);
-
-    useEffect(() => {
-        if (searchRequest === '') {
-            searchMode && toggleSearchMode(false)
-        } else {
-            !searchMode && toggleSearchMode(true)
-        }
-        searchUsers(searchRequest)
-    }, [searchRequest]);
 
     const handleSearchRequest: HandleSearchRequestType = (e) => {
         const {value} = e.currentTarget;
@@ -95,13 +107,14 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
 
     return (
         <>
-            {isSearchMenuOpen && <SearchMenuCloseOverlay toggleSearchMenu={toggleSearchMenu}/>}
+            {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={toggleSearchMenu}/>}
             <PageContainer>
                 <h4 className='
             w-full text-center font-bold
             '>Users({usersToShow.length})</h4>
                 <SearchBar
-                    isSearchMenuOpen={isSearchMenuOpen}
+                    menuType={'users'}
+                    isSearchMenuOpen={isSearchMenuActive}
                     toggleSearchMenu={toggleSearchMenu}
                     searchRequest={searchRequest}
                     clearSearchRequest={clearSearchRequest}
@@ -113,6 +126,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     filterByStatusMode={filterByStatusMode}
                     handleFilterByPhotoMode={handleFilterByPhotoMode}
                     handleFilterByStatusMode={handleFilterByStatusMode}
+                    isSearchMenuActive={isActive}
                 />
                 <Paginator
                     currentPage={currentPage}

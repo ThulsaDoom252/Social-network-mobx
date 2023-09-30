@@ -9,7 +9,7 @@ import {
     withoutStatus,
     withPhoto,
     withStatus,
-} from '../users/filterModes';
+} from '../../context/filterModes';
 import {FilterPhotoModeTypes, FilterStatusModeTypes} from '../../types';
 
 interface UsersSearchMenuProps {
@@ -20,6 +20,8 @@ interface UsersSearchMenuProps {
     filterByStatusMode: string;
     handleFilterByPhotoMode: (value: string) => void;
     handleFilterByStatusMode: (value: string) => void;
+    sortByName?: () => void
+    sortByPhoto?: () => void
 }
 
 const UsersSearchMenu: React.FC<UsersSearchMenuProps> = ({
@@ -47,6 +49,8 @@ const UsersSearchMenu: React.FC<UsersSearchMenuProps> = ({
                         <div className="bg-white w-64 p-2 rounded-md flex flex-col items-center">
                             <div className="w-full flex flex-col items-center">
                                 <div>
+                                    <h6>Show only</h6>
+                                    <hr/>
                                     <p>By photo:</p>
                                     <Select size="small" value={filterByPhotoMode} style={{width: 200}}
                                             onChange={handlePhotoFilterModeChange}>

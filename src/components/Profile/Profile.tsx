@@ -8,7 +8,7 @@ import {
     AiFillYoutube
 } from "react-icons/ai";
 import SkeletonLoader from "../context/SkeletonLoader";
-import {Button, Skeleton} from "antd";
+import {Button, Skeleton, Space} from "antd";
 
 interface ProfileProps {
     smallScreenMode?: boolean
@@ -18,6 +18,8 @@ interface ProfileProps {
     isProfileDataLoaded: boolean,
     isUserFollowed: boolean,
     noContacts: boolean,
+    handleOpenModal: (e: React.MouseEvent) => void
+
 }
 
 const Profile: React.FC<ProfileProps> = ({
@@ -28,6 +30,7 @@ const Profile: React.FC<ProfileProps> = ({
                                              isUserFollowed,
                                              tinyScreenMode,
                                              noContacts,
+                                             handleOpenModal,
                                          }) => {
 
 
@@ -101,11 +104,17 @@ const Profile: React.FC<ProfileProps> = ({
                     w-full
                     flex
                     items-center
-                   ${tinyScreenMode ? 'justify-center' : 'justify-between'}
+                   ${tinyScreenMode ? 'justify-center flex-col' : 'justify-between'}
                     `}>
                             <div>
                                 {fullName}
                             </div>
+                            {tinyScreenMode && isCurrentUser &&
+                                <Button type="primary"
+                                        className='bg-blue-400'
+                                        disabled={false}
+                                    onClick={handleOpenModal}
+                                >Edit Profile</Button>}
                             <div hidden={isCurrentUser || tinyScreenMode}>
                                 <Button size={'small'} type={'primary'} className={'bg-blue-400'}>
                                     {isUserFollowed ? 'Unfollow' : 'Follow'}
@@ -166,8 +175,23 @@ const Profile: React.FC<ProfileProps> = ({
                     </div>
                 </div>
 
-                : <div className={'mt-3 p-5'}>
-                    <Skeleton avatar active paragraph={{rows: 6}}/>
+                : <div className={`mt-3 p-5 ${tinyScreenMode && 'h-screen'}`}>
+                    {!tinyScreenMode ?
+                    <Skeleton avatar active paragraph={{rows: 6}}/> :
+                        <Space style={{display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center'}}>
+                            <Skeleton.Image active/>
+                            <Skeleton.Input active/>
+                            <Skeleton.Input active/>
+                            <Skeleton.Input active/>
+                            <Skeleton.Input active/>
+                            <Skeleton.Input active/>
+                            <Space>
+                                <Skeleton.Avatar active/>
+                                <Skeleton.Avatar active/>
+                                <Skeleton.Avatar active/>
+                                <Skeleton.Avatar active/>
+                            </Space>
+                        </Space>}
                 </div>}
         </div>
     );

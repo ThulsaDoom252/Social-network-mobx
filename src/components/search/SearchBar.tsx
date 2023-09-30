@@ -3,6 +3,8 @@ import {HandleSearchRequestType, User} from "../../types";
 import {Input} from "antd";
 import {CloseOutlined, ControlOutlined, UserOutlined} from "@ant-design/icons";
 import SearchMenu from "./UsersSearchmenu";
+import UsersSearchMenu from "./UsersSearchmenu";
+import FriendsSearchMenu from "./FriendsSearchMenu";
 
 interface SearchBarProps {
     searchRequest: string,
@@ -17,6 +19,12 @@ interface SearchBarProps {
     handleFilterByStatusMode: (value: string) => void
     isSearchMenuOpen: boolean,
     toggleSearchMenu: React.Dispatch<React.SetStateAction<boolean>>
+    isSearchMenuActive: boolean,
+    menuType: 'users' | 'friends',
+    sortByNameValue?: string,
+    sortByPhotoValue?: string,
+     handleCurrentSortTypeValue?: (value:string) => void
+
 }
 
 
@@ -32,21 +40,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                                  handleFilterByStatusMode,
                                                  isSearchMenuOpen,
                                                  toggleSearchMenu,
+                                                 isSearchMenuActive,
+                                                 menuType,
+                                                 sortByNameValue,
+                                                 sortByPhotoValue,
+                                                 handleCurrentSortTypeValue,
                                              }) => {
 
-    const [isActive, setIsActive] = useState(false);
-
-    useEffect(() => {
-        if (isSearchMenuOpen) {
-            setIsActive(true);
-        } else {
-            // Задержите исчезновение компонента, чтобы анимация завершилась
-            setTimeout(() => setIsActive(false), 300);
-        }
-    }, [isSearchMenuOpen]);
 
     return (
-        <div className={`w-full mt-2 flex justify-center relative ${isActive ? 'active' : ''}`}>
+        <div className={`w-full mt-2 flex justify-center relative ${isSearchMenuActive ? 'active' : ''}`}>
             <Input value={searchRequest} placeholder="default size" prefix={<UserOutlined/>}
                    onChange={handleSearchRequest}/>
             <div
@@ -86,18 +89,22 @@ const SearchBar: React.FC<SearchBarProps> = ({
             >
                 <CloseOutlined/></div>
             <div className={'absolute z-20 right-5 top-10 '}>
-                <SearchMenu isOpen={isSearchMenuOpen}
-                                 handleUsersPerPage={handleUsersPerPage}
-                                 usersPerPage={usersPerPage}
-                                 filterByStatusMode={filterByStatusMode}
-                                 filterByPhotoMode={filterByPhotoMode}
-                                 handleFilterByPhotoMode={handleFilterByPhotoMode}
-                                 handleFilterByStatusMode={handleFilterByStatusMode}
-                />
-            </div>
+                {menuType === 'users' ?
+                    <UsersSearchMenu isOpen={isSearchMenuOpen}
+                                     handleUsersPerPage={handleUsersPerPage}
+                                     usersPerPage={usersPerPage}
+                                     filterByStatusMode={filterByStatusMode}
+                                     filterByPhotoMode={filterByPhotoMode}
+                                     handleFilterByPhotoMode={handleFilterByPhotoMode}
+                                     handleFilterByStatusMode={handleFilterByStatusMode}
+                    /> : <FriendsSearchMenu isOpen={isSearchMenuOpen}
+                                            sortByNameValue={sortByNameValue}
+                                            sortByPhotoValue={sortByPhotoValue}
+                                            handleCurrentSortTypeValue={handleCurrentSortTypeValue}/>}
+                    </div>
 
-        </div>
-    );
-};
+                    </div>
+                    );
+                };
 
-export default SearchBar;
+                export default SearchBar;

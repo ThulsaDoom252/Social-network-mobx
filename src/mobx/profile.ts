@@ -18,6 +18,7 @@ class profileStore {
     isCurrentUserProfileDataLoaded: boolean = false
     isStatusModalOpen: boolean = false
 
+
     constructor() {
         makeAutoObservable(this)
     }
