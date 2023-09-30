@@ -7,9 +7,9 @@ import {HandleSearchRequestType, User} from "../../types";
 import {observer} from "mobx-react-lite";
 import ContentLoader from "react-content-loader";
 import PageContainer from "../../components/common/PageContainer";
-import SearchBar from "../../components/users/SearchBar";
 import Paginator from "../../components/paginator/Paginator";
-import SearchMenuCloseOverlay from "../../components/users/SearchMenuCloseOverlay";
+import SearchMenuCloseOverlay from "../../components/search/SearchMenuCloseOverlay";
+import SearchBar from "../../components/search/SearchBar";
 
 interface UsersContainerProps {
     smallScreenMode: boolean
@@ -21,6 +21,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                                                                 }) => {
     const users: User[] = usersStore.users; // Убедитесь, что тип данных соответствует User[]
     const isUsersLoaded = usersStore.isUsersLoaded
+    //Search Props
     const searchResults: User[] = usersStore.searchResults
     const searchRequest = usersStore.searchRequest
     const searchMode = usersStore.searchMode

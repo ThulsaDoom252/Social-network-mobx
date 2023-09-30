@@ -24,11 +24,17 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         }
     }, []);
 
-    return <Friends smallScreen={mobileMode}
-                    friends={friends}
-                    handleUnfollowFriend={handleUnfollowFriend}
-                    isFriendsLoaded={isFriendsLoaded}
-    />
+    return (
+        <>
+
+            <Friends smallScreen={mobileMode}
+                     friends={friends}
+                     handleUnfollowFriend={handleUnfollowFriend}
+                     isFriendsLoaded={isFriendsLoaded}
+            />
+        </>
+    )
+
 });
 
 export default authHoc(FriendsPageContainer);

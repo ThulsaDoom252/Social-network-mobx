@@ -22,7 +22,6 @@ const Users: React.FC<UsersProps> = observer(({
                                                   followUserHandler,
                                               }) => {
 
-    // @ts-ignore
     return (
         <>
             {/*//Users list block*/}
@@ -33,9 +32,10 @@ const Users: React.FC<UsersProps> = observer(({
             p-5
             ${!smallScreenMode && 'grid grid-cols-8 grid-rows-2 gap-3'}
             `}>
+                {/*//Mapping users (if loaded)*/}
                 {isUsersLoaded ? usersToShow.map((user, index) =>
-                    //User main block
-                    <div key={index} className={`
+                        //User main block
+                        <div key={index} className={`
                     flex
                     relative
                     border
@@ -43,32 +43,33 @@ const Users: React.FC<UsersProps> = observer(({
                 p-5
                 border-gray-400
                    ${smallScreenMode ? 'justify-between mt-2' : 'justify-center flex-col items-center'} `}>
-                        {/*//Image Container*/}
-                        <div className={`${smallScreenMode ? 'w-24' : 'max-w-20 max-h-20'}`}>
-                            <NavLink to={`${profileRoute}/${user.id}`}>
-                                <img className='w-full h-full cursor-pointer rounded-full'
-                                     src={user.photos.small || anon}
-                                     alt={'friend-photo'}/>
-                            </NavLink>
+                            {/*//Image Container*/}
+                            <div className={`${smallScreenMode ? 'w-24' : 'max-w-20 max-h-20'}`}>
+                                <NavLink to={`${profileRoute}/${user.id}`}>
+                                    <img className='w-full h-full cursor-pointer rounded-full'
+                                         src={user.photos.small || anon}
+                                         alt={'friend-photo'}/>
+                                </NavLink>
 
-                        </div>
-
-                        <div className='
+                            </div>
+                            {/*//User data*/}
+                            <div className='
                         w-full
                         text-center
                         '>
-                            <div>{user.name && truncate(user.name, (smallScreenMode ? 20 : 10))}</div>
-                            <div>{user.status ? truncate(user.status, (smallScreenMode ? 20 : 10)) : 'no status'}</div>
-                            <Button
-                                onClick={() => followUserHandler(user.followed || false, user.id || 0,
-                                    {...user}
-                                )}
-                                shape={"round"}
-                                size={`${smallScreenMode ? 'middle' : 'small'}`}
-                                className={`bg-blue-400 absolute right-0 ${smallScreenMode ? 'transform -translate-y-1/2' : 'top-0'}`}
-                                type="primary">{user.followed ? 'Unfollow' : 'Follow'}</Button>
+                                <div>{user.name && truncate(user.name, (smallScreenMode ? 20 : 10))}</div>
+                                <div>{user.status ? truncate(user.status, (smallScreenMode ? 20 : 10)) : 'no status'}</div>
+                                <Button
+                                    onClick={() => followUserHandler(user.followed || false, user.id || 0,
+                                        {...user}
+                                    )}
+                                    shape={"round"}
+                                    size={`${smallScreenMode ? 'middle' : 'small'}`}
+                                    className={`bg-blue-400 absolute right-0 ${smallScreenMode ? 'transform -translate-y-1/2' : 'top-0'}`}
+                                    type="primary">{user.followed ? 'Unfollow' : 'Follow'}</Button>
+                            </div>
                         </div>
-                    </div>
+                    //Mapping dull array if users not loaded
                 ) : dummyUsers.map((index) =>
                     <div key={index}>
                         <SkeletonLoader>

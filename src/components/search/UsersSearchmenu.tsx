@@ -9,7 +9,7 @@ import {
     withoutStatus,
     withPhoto,
     withStatus,
-} from './filterModes';
+} from '../users/filterModes';
 import {FilterPhotoModeTypes, FilterStatusModeTypes} from '../../types';
 
 interface UsersSearchMenuProps {

@@ -3,7 +3,7 @@ import anon from "../../public/anon.jpg"
 import {dummyUsers, friendsRoute, profileRoute} from "../../common";
 import {User} from "../../types";
 import SkeletonLoader from "../context/SkeletonLoader";
-import {Button} from "antd";
+import {Button, Skeleton} from "antd";
 import {NavLink} from "react-router-dom";
 
 interface friendsListProps {
@@ -36,9 +36,7 @@ const FriendsList: React.FC<friendsListProps> = ({friends, isFriendsLoaded}) => 
                 h-8
                 m-1
                 '>
-                    <SkeletonLoader>
-                        <rect x="0" y="-20" rx="0" ry="0" width="40" height={'60'}/>
-                    </SkeletonLoader>
+                    <Skeleton avatar active/>
                 </div>
             ) : friends.map((friend, index) => index <= 11 ?
                 <div key={index} className={`
@@ -51,24 +49,28 @@ const FriendsList: React.FC<friendsListProps> = ({friends, isFriendsLoaded}) => 
 
                 </div> : void 0
             )}</div>
-            <hr className='
+            {isFriendsLoaded &&   <>
+                <hr className='
             mt-5
             border-2
             rounded
             border-gray-400
             w-full'/>
-            <div className='
+                <div className='
              h-full
              w-full
              flex
              items-center
              justify-center
              '>
-                {friends.length !== 0 &&
-                    <NavLink to={friendsRoute}>
-                        <Button type={'primary'} size={'small'} className={'bg-blue-400'}>Go to list</Button>
-                    </NavLink>}
-            </div>
+                    {friends.length !== 0 &&
+                        <NavLink to={friendsRoute}>
+                            <Button type={'primary'} size={'small'} className={'bg-blue-400'}>Go to list</Button>
+                        </NavLink>}
+                </div>
+            </>}
+
+
         </div>
     );
 };

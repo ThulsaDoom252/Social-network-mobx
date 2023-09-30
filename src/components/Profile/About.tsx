@@ -1,5 +1,6 @@
 import React from 'react';
 import SkeletonLoader from "../context/SkeletonLoader";
+import {Skeleton} from "antd";
 
 interface AboutProps {
     aboutProps: any
@@ -61,20 +62,7 @@ const About: React.FC<AboutProps> = ({aboutProps, isProfileDataLoaded}) => {
                         }
                     </div>
                 </> :
-                //Skeleton loader
-                <SkeletonLoader width={'100%'} height={'100%'} viewBox={'0 0 100% 100%'}>
-                    <rect x="0" y="20" width="30%" height="10"/>
-                    <rect x="0" y="40" width="50%" height="10"/>
-                    <rect x="0" y="70" width="80%" height="10"/>
-                    <rect x="0" y="90" width="90%" height="10"/>
-                    <rect x="0" y="110" width="60%" height="10"/>
-                    <rect x="0" y="140" width="50%" height="10"/>
-                    <rect x="0" y="160" width="90%" height="10"/>
-                    <rect x="0" y="200" width="50%" height="10"/>
-                    <rect x="0" y="220" width="90%" height="10"/>
-                    <rect x="0" y="250" width="50%" height="10"/>
-                    <rect x="0" y="270" width="90%" height="10"/>
-                </SkeletonLoader>
+               <Skeleton/>
             }
         </div>
     );

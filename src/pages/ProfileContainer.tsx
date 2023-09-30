@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import About from "../components/Profile/About";
 import Profile from "../components/Profile/Profile";
 import FriendsList from "../components/Profile/FriendsList";
@@ -10,6 +10,7 @@ import {useParams} from "react-router-dom";
 
 interface ProfilePageProps {
     smallScreenMode?: boolean
+    tinyScreenMode?: boolean
     isLogged: boolean,
     profileData: Partial<ProfileData>,
     currentUserEmail: string,
@@ -23,9 +24,13 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
                                                           currentUserId,
                                                           profileData, currentUserEmail,
                                                           currentUserStatus, isProfileDataLoaded,
+                                                          tinyScreenMode,
                                                       }) => {
 
     const {userid} = useParams();
+
+    const [noContacts, setIsNoContacts] = useState<boolean>(false)
+    const [emptyContacts, setEmptyContacts] = useState<number>(0)
 
     const isUserFollowed = profileStore.isUserFollowed
     const isCurrentUserProfile = profileStore.isCurrentUserProfile
@@ -56,6 +61,23 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
 
     }, [userid]);
 
+    useEffect(() => {
+        if (isProfileDataLoaded) {
+            noContacts && setIsNoContacts(false)
+            emptyContacts !== 0 && setEmptyContacts(0)
+            userContacts.forEach(contact => !contact && setEmptyContacts(prevValue => prevValue + 1))
+        }
+
+    }, [isProfileDataLoaded]);
+
+    useEffect(() => {
+        if (emptyContacts === 5) {
+            setIsNoContacts(true)
+            debugger
+        }
+
+    }, [emptyContacts]);
+
 
     useEffect(() => {
         if (isCurrentUser) {
@@ -83,7 +105,9 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
     const {github, facebook, instagram, twitter, website, youtube} = contacts || {}
     const aboutProps = [userId, lookingForAJobDescription, website, currentUserEmail,
         isCurrentUser, isProfileDataLoaded]
-    const profileProps = [github, facebook, instagram, twitter, youtube, aboutMe,
+    const userContacts = [github, facebook, instagram, twitter, youtube]
+
+    const profileProps = [userContacts, aboutMe,
         lookingForAJobDescription, lookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser]
 
     return (
@@ -93,7 +117,10 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
                      profileProps={profileProps}
                      isUserFollowed={isUserFollowed}
                      currentUserStatus={currentUserStatus}
-                     isProfileDataLoaded={isProfileDataLoaded}/>
+                     isProfileDataLoaded={isProfileDataLoaded}
+                     tinyScreenMode={tinyScreenMode}
+                     noContacts={noContacts}
+            />
             {!smallScreenMode && <FriendsList friends={friends} isFriendsLoaded={isFriendsLoaded}/>}
 
         </>

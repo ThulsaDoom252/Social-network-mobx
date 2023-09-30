@@ -36,3 +36,15 @@ code {
     opacity: 1;
     transition: opacity 1s;
 }
+
+/*//Search bar*/
+.search-bar {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.search-bar.active {
+    opacity: 1;
+    transform: translateY(0);
+}

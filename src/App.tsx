@@ -27,7 +27,10 @@ const App: React.FC = observer(() => {
     const currentUserId = authStore.id
     const userId = profileStore.userId
 
+    //Screen sizes
     const smallScreenMode = appStore.smallScreen
+    const tinyScreenMode = appStore.tinyScreen
+
     const isEditDataModalOpen = appStore.isEditProfileModalOpen
     const currentUserEmail = authStore.email
     const isProfileDataLoaded = profileStore.isProfileDataLoaded
@@ -60,6 +63,7 @@ const App: React.FC = observer(() => {
         const handleResize = () => {
             const screenWidth = window.innerWidth;
             appStore.toggleSmallScreen(screenWidth < 1000);
+            appStore.toggleTinyScreen(screenWidth < 481)
         };
 
         window.addEventListener("resize", handleResize);
@@ -114,12 +118,13 @@ const App: React.FC = observer(() => {
                     `}
                 >
                     {isLogged && <Header
-                        // setIsOpen={setIsIsModalOpen}
                         userId={userId}
                         smallScreenMode={smallScreenMode}
                         avatar={currentUserAvatar}
                         currentUserName={currentUsername}
-                    />}
+                        tinyScreenMode={tinyScreenMode}
+                        isCurrentUserDataLoaded={isCurrentUserDataLoaded}/>
+                    }
                     <div className={`
                          ${smallScreenMode ? 'p-0' : 'p-1'}
                         `}>
@@ -142,6 +147,7 @@ const App: React.FC = observer(() => {
                                                                        smallScreenMode={smallScreenMode}/>}/>
                                 <Route path={`/profile/:userid?`}
                                        element={<ProfilePage
+                                           tinyScreenMode={tinyScreenMode}
                                            isLogged={isLogged}
                                            isProfileDataLoaded={isProfileDataLoaded}
                                            smallScreenMode={smallScreenMode}
@@ -153,7 +159,8 @@ const App: React.FC = observer(() => {
                                 <Route path={friendsRoute}
                                        element={<FriendsPageContainer mobileMode={smallScreenMode}
                                                                       isLogged={isLogged}/>}/>
-                                <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode} isLogged={isLogged}/>}/>
+                                <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode}
+                                                                                  isLogged={isLogged}/>}/>
                                 <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>
                         </div>
