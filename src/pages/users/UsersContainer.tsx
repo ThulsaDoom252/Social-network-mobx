@@ -12,11 +12,13 @@ import SearchBar from "../../components/search/SearchBar";
 
 interface UsersContainerProps {
     smallScreenMode: boolean
+    tinyScreenMode: boolean
     isLogged: boolean,
 }
 
 const UsersContainer: React.FC<UsersContainerProps> = observer(({
                                                                     smallScreenMode,
+                                                                      tinyScreenMode,
                                                                 }) => {
     const users: User[] = usersStore.users; // Убедитесь, что тип данных соответствует User[]
     const isUsersLoaded = usersStore.isUsersLoaded
@@ -140,6 +142,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     usersToShow={usersToShow}
                     smallScreenMode={smallScreenMode}
                     isUsersLoaded={isUsersLoaded}
+                    tinyScreenMode={tinyScreenMode}
                 />
             </PageContainer>
         </>

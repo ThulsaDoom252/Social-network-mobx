@@ -9,6 +9,23 @@ import {
 } from "./context/filterModes";
 import {byNameAlphabet, byNameReverse, byNoPhoto, byPhoto} from "./context/sortModes";
 
+//AuthContainer
+
+export type OnFinishFunction = (values: {
+    email: string;
+    password: string;
+    remember: boolean;
+    captcha: string;
+}) => void;
+
+export type AuthField = {
+    email?: string;
+    password?: string;
+    remember?: string;
+    captcha?: string;
+};
+
+
 export type Contacts = {
     github: string;
     vk: string;
@@ -53,5 +70,5 @@ export type HandleSearchRequestType = (e: ChangeEvent<HTMLInputElement>) => void
 
 export type FilterStatusModeTypes = typeof withStatus | typeof withoutStatus | typeof defaultStatusFilterMode;
 
-export type FilterPhotoModeTypes = typeof  withPhoto | typeof withoutPhoto | typeof defaultPhotoFilterMode
+export type FilterPhotoModeTypes = typeof withPhoto | typeof withoutPhoto | typeof defaultPhotoFilterMode
 

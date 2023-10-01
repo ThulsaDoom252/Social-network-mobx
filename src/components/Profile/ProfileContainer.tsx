@@ -1,13 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react';
-import About from "../components/Profile/About";
-import Profile from "../components/Profile/Profile";
-import FriendsList from "../components/Profile/FriendsList";
-import authHoc from "../hoc/authHoc";
-import profileStore from "../mobx/profile"
-import friendsStore from "../mobx/friends"
-import {ProfileData} from "../types";
+import React, {useEffect, useState} from 'react';
+import About from "./About";
+import Profile from "./Profile";
+import FriendsList from "./FriendsList";
+import authHoc from "../../hoc/authHoc";
+import profileStore from "../../mobx/profile"
+import friendsStore from "../../mobx/friends"
+import {ProfileData} from "../../types";
 import {useParams} from "react-router-dom";
-import appStore from "../mobx/app"
+import appStore from "../../mobx/app"
 
 interface ProfilePageProps {
     smallScreenMode?: boolean

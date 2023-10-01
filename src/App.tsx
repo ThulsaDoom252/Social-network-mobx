@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import Header from "./components/Header";
 import Info from "./pages/Info";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
-import ProfilePage from "./pages/ProfileContainer";
+import ProfilePage from "./components/Profile/ProfileContainer";
 import MobileNavbar from "./components/MobileNavbar";
 import {authRoute, friendsRoute, infoRoute, rootRoute, usersRoute} from "./common";
 import EditProfileModal from "./components/Profile/EditProfileModal";
@@ -10,7 +10,7 @@ import authStore from "./mobx/auth/auth"
 import profileStore from "./mobx/profile"
 import appStore from "./mobx/app"
 import {observer} from "mobx-react-lite";
-import Auth from "./pages/Auth";
+import AuthContainer from "./components/Auth/AuthContainer";
 import {initializeProfile} from "./mobx/initializeProfile";
 import UsersContainer from "./pages/users/UsersContainer";
 import Initialize from "./components/initialize";
@@ -91,26 +91,26 @@ const App: React.FC = observer(() => {
 
     return (
         <BrowserRouter>
-                <div className={`
+            <div className={`
               w-screen
         h-screen
         ${!isLogged && 'flex justify-center'}
             `}
-                     onClick={handleCloseModal}
-                >
-                    <EditProfileModal
-                        isCurrentUserDataLoaded={isCurrentUserDataLoaded}
-                        isAvatarUpdating={isAvatarUpdating}
-                        isUserDataUpdating={isUserDataUpdating}
-                        currentUserProfileData={currentUserProfileData}
-                        smallScreen={smallScreenMode}
-                        // setIsOpen={setIsIsModalOpen}
-                        isOpen={isEditDataModalOpen}/>
-                    <StatusModal visible={isStatusModalOpen}
-                                 currentUserStatus={currentUserStatus}
-                                 onClose={handleCloseStatusModal}
-                                 handleChangeStatus={handleChangeStatus}/>
-                    <div className={`
+                 onClick={handleCloseModal}
+            >
+                <EditProfileModal
+                    isCurrentUserDataLoaded={isCurrentUserDataLoaded}
+                    isAvatarUpdating={isAvatarUpdating}
+                    isUserDataUpdating={isUserDataUpdating}
+                    currentUserProfileData={currentUserProfileData}
+                    smallScreen={smallScreenMode}
+                    // setIsOpen={setIsIsModalOpen}
+                    isOpen={isEditDataModalOpen}/>
+                <StatusModal visible={isStatusModalOpen}
+                             currentUserStatus={currentUserStatus}
+                             onClose={handleCloseStatusModal}
+                             handleChangeStatus={handleChangeStatus}/>
+                <div className={`
                 ${isLogged && `  
                 mx-auto
                 max-w-container
@@ -119,63 +119,64 @@ const App: React.FC = observer(() => {
           min-h-full
           overflow-y-scroll`}
                     `}
-                    >
-                        {isLogged && <Header
-                            userId={userId}
-                            handleOpenModal={handleOpenEditModal}
-                            smallScreenMode={smallScreenMode}
-                            avatar={currentUserAvatar}
-                            currentUserName={currentUsername}
-                            tinyScreenMode={tinyScreenMode}
-                            isCurrentUserDataLoaded={isCurrentUserDataLoaded}/>
-                        }
-                        <div className={`
+                >
+                    {isLogged && <Header
+                        userId={userId}
+                        handleOpenModal={handleOpenEditModal}
+                        smallScreenMode={smallScreenMode}
+                        avatar={currentUserAvatar}
+                        currentUserName={currentUsername}
+                        tinyScreenMode={tinyScreenMode}
+                        isCurrentUserDataLoaded={isCurrentUserDataLoaded}/>
+                    }
+                    <div className={`
                          ${smallScreenMode ? 'p-0' : 'p-1'}
                         `}>
-                            <div className={`
+                        <div className={`
                     flex
                     justify-between
                     ${smallScreenMode ? 'flex-col' : 'pt-2'}
                     `}>
-                                {isLogged && smallScreenMode && <div className={`
+                            {isLogged && smallScreenMode && <div className={`
                             relative
                             w-full
                             h-12
                             `}>
 
-                                    {smallScreenMode && !isEditDataModalOpen &&
-                                        <MobileNavbar currentUserId={currentUserId}/>}
-                                </div>}
-                                <Routes>
-                                    <Route path={rootRoute} element={<Navigate to={`/profile/${currentUserId}`}/>}/>
-                                    <Route path={authRoute} element={<Auth isLogged={isLogged}
-                                                                           smallScreenMode={smallScreenMode}/>}/>
-                                    <Route path={`/profile/:userid?`}
-                                           element={<ProfilePage
-                                               handleOpenModal={handleOpenEditModal}
-                                               tinyScreenMode={tinyScreenMode}
-                                               isLogged={isLogged}
-                                               isProfileDataLoaded={isProfileDataLoaded}
-                                               smallScreenMode={smallScreenMode}
-                                               profileData={profileData}
-                                               currentUserId={currentUserId}
-                                               currentUserEmail={currentUserEmail}
-                                               currentUserStatus={currentUserStatus}
-                                           />}/>
-                                    <Route path={friendsRoute}
-                                           element={<FriendsPageContainer mobileMode={smallScreenMode}
-                                                                          isLogged={isLogged}
-                                                                          tinyScreenMode={tinyScreenMode}
+                                {smallScreenMode && !isEditDataModalOpen &&
+                                    <MobileNavbar currentUserId={currentUserId}/>}
+                            </div>}
+                            <Routes>
+                                <Route path={rootRoute} element={<Navigate to={`/profile/${currentUserId}`}/>}/>
+                                <Route path={authRoute} element={<AuthContainer isLogged={isLogged}
+                                                                                smallScreenMode={smallScreenMode}/>}/>
+                                <Route path={`/profile/:userid?`}
+                                       element={<ProfilePage
+                                           handleOpenModal={handleOpenEditModal}
+                                           tinyScreenMode={tinyScreenMode}
+                                           isLogged={isLogged}
+                                           isProfileDataLoaded={isProfileDataLoaded}
+                                           smallScreenMode={smallScreenMode}
+                                           profileData={profileData}
+                                           currentUserId={currentUserId}
+                                           currentUserEmail={currentUserEmail}
+                                           currentUserStatus={currentUserStatus}
+                                       />}/>
+                                <Route path={friendsRoute}
+                                       element={<FriendsPageContainer mobileMode={smallScreenMode}
+                                                                      isLogged={isLogged}
+                                                                      tinyScreenMode={tinyScreenMode}
 
-                                           />}/>
-                                    <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode}
-                                                                                      isLogged={isLogged}/>}/>
-                                    <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
-                                </Routes>
-                            </div>
+                                       />}/>
+                                <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode}
+                                                                                  tinyScreenMode={tinyScreenMode}
+                                                                                  isLogged={isLogged}/>}/>
+                                <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
+                            </Routes>
                         </div>
                     </div>
                 </div>
+            </div>
         </BrowserRouter>
 
     );

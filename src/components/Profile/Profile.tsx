@@ -7,7 +7,6 @@ import {
     AiFillTwitterSquare,
     AiFillYoutube
 } from "react-icons/ai";
-import SkeletonLoader from "../context/SkeletonLoader";
 import {Button, Skeleton, Space} from "antd";
 
 interface ProfileProps {
@@ -113,7 +112,7 @@ const Profile: React.FC<ProfileProps> = ({
                                 <Button type="primary"
                                         className='bg-blue-400'
                                         disabled={false}
-                                    onClick={handleOpenModal}
+                                        onClick={handleOpenModal}
                                 >Edit Profile</Button>}
                             <div hidden={isCurrentUser || tinyScreenMode}>
                                 <Button size={'small'} type={'primary'} className={'bg-blue-400'}>
@@ -162,8 +161,8 @@ const Profile: React.FC<ProfileProps> = ({
                      h-fit
                     `}>
                                 <div className={'w-1/2 flex justify-between flex-wrap '}>
-                                    {isProfileDataLoaded && contacts.map((contact) => contact.src !== null ?
-                                        <a title={contact.src}
+                                    {isProfileDataLoaded && contacts.map((contact, index) => contact.src !== null ?
+                                        <a key={index} title={contact.src}
                                            className={`${contact.color}`}
                                            href={contact.src}
                                            target={'_blank'}
@@ -177,7 +176,7 @@ const Profile: React.FC<ProfileProps> = ({
 
                 : <div className={`mt-3 p-5 ${tinyScreenMode && 'h-screen'}`}>
                     {!tinyScreenMode ?
-                    <Skeleton avatar active paragraph={{rows: 6}}/> :
+                        <Skeleton avatar active paragraph={{rows: 6}}/> :
                         <Space style={{display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center'}}>
                             <Skeleton.Image active/>
                             <Skeleton.Input active/>

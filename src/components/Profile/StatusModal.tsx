@@ -43,7 +43,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
     return (
         <Modal
             title="Status"
-            visible={visible}
+            open={visible}
             onCancel={onClose}
             footer={[
                 <Button key="cancel" onClick={onClose}>

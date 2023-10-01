@@ -13,6 +13,7 @@ interface UsersProps {
     usersToShow: User[]
     isUsersLoaded: boolean,
     followUserHandler: (isFollowed: boolean, userId: number, user: User) => void
+    tinyScreenMode: boolean
 }
 
 const Users: React.FC<UsersProps> = observer(({
@@ -20,6 +21,7 @@ const Users: React.FC<UsersProps> = observer(({
                                                   usersToShow,
                                                   isUsersLoaded,
                                                   followUserHandler,
+                                                  tinyScreenMode,
                                               }) => {
 
     return (
@@ -42,7 +44,7 @@ const Users: React.FC<UsersProps> = observer(({
                 rounded-md
                 p-5
                 border-gray-400
-                   ${smallScreenMode ? 'justify-between mt-2' : 'justify-center flex-col items-center'} `}>
+                   ${smallScreenMode && !tinyScreenMode ? 'justify-between mt-2' : tinyScreenMode ? 'flex-col items-center' : 'justify-center flex-col items-center'} `}>
                             {/*//Image Container*/}
                             <div className={`${smallScreenMode ? 'w-24' : 'max-w-20 max-h-20'}`}>
                                 <NavLink to={`${profileRoute}/${user.id}`}>
@@ -65,7 +67,9 @@ const Users: React.FC<UsersProps> = observer(({
                                     )}
                                     shape={"round"}
                                     size={`${smallScreenMode ? 'middle' : 'small'}`}
-                                    className={`bg-blue-400 absolute right-0 ${smallScreenMode ? 'transform -translate-y-1/2' : 'top-0'}`}
+                                    className={`bg-blue-400 
+                                    ${!tinyScreenMode && 'absolute'} 
+                                    ${smallScreenMode && !tinyScreenMode ? 'transform -translate-y-1/2 right-2' : 'top-0 right-0'}`}
                                     type="primary">{user.followed ? 'Unfollow' : 'Follow'}</Button>
                             </div>
                         </div>

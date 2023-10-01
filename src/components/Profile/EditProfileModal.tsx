@@ -47,7 +47,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     //Setting looking for a job value - to be changeable in form
     const [lookingForAJobValue, setIsLookingForAJobValue] = useState<('Yes' | 'No') | undefined>(lookingForAJob ? 'Yes' : 'No');
 
-    //Using ant desing native form
+    //Ant design native hook form
     const [form] = Form.useForm();
 
     //Ref for hidden file input

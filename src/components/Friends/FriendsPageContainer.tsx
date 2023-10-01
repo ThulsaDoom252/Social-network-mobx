@@ -7,8 +7,7 @@ import {SearchContext} from "../../context/SearchContext";
 import SearchBar from "../search/SearchBar";
 import appStore from "../../mobx/app";
 import PageContainer from "../common/PageContainer";
-import {Button, Space, Tooltip} from 'antd';
-import Icon from "antd/es/icon";
+import {Button, Tooltip} from 'antd';
 import {InfoCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import SearchMenuCloseOverlay from "../search/SearchMenuCloseOverlay";
 

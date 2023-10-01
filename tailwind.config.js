@@ -5,10 +5,15 @@ module.exports = {
     ],
     theme: {
         extend: {
+            backgroundImage: {
+                'auth': "url('components/Auth/BG.png')"
+            },
             width: {
                 auth: '800px',
                 profile: '880px',
                 editModal: '1000px',
+                mobileAuthModal: '80vw',
+                desktopAuthModal: '450px',
             },
             maxWidth: {
                 container: '1300px',
@@ -24,7 +29,7 @@ module.exports = {
                 'authRightBlock': '500px',
             },
             minHeight: {
-              pageContainer: '500px',
+                pageContainer: '500px',
             }
 
 
