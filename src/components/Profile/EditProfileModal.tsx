@@ -109,7 +109,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     const updateAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files && e.target.files[0];
         if (selectedFile) {
-            profileStore.updateAvatar(selectedFile).then(() => enqueueSnackbar('Avatar updated'));
+            profileStore.updateAvatar(selectedFile).then(() => void 0);
         }
     };
     const handleAvatarClick = () => hiddenFileInput.current && hiddenFileInput.current.click()
@@ -147,8 +147,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             values.youtube,
             values.mainLink
         );
-        enqueueSnackbar('Data successfully updated')
-        handleClose()
+        // handleClose()
     };
 
     //Input change handler

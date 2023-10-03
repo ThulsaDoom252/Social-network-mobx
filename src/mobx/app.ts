@@ -1,30 +1,39 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable} from "mobx"
 
 class AppStore {
     currentPath: string = ''
-    smallScreen = false
-    tinyScreen = false
+    smallScreen: boolean = false
+    tinyScreen: boolean = false
     isEditProfileModalOpen = false
-    isInitialized = false
-
+    isInitialized: boolean = false
+    apiError: any = null
+    successMessage: string | null = null
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    setCurrentPath(value:string) {
+    setSuccessMessage(value: string | null) {
+        this.successMessage = value
+    }
+
+    setCurrentPath(value: string) {
         this.currentPath = value
+    }
+
+    setApiError(value: any) {
+        this.apiError = value
     }
 
     toggleSmallScreen(toggle: boolean) {
         this.smallScreen = toggle
     }
 
-    toggleTinyScreen(toggle:boolean) {
+    toggleTinyScreen(toggle: boolean) {
         this.tinyScreen = toggle
     }
 
-    toggleIsInitialized(toggle:boolean) {
+    toggleIsInitialized(toggle: boolean) {
         this.isInitialized = toggle
     }
 

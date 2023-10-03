@@ -1,10 +1,10 @@
 import React from 'react';
-import {profileRoute, dummyUsers} from "../common";
-import anon from "../public/anon.jpg";
-import {User} from "../types";
+import {profileRoute, dummyUsers} from "../../common";
+import anon from "../../public/anon.jpg";
+import {User} from "../../types";
 import {Button, Skeleton, Space} from "antd";
 import {NavLink} from "react-router-dom";
-import {truncate} from "../common/commonFuncs";
+import {truncate} from "../../common/commonFuncs";
 import {TbFriendsOff} from "react-icons/tb";
 
 interface FriendsPageProps {

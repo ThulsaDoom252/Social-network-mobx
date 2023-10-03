@@ -1,6 +1,7 @@
 import {User} from "../types";
 import {makeAutoObservable} from "mobx";
 import {usersApi} from "../api/api";
+import appStore from "../mobx/app"
 
 class FriendsStore {
     isFriendsLoaded: boolean = false
@@ -27,21 +28,24 @@ class FriendsStore {
     }
 
     async getFriends() {
-        await usersApi.getFriends()
-            .then((res) => {
-                this.setFriends(res.items)
-                this.setIsFriendsLoaded(true)
-            })
-            .catch((e) => {
-                alert(e)
-            })
-
+        try {
+            debugger
+            const response = await usersApi.getFriends()
+            this.setFriends(response.items)
+            this.setIsFriendsLoaded(true)
+        } catch (e) {
+            appStore.setApiError(`Error loading friends: ${e}`)
+        }
     }
 
     async unFollowFriend(friendId: number) {
-        await usersApi.unFollowUser(friendId)
-            .then(() => this.deleteFriendFromList(friendId))
-            .catch(() => alert('something went wrong'))
+        try {
+            await usersApi.unFollowUser(friendId)
+            this.deleteFriendFromList(friendId)
+        } catch (e) {
+            appStore.setApiError(`Error deleting friend from list: ${e}`)
+        }
+
     }
 }
 

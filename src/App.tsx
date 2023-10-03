@@ -11,21 +11,32 @@ import profileStore from "./mobx/profile"
 import appStore from "./mobx/app"
 import {observer} from "mobx-react-lite";
 import AuthContainer from "./components/Auth/AuthContainer";
-import {initializeProfile} from "./mobx/initializeProfile";
+import {initializeCurrentUser} from "./mobx/initializeCurrentUser";
 import UsersContainer from "./pages/users/UsersContainer";
 import Initialize from "./components/initialize";
 import StatusModal from "./components/Profile/StatusModal";
 import FriendsPageContainer from "./components/Friends/FriendsPageContainer";
+import {closeSnackbar, useSnackbar} from "notistack";
+import {Button} from "antd";
 
 const App: React.FC = observer(() => {
+
+    const {enqueueSnackbar} = useSnackbar()
+
     const isLogged = authStore.isLogged
     const profileData = profileStore.profileData
     const isAvatarUpdating = profileStore.isAvatarUpdating
     const isUserDataUpdating = profileStore.isUserDataUpdating
     const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded
 
+    const isLoggedOutByUser = authStore.isLoggedOutByUser
+
+    const apiError = appStore.apiError
+
+    const successMessage = appStore.successMessage
+
     const currentUserId = authStore.id
-    const userId = profileStore.userId
+    const userId = profileStore.currentUserId
 
     //Screen sizes
     const smallScreenMode = appStore.smallScreen
@@ -59,8 +70,30 @@ const App: React.FC = observer(() => {
 
     //Проверяем авторизацию пользователя, получаем данные пользователя если он авторизирован
     useEffect(() => {
-        initializeProfile().then(() => void 0)
-    }, []);
+        if (!isLoggedOutByUser) {
+            initializeCurrentUser().then(() => void 0)
+        }
+    }, [isLogged]);
+
+    useEffect(() => {
+        if (apiError) {
+            console.error(`Contacts developer for this error - ${apiError}`)
+            enqueueSnackbar(`${apiError} . See console for details`, {
+
+                autoHideDuration: 3000,
+                variant: 'error',
+            });
+        }
+    }, [apiError]);
+
+
+    useEffect(() => {
+        if (successMessage) {
+            enqueueSnackbar(successMessage, {autoHideDuration: 1500})
+            appStore.setSuccessMessage(null)
+        }
+
+    }, [successMessage]);
 
 
     //Подписуемся на изменения размеров экрана, переключая переменную smallScreen
@@ -98,14 +131,15 @@ const App: React.FC = observer(() => {
             `}
                  onClick={handleCloseModal}
             >
-                <EditProfileModal
-                    isCurrentUserDataLoaded={isCurrentUserDataLoaded}
-                    isAvatarUpdating={isAvatarUpdating}
-                    isUserDataUpdating={isUserDataUpdating}
-                    currentUserProfileData={currentUserProfileData}
-                    smallScreen={smallScreenMode}
-                    // setIsOpen={setIsIsModalOpen}
-                    isOpen={isEditDataModalOpen}/>
+                {isCurrentUserDataLoaded &&
+                    <EditProfileModal
+                        isCurrentUserDataLoaded={isCurrentUserDataLoaded}
+                        isAvatarUpdating={isAvatarUpdating}
+                        isUserDataUpdating={isUserDataUpdating}
+                        currentUserProfileData={currentUserProfileData}
+                        smallScreen={smallScreenMode}
+                        // setIsOpen={setIsIsModalOpen}
+                        isOpen={isEditDataModalOpen}/>}
                 <StatusModal visible={isStatusModalOpen}
                              currentUserStatus={currentUserStatus}
                              onClose={handleCloseStatusModal}
@@ -155,9 +189,11 @@ const App: React.FC = observer(() => {
                                            handleOpenModal={handleOpenEditModal}
                                            tinyScreenMode={tinyScreenMode}
                                            isLogged={isLogged}
+                                           isCurrentUserDataLoaded={isCurrentUserDataLoaded}
                                            isProfileDataLoaded={isProfileDataLoaded}
                                            smallScreenMode={smallScreenMode}
                                            profileData={profileData}
+                                           currentUserProfileData={currentUserProfileData}
                                            currentUserId={currentUserId}
                                            currentUserEmail={currentUserEmail}
                                            currentUserStatus={currentUserStatus}

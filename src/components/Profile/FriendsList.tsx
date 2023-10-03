@@ -2,7 +2,6 @@ import React from 'react';
 import anon from "../../public/anon.jpg"
 import {dummyUsers, friendsRoute, profileRoute} from "../../common";
 import {User} from "../../types";
-import SkeletonLoader from "../context/SkeletonLoader";
 import {Button, Skeleton} from "antd";
 import {NavLink} from "react-router-dom";
 

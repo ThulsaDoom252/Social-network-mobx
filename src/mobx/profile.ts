@@ -1,31 +1,41 @@
 import {makeAutoObservable} from "mobx";
 import {profileApi, usersApi} from "../api/api";
-import profile from "../components/Profile/Profile";
 import {ProfileData} from "../types";
+import appStore from "./app"
 
 class profileStore {
-    userId: number = 0
+    currentUserId: number = 0
+    currentUserProfileData: Partial<ProfileData> = {};
+    profileData: Partial<ProfileData> = {};
+    currentUserStatus: string = ''
     isCurrentUserProfile: boolean = false
     isAvatarUpdating: boolean = false
     isProfileDataLoaded: boolean = false
     isUserFollowed: boolean = false
     isCurrentUserDataLoaded: boolean = false
     isStatusLoading: boolean = false
-    currentUserStatus: string = ''
-    currentUserProfileData: Partial<ProfileData> = {};
-    profileData: Partial<ProfileData> = {};
     isUserDataUpdating: boolean = false
     isCurrentUserProfileDataLoaded: boolean = false
     isStatusModalOpen: boolean = false
-
 
     constructor() {
         makeAutoObservable(this)
     }
 
+    setUserId(id: number) {
+        this.currentUserId = id
+    }
+
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data
-        this.isCurrentUserProfileDataLoaded = true
+    }
+
+    setProfileData(data: object) {
+        this.profileData = data
+    }
+
+    setCurrentUserStatus(status: string) {
+        this.currentUserStatus = status
     }
 
     setIsCurrentUserProfile(isCurrentProfile: boolean) {
@@ -52,26 +62,29 @@ class profileStore {
         this.isStatusLoading = toggle
     }
 
-    setUserId(id: number) {
-        this.userId = id
-    }
-
-    setProfileData(data: object) {
-        this.profileData = data
-        // @ts-ignore
-        this.isProfileDataLoaded = true
-    }
-
-    setCurrentUserStatus(status: string) {
-        this.currentUserStatus = status
-    }
-
     toggleIsUserDataUpdating(toggle: boolean) {
         this.isUserDataUpdating = toggle
     }
 
     toggleIsAvatarUpdating(toggle: boolean) {
         this.isAvatarUpdating = toggle
+    }
+
+    clearAllProfileData() {
+        this.currentUserId = 0
+        this.isAvatarUpdating = false
+        this.isCurrentUserProfile = false
+        this.isAvatarUpdating = false
+        this.isProfileDataLoaded = false
+        this.isUserFollowed = false
+        this.isCurrentUserDataLoaded = false
+        this.isStatusLoading = false
+        this.currentUserStatus = ''
+        this.currentUserProfileData = {};
+        this.profileData = {};
+        this.isUserDataUpdating = false
+        this.isCurrentUserProfileDataLoaded = false
+        this.isStatusModalOpen = false
     }
 
     async updateUserData(userId: string,
@@ -88,94 +101,133 @@ class profileStore {
                          youtube: string,
                          mainLink: string,) {
         this.toggleIsUserDataUpdating(true)
-        const updateDataResponse = await profileApi.updateUserData(
-            userId,
-            aboutMe,
-            lookingForAJob,
-            lookingForAJobDescription,
-            fullName,
-            github,
-            vk,
-            facebook,
-            instagram,
-            twitter,
-            website,
-            youtube,
-            mainLink)
-        if (updateDataResponse.resultCode === 0) {
-            this.setCurrentUserProfileData({
-                ...this.currentUserProfileData,
-                aboutMe, lookingForAJob,
+        try {
+            const updateDataResponse = await profileApi.updateUserData(
+                userId,
+                aboutMe,
+                lookingForAJob,
                 lookingForAJobDescription,
-                fullName, github, vk, facebook, instagram, twitter,
-                website, youtube, mainLink
-            })
-            this.isCurrentUserProfile ? await this.getProfileData(parseInt(userId)) : void 0
+                fullName,
+                github,
+                vk,
+                facebook,
+                instagram,
+                twitter,
+                website,
+                youtube,
+                mainLink)
+            if (updateDataResponse.resultCode === 0) {
+                this.setCurrentUserProfileData({
+                    ...this.currentUserProfileData,
+                    aboutMe, lookingForAJob,
+                    lookingForAJobDescription,
+                    fullName, github, vk, facebook, instagram, twitter,
+                    website, youtube, mainLink
+                })
+                appStore.setSuccessMessage('Data successfully updated')
 
-        } else {
-            console.log('there was an error updating data...')
+            } else {
+                console.error(`Update data error - ${updateDataResponse}`)
+            }
+        } catch (e) {
+            appStore.setApiError(e)
         }
+
         this.toggleIsUserDataUpdating(false)
     }
 
     async getCurrentUserData(id: number) {
-        this.toggleIsCurrentUserDataLoaded(false)
-        const responseData = await profileApi.getProfileData(id)
-        this.setCurrentUserProfileData(responseData)
-        this.setUserId(responseData.userId)
-        this.toggleIsCurrentUserDataLoaded(true)
+        try {
+            const responseData = await profileApi.getProfileData(id)
+            const responseStatusData = await profileApi.getStatus(id)
+            this.setCurrentUserProfileData(responseData)
+            this.setCurrentUserStatus(responseStatusData)
+            this.setUserId(responseData.userId)
+            this.toggleIsCurrentUserDataLoaded(true)
+        } catch (e) {
+            appStore.setApiError(`Failed to get current user data, ${e}`)
+        }
     }
 
-    async getProfileData(id: number) {
-        const responseData = await profileApi.getProfileData(id)
-        this.setProfileData(responseData)
+    async getProfileData(id: number,) {
+        try {
+            const responseData = await profileApi.getProfileData(id)
+            this.setProfileData(responseData)
+        } catch (e) {
+            appStore.setApiError(`Error getting user data ${e}`)
+        }
     }
 
     async initializeProfile(id: number) {
         this.toggleIsProfileDataLoaded(false)
-        await this.getProfileData(id)
-        await this.getCurrentUserStatus(id)
-        await this.getIsUserFollowedInfo(id)
-        this.toggleIsProfileDataLoaded(true)
+        try {
+            await Promise.all([
+                this.getProfileData(id),
+                this.getUserStatus(id),
+                this.getIsUserFollowedInfo(id)
+            ]);
+            this.toggleIsProfileDataLoaded(true)
+        } catch (e) {
+            appStore.setApiError(`Error initializing profile, see console for details`)
+        }
     }
 
     async getIsUserFollowedInfo(id: number) {
-        const isFollowedResponse = await usersApi.getIsUserFollowedInfo(id)
-        this.setIsUserFollowed(isFollowedResponse)
+        try {
+            const isFollowedResponse = await usersApi.getIsUserFollowedInfo(id)
+            this.setIsUserFollowed(isFollowedResponse)
+        } catch (e) {
+            console.error(`Error getting isUserFollowed info ${e}`)
+        }
     }
 
-    async getCurrentUserStatus(id: number) {
+    async getUserStatus(id: number) {
         this.toggleIsStatusLoading(true)
-        const statusResponseData = await profileApi.getUserStatus(id)
-        this.setCurrentUserStatus(statusResponseData)
+        try {
+            const statusResponseData = await profileApi.getStatus(id)
+            this.setCurrentUserStatus(statusResponseData)
+        } catch (e) {
+            console.error(`Error in getting user status ${e}`)
+        }
+
         this.toggleIsStatusLoading(false)
     }
 
     async updateStatus(status: string) {
         this.toggleIsStatusLoading(true)
-        const response = await profileApi.updateUserStatus(status)
-        if (response.resultCode === 0) {
-            alert('status updated!')
-            this.setCurrentUserStatus(status)
-        } else {
-            alert('smth goes wrong...')
+        try {
+            const response = await profileApi.updateStatus(status)
+            if (response.resultCode === 0) {
+                this.setCurrentUserStatus(status)
+                appStore.setSuccessMessage(`Status updated!`)
+            } else {
+                appStore.setApiError(`Error updating status: ${response}`)
+            }
+        } catch (e) {
+            appStore.setApiError(e)
         }
         this.toggleIsStatusLoading(false)
     }
 
     async updateAvatar(photo: File | Blob) {
         this.toggleIsAvatarUpdating(true)
-        const updateAvatarResponse = await profileApi.updatePhoto(photo)
-        if (updateAvatarResponse.data.resultCode === 0) {
-            this.setCurrentUserProfileData({
-                ...this.currentUserProfileData,
-                photos: {
-                    ...this.currentUserProfileData.photos,
-                    large: updateAvatarResponse.data.data.photos.large
-                }
-            });
-        } else {
-            console.log('some error occured uploading photo...')
+        try {
+            const updateAvatarResponse = await profileApi.updatePhoto(photo)
+            if (updateAvatarResponse.data.resultCode === 0) {
+                this.setCurrentUserProfileData({
+                    ...this.currentUserProfileData,
+                    photos: {
+                        ...this.currentUserProfileData.photos,
+                        large: updateAvatarResponse.data.data.photos.large
+                    }
+                });
+                appStore.setSuccessMessage(`Avatar updated!`)
+            } else {
+                console.log('some error occurred uploading photo...')
+            }
+
+        } catch (e) {
+            appStore.setApiError(`Error updating avatar ${e}`)
         }
         this.toggleIsAvatarUpdating(false)
     }

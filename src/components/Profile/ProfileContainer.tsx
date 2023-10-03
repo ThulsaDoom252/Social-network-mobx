@@ -14,8 +14,10 @@ interface ProfilePageProps {
     tinyScreenMode?: boolean
     isLogged: boolean,
     profileData: Partial<ProfileData>,
+    currentUserProfileData: Partial<ProfileData>,
     currentUserEmail: string,
     isProfileDataLoaded: boolean,
+    isCurrentUserDataLoaded: boolean,
     currentUserStatus: string,
     currentUserId: string,
     handleOpenModal: (e: React.MouseEvent) => void
@@ -28,7 +30,9 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
                                                           profileData, currentUserEmail,
                                                           currentUserStatus, isProfileDataLoaded,
                                                           tinyScreenMode,
-                                                           handleOpenModal,
+                                                          handleOpenModal,
+                                                          currentUserProfileData,
+                                                          isCurrentUserDataLoaded,
                                                       }) => {
 
     const {userid} = useParams();
@@ -41,6 +45,11 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
     const isCurrentUserProfile = profileStore.isCurrentUserProfile
     const friends = friendsStore.friends
     const isFriendsLoaded = friendsStore.isFriendsLoaded
+
+    //Is current user check
+    const isCurrentUser = currentUserId.toString() === userid
+
+    const isDataLoaded = isCurrentUser ? isCurrentUserDataLoaded : isProfileDataLoaded
     const getFriends = () => {
         friendsStore.getFriends().then(() => void 0)
     }
@@ -53,12 +62,9 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
         profileStore.toggleStatusModal(true)
     }
 
-    //Is current user check
-    const isCurrentUser = currentUserId.toString() === userid
-
     // Initialize profile depending on user id param
     useEffect(() => {
-        if (userid) {
+        if (userid && !isCurrentUser) {
             profileStore.initializeProfile(parseInt(userid)).then(() => void 0)
         } else {
             isCurrentUserProfile ? setIsCurrentUserProfile(false) : void 0
@@ -79,7 +85,6 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
     useEffect(() => {
         if (emptyContacts === 5) {
             setIsNoContacts(true)
-            debugger
         }
 
     }, [emptyContacts]);
@@ -93,10 +98,12 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
     }, [isCurrentUser]);
 
     useEffect(() => {
-        if (!isFriendsLoaded) {
+        debugger
+        if (!isFriendsLoaded && isCurrentUser) {
             getFriends()
         }
     }, [isFriendsLoaded]);
+
 
     //Destructuring props
     const {
@@ -107,7 +114,7 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
         lookingForAJobDescription,
         contacts,
         photos
-    } = profileData as ProfileData || {}
+    } = (isCurrentUser ? currentUserProfileData : profileData) as ProfileData || {}
     const {github, facebook, instagram, twitter, website, youtube} = contacts || {}
     const aboutProps = [userId, lookingForAJobDescription, website, currentUserEmail,
         isCurrentUser, isProfileDataLoaded]
@@ -118,12 +125,12 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
 
     return (
         <>
-            {!smallScreenMode && <About isProfileDataLoaded={isProfileDataLoaded} aboutProps={aboutProps}/>}
+            {!smallScreenMode && <About isProfileDataLoaded={isDataLoaded} aboutProps={aboutProps}/>}
             <Profile smallScreenMode={smallScreenMode}
                      profileProps={profileProps}
                      isUserFollowed={isUserFollowed}
                      currentUserStatus={currentUserStatus}
-                     isProfileDataLoaded={isProfileDataLoaded}
+                     isProfileDataLoaded={isDataLoaded}
                      tinyScreenMode={tinyScreenMode}
                      noContacts={noContacts}
                      handleOpenModal={handleOpenModal}

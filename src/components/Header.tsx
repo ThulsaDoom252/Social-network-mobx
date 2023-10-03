@@ -3,7 +3,6 @@ import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
 import authStore from "../mobx/auth/auth"
 import {Button, Skeleton, Space} from "antd";
-import appStore from "../mobx/app";
 
 interface HeaderProps {
     smallScreenMode: boolean,

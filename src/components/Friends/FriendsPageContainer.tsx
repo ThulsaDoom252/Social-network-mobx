@@ -1,14 +1,14 @@
 import React, {useContext, useEffect} from 'react';
 import friendsStore from "../../mobx/friends"
 import authHoc from "../../hoc/authHoc";
-import Friends from "../../pages/Friends";
+import Friends from "./Friends";
 import {observer} from "mobx-react-lite";
 import {SearchContext} from "../../context/SearchContext";
 import SearchBar from "../search/SearchBar";
 import appStore from "../../mobx/app";
 import PageContainer from "../common/PageContainer";
 import {Button, Tooltip} from 'antd';
-import {InfoCircleOutlined, SearchOutlined} from "@ant-design/icons";
+import {InfoCircleOutlined} from "@ant-design/icons";
 import SearchMenuCloseOverlay from "../search/SearchMenuCloseOverlay";
 
 
@@ -51,7 +51,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
     const currentPath = appStore.currentPath
 
 
-    const friends = searchMode ? searchResults : friendsStore.friends
+    const friendsToShow = searchMode ? searchResults : friendsStore.friends
     const isFriendsLoaded = friendsStore.isFriendsLoaded
 
     const handleUnfollowFriend = (id: number) => {
@@ -69,17 +69,16 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
     useEffect(() => {
         if (isFriendsLoaded) {
             handleCurrentSortType(currentSortTypeValue)
-            debugger
         }
     }, []);
 
     return (
         <PageContainer>
             {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={() => setIsSearchMenuActive(false)}/>}
-            {isFriendsLoaded && friends.length !== 0 &&
+            {isFriendsLoaded && friendsToShow.length !== 0 &&
                 <div className={'flex items-center justify-center'}><h4 className='
             font-bold
-            '>You have {friends.length} friends</h4>
+            '>You have {friendsToShow.length} friends</h4>
                     <Tooltip title="Maximum 100">
                         <Button
                             type="default"
@@ -109,7 +108,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
                 handleCurrentSortTypeValue={handleCurrentSortType}
             />
             <Friends smallScreen={mobileMode}
-                     friends={friends}
+                     friends={friendsToShow}
                      handleUnfollowFriend={handleUnfollowFriend}
                      isFriendsLoaded={isFriendsLoaded}
                      tinyScreenMode={tinyScreenMode}
