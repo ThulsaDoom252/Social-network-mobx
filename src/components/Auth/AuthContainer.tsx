@@ -7,9 +7,10 @@ import Auth from "./Auth";
 interface authContainerProps {
     smallScreenMode: boolean;
     isLogged: boolean;
+    currentUserId:number
 }
 
-const AuthContainer: React.FC<authContainerProps> = ({smallScreenMode, isLogged}) => {
+const AuthContainer: React.FC<authContainerProps> = ({smallScreenMode, isLogged, currentUserId}) => {
 
     const onFinish = (values: any) => {
         setIsFormDisabled(true);
@@ -29,7 +30,6 @@ const AuthContainer: React.FC<authContainerProps> = ({smallScreenMode, isLogged}
     const isAuthError: boolean = authError !== "";
     const isCaptchaRequired = authStore.isCaptchaRequired;
     const captchaUrl: string = authStore.captchaUrl;
-    const currentUserId: string = authStore.id
 
     if (isLogged) {
         return <Navigate to={`${profileRoute}/${currentUserId}`}/>

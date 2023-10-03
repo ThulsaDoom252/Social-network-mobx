@@ -70,13 +70,18 @@ class UsersStore {
     }
 
     async followUser(userId: number, user: User) {
+        debugger
         try {
-            this.fetchingUserIds.push(userId)
+            debugger
+            // this.fetchingUserIds.push(userId)
             await usersApi.followUser(userId)
             friendsStore.isFriendsLoaded && friendsStore.addFriendToList(user)
+            debugger
             this.users = this.users.map(user => user.id === userId ? {...user, followed: true} : user)
             this.fetchingUserIds = this.fetchingUserIds.filter(id => id !== userId);
+            debugger
         } catch (e) {
+            debugger
             appStore.setApiError(`Error following user: ${e}`)
         }
     }

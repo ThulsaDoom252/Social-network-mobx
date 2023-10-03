@@ -1,12 +1,13 @@
 import {makeAutoObservable} from "mobx";
-import {profileApi, usersApi} from "../api/api";
+import {profileApi} from "../api/api";
 import {ProfileData} from "../types";
 import appStore from "./app"
+import friendsStore from "../mobx/friends"
 
 class profileStore {
-    currentUserId: number = 0
     currentUserProfileData: Partial<ProfileData> = {};
     profileData: Partial<ProfileData> = {};
+    viewedUserId: number | null = null
     currentUserStatus: string = ''
     isCurrentUserProfile: boolean = false
     isAvatarUpdating: boolean = false
@@ -22,12 +23,12 @@ class profileStore {
         makeAutoObservable(this)
     }
 
-    setUserId(id: number) {
-        this.currentUserId = id
-    }
-
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data
+    }
+
+    setViewedUserId(value: number) {
+        this.viewedUserId = value
     }
 
     setProfileData(data: object) {
@@ -71,7 +72,6 @@ class profileStore {
     }
 
     clearAllProfileData() {
-        this.currentUserId = 0
         this.isAvatarUpdating = false
         this.isCurrentUserProfile = false
         this.isAvatarUpdating = false
@@ -142,7 +142,7 @@ class profileStore {
             const responseStatusData = await profileApi.getStatus(id)
             this.setCurrentUserProfileData(responseData)
             this.setCurrentUserStatus(responseStatusData)
-            this.setUserId(responseData.userId)
+            this.setViewedUserId(id)
             this.toggleIsCurrentUserDataLoaded(true)
         } catch (e) {
             appStore.setApiError(`Failed to get current user data, ${e}`)
@@ -153,32 +153,33 @@ class profileStore {
         try {
             const responseData = await profileApi.getProfileData(id)
             this.setProfileData(responseData)
+            this.setViewedUserId(id)
         } catch (e) {
             appStore.setApiError(`Error getting user data ${e}`)
         }
     }
 
     async initializeProfile(id: number) {
-        this.toggleIsProfileDataLoaded(false)
-        try {
-            await Promise.all([
-                this.getProfileData(id),
-                this.getUserStatus(id),
-                this.getIsUserFollowedInfo(id)
-            ]);
-            this.toggleIsProfileDataLoaded(true)
-        } catch (e) {
-            appStore.setApiError(`Error initializing profile, see console for details`)
+        if (this.profileData.userId !== id) {
+            this.toggleIsProfileDataLoaded(false)
+            try {
+                await Promise.all([
+                    this.getProfileData(id),
+                    this.getUserStatus(id),
+                    this.getIsUserFollowedInfo(id)
+                ]);
+                this.toggleIsProfileDataLoaded(true)
+            } catch (e) {
+                appStore.setApiError(`Error initializing profile, see console for details`)
+            }
         }
     }
 
     async getIsUserFollowedInfo(id: number) {
-        try {
-            const isFollowedResponse = await usersApi.getIsUserFollowedInfo(id)
-            this.setIsUserFollowed(isFollowedResponse)
-        } catch (e) {
-            console.error(`Error getting isUserFollowed info ${e}`)
-        }
+        this.isUserFollowed && this.setIsUserFollowed(false)
+        friendsStore.friends.forEach((friend) => {
+            friend.id === id && this.setIsUserFollowed(true)
+        })
     }
 
     async getUserStatus(id: number) {

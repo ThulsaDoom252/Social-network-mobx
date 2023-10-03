@@ -29,7 +29,6 @@ class FriendsStore {
 
     async getFriends() {
         try {
-            debugger
             const response = await usersApi.getFriends()
             this.setFriends(response.items)
             this.setIsFriendsLoaded(true)
@@ -37,7 +36,6 @@ class FriendsStore {
             appStore.setApiError(`Error loading friends: ${e}`)
         }
     }
-
     async unFollowFriend(friendId: number) {
         try {
             await usersApi.unFollowUser(friendId)
@@ -45,9 +43,7 @@ class FriendsStore {
         } catch (e) {
             appStore.setApiError(`Error deleting friend from list: ${e}`)
         }
-
     }
 }
-
 
 export default new FriendsStore()

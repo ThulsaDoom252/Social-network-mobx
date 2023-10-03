@@ -3,10 +3,12 @@ import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
 import authStore from "../mobx/auth/auth"
 import {Button, Skeleton, Space} from "antd";
+import {NavLink} from "react-router-dom";
 
 interface HeaderProps {
     smallScreenMode: boolean,
     avatar?: string,
+    currentUserId:number,
     currentUserName?: string
     userId: number,
     tinyScreenMode: boolean,
@@ -18,6 +20,7 @@ const Header: React.FC<HeaderProps> = ({
                                            smallScreenMode = true,
                                            // setIsOpen,
                                            avatar,
+                                           currentUserId,
                                            currentUserName,
                                            userId,
                                            tinyScreenMode,
@@ -67,28 +70,30 @@ const Header: React.FC<HeaderProps> = ({
                 justify-between
                 items-center
                 '>
-                                <div className='
+                                <NavLink to={`/profile/${currentUserId}`}>
+                                    <div className='
                     flex
                     items-center
                     justify-between
                     w-40
                     h-10
                     '><img
-                                    className={`rounded-full h-20 w-20 ${smallScreenMode && 'mt-2'}`}
-                                    src={avatar || anon}
-                                    alt="user-photo"/>
+                                        className={`rounded-full h-20 w-20 ${smallScreenMode && 'mt-2'}`}
+                                        src={avatar || anon}
+                                        alt="user-photo"/>
 
-                                    <div
-                                        className={`${smallScreenMode && "flex flex-col justify-center items-center"}`}>
-                                        <div className={'ml-2 fontLato cursor-default'}>{currentUserName}</div>
+                                        <div
+                                            className={`${smallScreenMode && "flex flex-col justify-center items-center"}`}>
+                                            <div className={'ml-2 fontLato cursor-default'}>{currentUserName}</div>
 
-                                        <Button
-                                            className={`bg-blue-400 ${!smallScreenMode && 'absolute top-2 right-2 fontLato'}`}
-                                            size={`${smallScreenMode ? 'small' : 'middle'}`} type={'primary'}
-                                            onClick={handleLogOut}>Logout</Button>
+                                            <Button
+                                                className={`bg-blue-400 ${!smallScreenMode && 'absolute top-2 right-2 fontLato'}`}
+                                                size={`${smallScreenMode ? 'small' : 'middle'}`} type={'primary'}
+                                                onClick={handleLogOut}>Logout</Button>
+                                        </div>
+
                                     </div>
-
-                                </div>
+                                </NavLink>
                                 {!tinyScreenMode &&
                                     <Button type="primary"
                                             className='bg-blue-400'

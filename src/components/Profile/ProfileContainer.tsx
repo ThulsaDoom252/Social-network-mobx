@@ -7,7 +7,8 @@ import profileStore from "../../mobx/profile"
 import friendsStore from "../../mobx/friends"
 import {ProfileData} from "../../types";
 import {useParams} from "react-router-dom";
-import appStore from "../../mobx/app"
+import usersStore from "../../mobx/users"
+import {observer} from "mobx-react-lite";
 
 interface ProfilePageProps {
     smallScreenMode?: boolean
@@ -19,44 +20,50 @@ interface ProfilePageProps {
     isProfileDataLoaded: boolean,
     isCurrentUserDataLoaded: boolean,
     currentUserStatus: string,
-    currentUserId: string,
+    currentUserId: number,
     handleOpenModal: (e: React.MouseEvent) => void
+    isCurrentUserProfile: boolean,
+    viewedUserId: number,
 
 }
 
-const ProfileContainer: React.FC<ProfilePageProps> = ({
-                                                          smallScreenMode,
-                                                          currentUserId,
-                                                          profileData, currentUserEmail,
-                                                          currentUserStatus, isProfileDataLoaded,
-                                                          tinyScreenMode,
-                                                          handleOpenModal,
-                                                          currentUserProfileData,
-                                                          isCurrentUserDataLoaded,
-                                                      }) => {
+const ProfileContainer: React.FC<ProfilePageProps> = observer(({
+                                                                   smallScreenMode,
+                                                                   currentUserId,
+                                                                   profileData, currentUserEmail,
+                                                                   currentUserStatus, isProfileDataLoaded,
+                                                                   tinyScreenMode,
+                                                                   handleOpenModal,
+                                                                   currentUserProfileData,
+                                                                   isCurrentUserDataLoaded,
+                                                                   isCurrentUserProfile,
+                                                                   viewedUserId,
+                                                               }) => {
 
-    const {userid} = useParams();
+    const {useridParam} = useParams();
+    const parsedUserIdParam = parseInt(useridParam || '0')
 
     const [noContacts, setIsNoContacts] = useState<boolean>(false)
     const [emptyContacts, setEmptyContacts] = useState<number>(0)
-    const currentPath = appStore.currentPath
 
     const isUserFollowed = profileStore.isUserFollowed
-    const isCurrentUserProfile = profileStore.isCurrentUserProfile
     const friends = friendsStore.friends
     const isFriendsLoaded = friendsStore.isFriendsLoaded
 
     //Is current user check
-    const isCurrentUser = currentUserId.toString() === userid
-
-    const isDataLoaded = isCurrentUser ? isCurrentUserDataLoaded : isProfileDataLoaded
+    const isDataLoaded = isCurrentUserProfile ? isCurrentUserDataLoaded : isProfileDataLoaded
     const getFriends = () => {
         friendsStore.getFriends().then(() => void 0)
     }
 
-    const setIsCurrentUserProfile = (isCurrentUserProfile: boolean) => {
-        profileStore.setIsCurrentUserProfile(isCurrentUserProfile)
-    }
+    useEffect(() => {
+        if (currentUserId === parsedUserIdParam) {
+            !isCurrentUserProfile && profileStore.setIsCurrentUserProfile(true)
+        } else {
+            isCurrentUserProfile && profileStore.setIsCurrentUserProfile(false)
+        }
+
+    }, [parsedUserIdParam]);
 
     const handleOpenStatusModal = () => {
         profileStore.toggleStatusModal(true)
@@ -64,14 +71,11 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
 
     // Initialize profile depending on user id param
     useEffect(() => {
-        if (userid && !isCurrentUser) {
-            profileStore.initializeProfile(parseInt(userid)).then(() => void 0)
-        } else {
-            isCurrentUserProfile ? setIsCurrentUserProfile(false) : void 0
+        if (viewedUserId !== parsedUserIdParam && !isCurrentUserProfile) {
+            profileStore.initializeProfile(parsedUserIdParam).then(() => void 0)
         }
-        currentPath !== 'users' && appStore.setCurrentPath('users')
 
-    }, [userid]);
+    }, [viewedUserId, isCurrentUserProfile, parsedUserIdParam]);
 
     useEffect(() => {
         if (isProfileDataLoaded) {
@@ -89,21 +93,21 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
 
     }, [emptyContacts]);
 
-
-    useEffect(() => {
-        if (isCurrentUser) {
-            setIsCurrentUserProfile(true)
+    const handleFollowUser = async (id: number, isFollowed: boolean) => {
+        profileStore.setIsUserFollowed(false)
+        const user = {
+            id: userId,
+            name: fullName,
+            photos: {
+                small: photos.small,
+                large: photos.large,
+            },
+            status: currentUserStatus,
+            followed: true
         }
-
-    }, [isCurrentUser]);
-
-    useEffect(() => {
-        debugger
-        if (!isFriendsLoaded && isCurrentUser) {
-            getFriends()
-        }
-    }, [isFriendsLoaded]);
-
+        isFollowed ? await usersStore.unfollowUser(id) : await usersStore.followUser(id, user)
+        await profileStore.getIsUserFollowedInfo(id)
+    }
 
     //Destructuring props
     const {
@@ -114,14 +118,15 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
         lookingForAJobDescription,
         contacts,
         photos
-    } = (isCurrentUser ? currentUserProfileData : profileData) as ProfileData || {}
+    } = (isCurrentUserProfile ? currentUserProfileData : profileData) as ProfileData || {}
     const {github, facebook, instagram, twitter, website, youtube} = contacts || {}
     const aboutProps = [userId, lookingForAJobDescription, website, currentUserEmail,
-        isCurrentUser, isProfileDataLoaded]
+        isCurrentUserProfile, isProfileDataLoaded]
     const userContacts = [github, facebook, instagram, twitter, youtube]
 
     const profileProps = [userContacts, aboutMe,
-        lookingForAJobDescription, lookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser]
+        lookingForAJobDescription, lookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUserProfile, userId]
+
 
     return (
         <>
@@ -134,11 +139,12 @@ const ProfileContainer: React.FC<ProfilePageProps> = ({
                      tinyScreenMode={tinyScreenMode}
                      noContacts={noContacts}
                      handleOpenModal={handleOpenModal}
+                     handleFollowUser={handleFollowUser}
             />
             {!smallScreenMode && <FriendsList friends={friends} isFriendsLoaded={isFriendsLoaded}/>}
 
         </>
     );
-};
+});
 
 export default authHoc(ProfileContainer);

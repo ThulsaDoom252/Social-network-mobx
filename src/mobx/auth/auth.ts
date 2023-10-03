@@ -5,7 +5,7 @@ import appStore from "../app"
 import {delay} from "../../common/commonFuncs";
 
 class AuthStore {
-    id: string = ''
+    id: number = 913112333332221112020030120301230120120310230103010301
     email: string = ''
     login: string = ''
     authErrorText: string = ''
@@ -19,7 +19,7 @@ class AuthStore {
         makeAutoObservable(this)
     }
 
-    setUserData(id: string,
+    setUserData(id: number,
                 email: string,
                 login: string) {
         this.email = email
@@ -31,7 +31,7 @@ class AuthStore {
         this.authErrorText = text
     }
 
-    setUserId(id: string) {
+    setUserId(id: number) {
         this.id = id
     }
 

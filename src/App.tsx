@@ -16,8 +16,7 @@ import UsersContainer from "./pages/users/UsersContainer";
 import Initialize from "./components/initialize";
 import StatusModal from "./components/Profile/StatusModal";
 import FriendsPageContainer from "./components/Friends/FriendsPageContainer";
-import {closeSnackbar, useSnackbar} from "notistack";
-import {Button} from "antd";
+import {useSnackbar} from "notistack";
 
 const App: React.FC = observer(() => {
 
@@ -30,25 +29,21 @@ const App: React.FC = observer(() => {
     const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded
 
     const isLoggedOutByUser = authStore.isLoggedOutByUser
-
     const apiError = appStore.apiError
-
     const successMessage = appStore.successMessage
-
     const currentUserId = authStore.id
-    const userId = profileStore.currentUserId
+    const viewedUserId = profileStore.viewedUserId || currentUserId
 
     //Screen sizes
     const smallScreenMode = appStore.smallScreen
     const tinyScreenMode = appStore.tinyScreen
-
     const isEditDataModalOpen = appStore.isEditProfileModalOpen
     const currentUserEmail = authStore.email
     const isProfileDataLoaded = profileStore.isProfileDataLoaded
     const currentUserStatus = profileStore.currentUserStatus
     const currentUserProfileData = profileStore.currentUserProfileData
     const isStatusModalOpen = profileStore.isStatusModalOpen
-
+    const isCurrentUserProfile = profileStore.isCurrentUserProfile
 
     const handleCloseStatusModal = () => {
         profileStore.toggleStatusModal(false)
@@ -62,9 +57,7 @@ const App: React.FC = observer(() => {
         profileStore.updateStatus(status).finally(() => void 0)
     }
 
-    // @ts-ignore
     const currentUsername = profileStore.currentUserProfileData?.fullName
-    // @ts-ignore
     const currentUserAvatar = profileStore.currentUserProfileData?.photos?.large
 
 
@@ -86,7 +79,6 @@ const App: React.FC = observer(() => {
         }
     }, [apiError]);
 
-
     useEffect(() => {
         if (successMessage) {
             enqueueSnackbar(successMessage, {autoHideDuration: 1500})
@@ -94,7 +86,6 @@ const App: React.FC = observer(() => {
         }
 
     }, [successMessage]);
-
 
     //Подписуемся на изменения размеров экрана, переключая переменную smallScreen
     useEffect(() => {
@@ -111,7 +102,6 @@ const App: React.FC = observer(() => {
             window.removeEventListener("resize", handleResize);
         }
     }, []);
-
 
     // Закрываем модульное окно для редактирования данных
     const handleCloseModal = () => {
@@ -155,7 +145,8 @@ const App: React.FC = observer(() => {
                     `}
                 >
                     {isLogged && <Header
-                        userId={userId}
+                        currentUserId={currentUserId}
+                        userId={viewedUserId}
                         handleOpenModal={handleOpenEditModal}
                         smallScreenMode={smallScreenMode}
                         avatar={currentUserAvatar}
@@ -178,14 +169,17 @@ const App: React.FC = observer(() => {
                             `}>
 
                                 {smallScreenMode && !isEditDataModalOpen &&
-                                    <MobileNavbar currentUserId={currentUserId}/>}
+                                    <MobileNavbar viewedUserId={viewedUserId}/>}
                             </div>}
                             <Routes>
                                 <Route path={rootRoute} element={<Navigate to={`/profile/${currentUserId}`}/>}/>
                                 <Route path={authRoute} element={<AuthContainer isLogged={isLogged}
-                                                                                smallScreenMode={smallScreenMode}/>}/>
-                                <Route path={`/profile/:userid?`}
+                                                                                smallScreenMode={smallScreenMode}
+                                                                                currentUserId={currentUserId}
+                                />}/>
+                                <Route path={`/profile/:useridParam?`}
                                        element={<ProfilePage
+                                           isCurrentUserProfile={isCurrentUserProfile}
                                            handleOpenModal={handleOpenEditModal}
                                            tinyScreenMode={tinyScreenMode}
                                            isLogged={isLogged}
@@ -197,6 +191,7 @@ const App: React.FC = observer(() => {
                                            currentUserId={currentUserId}
                                            currentUserEmail={currentUserEmail}
                                            currentUserStatus={currentUserStatus}
+                                           viewedUserId={viewedUserId}
                                        />}/>
                                 <Route path={friendsRoute}
                                        element={<FriendsPageContainer mobileMode={smallScreenMode}

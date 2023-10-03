@@ -3,7 +3,7 @@ import {ImProfile} from "react-icons/im";
 import {FaUserFriends, FaUsers} from "react-icons/fa";
 import {FaCircleInfo} from "react-icons/fa6";
 import {NavLink} from "react-router-dom";
-import {friendsRoute, infoRoute, profileRoute, usersRoute} from "../common";
+import {friendsRoute, infoRoute, usersRoute} from "../common";
 
 interface NavbarProps {
     width?: string,

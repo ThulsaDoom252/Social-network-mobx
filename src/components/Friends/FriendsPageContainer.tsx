@@ -48,7 +48,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         handleCurrentSortType,
     } = searchContext
 
-    const currentPath = appStore.currentPath
+    // const currentPath = appStore.currentPath
 
 
     const friendsToShow = searchMode ? searchResults : friendsStore.friends
@@ -58,12 +58,12 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         friendsStore.unFollowFriend(id).then(() => void 0)
     }
 
-    useEffect(() => {
-        currentPath !== 'friends' && appStore.setCurrentPath('friends')
-        if (!isFriendsLoaded) {
-            friendsStore.getFriends().finally(() => void 0)
-        }
-    }, []);
+    // useEffect(() => {
+    //     currentPath !== 'friends' && appStore.setCurrentPath('friends')
+    //     if (!isFriendsLoaded) {
+    //         friendsStore.getFriends().finally(() => void 0)
+    //     }
+    // }, []);
 
 
     useEffect(() => {

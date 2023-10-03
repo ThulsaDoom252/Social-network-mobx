@@ -18,7 +18,7 @@ interface ProfileProps {
     isUserFollowed: boolean,
     noContacts: boolean,
     handleOpenModal: (e: React.MouseEvent) => void
-
+    handleFollowUser: (id:number, isFollowed:boolean) => void
 }
 
 const Profile: React.FC<ProfileProps> = ({
@@ -30,11 +30,12 @@ const Profile: React.FC<ProfileProps> = ({
                                              tinyScreenMode,
                                              noContacts,
                                              handleOpenModal,
+                                             handleFollowUser,
                                          }) => {
 
 
     const [userContacts,
-        aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser] = profileProps
+        aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser, userId] = profileProps
 
     const [github, facebook, instagram, twitter, youtube] = userContacts
 
@@ -115,7 +116,7 @@ const Profile: React.FC<ProfileProps> = ({
                                         onClick={handleOpenModal}
                                 >Edit Profile</Button>}
                             <div hidden={isCurrentUser || tinyScreenMode}>
-                                <Button size={'small'} type={'primary'} className={'bg-blue-400'}>
+                                <Button size={'small'} type={'primary'} className={'bg-blue-400'} onClick={() => handleFollowUser(userId, isUserFollowed)}>
                                     {isUserFollowed ? 'Unfollow' : 'Follow'}
                                 </Button>
                             </div>
