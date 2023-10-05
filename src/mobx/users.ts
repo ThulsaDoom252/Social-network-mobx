@@ -6,7 +6,7 @@ import friendsStore from "./friends"
 import appStore from "./app"
 
 class UsersStore {
-    usersCount: number = 20
+    itemsPerPage: number = 20
     newPage: number = 1
     currentPage: number  = 0
     totalUserCount: number = 0
@@ -47,8 +47,8 @@ class UsersStore {
         this.newPage = value
     }
 
-    setUsersPerPage(value: number) {
-        this.usersCount = value
+    setItemsPerPage(value: number) {
+        this.itemsPerPage = value
     }
 
     setSearchRequest(value: string) {

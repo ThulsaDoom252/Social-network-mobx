@@ -1,5 +1,4 @@
 import React from 'react';
-import SkeletonLoader from "../context/SkeletonLoader";
 import {Skeleton} from "antd";
 
 interface AboutProps {

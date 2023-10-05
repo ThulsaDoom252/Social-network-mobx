@@ -1,29 +1,32 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import Users from "./Users";
 import authHoc from "../../hoc/authHoc";
-import {useSnackbar} from "notistack";
 import usersStore from "../../mobx/users"
-import {HandleSearchRequestType, User} from "../../types";
+import {User} from "../../types";
 import {observer} from "mobx-react-lite";
-import PageContainer from "../../components/common/PageContainer";
-import Paginator from "../../components/paginator/Paginator";
-import SearchMenuCloseOverlay from "../../components/search/SearchMenuCloseOverlay";
-import SearchBar from "../../components/search/SearchBar";
+import PageContainer from "../common/PageContainer";
+import Paginator from "../Paginator/Paginator";
+import SearchMenuCloseOverlay from "../Search/SearchMenuCloseOverlay";
+import SearchBar from "../Search/SearchBar";
 import {SearchContext} from "../../context/SearchContext";
+import appStore from "../../mobx/app"
+
 
 interface UsersContainerProps {
     smallScreenMode: boolean
     tinyScreenMode: boolean
     isLogged: boolean,
+    currentPath: string,
 }
 
 const UsersContainer: React.FC<UsersContainerProps> = observer(({
                                                                     smallScreenMode,
                                                                     tinyScreenMode,
+                                                                    currentPath,
                                                                 }) => {
     const searchContext = useContext(SearchContext)
 
-    const  newPage= usersStore.newPage
+    const newPage = usersStore.newPage
 
     const {
         searchResults,
@@ -31,80 +34,45 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
         searchMode,
         filterByStatusMode,
         filterByPhotoMode,
-        currentSortTypeValue,
-        handleUsersPerPage,
+        handleItemsPerPage,
         handleFilterByStatusMode,
         handleFilterByPhotoMode,
-        toggleSearchMode,
-        searchUsers,
         isSearchMenuActive,
         setIsSearchMenuActive,
-        isSearchMenuOpened,
-        setIsSearchMenuOpened,
-        setSearchRequest,
-        setSearchResults,
-        setFilterByStatusMode,
-        setFilterByPhotoMode,
         handleSearchRequest,
+        newItemsPerPageValue,
         clearSearchRequest,
-        sortByNameValue,
-        sortByPhotoValue,
-        handleCurrentSortType,
         users,
         filteredUsers,
         filterMode
     } = searchContext
 
     const isUsersLoaded = usersStore.isUsersLoaded
-    //Search Props
-    // const searchResults: User[] = usersStore.searchResults
-    // const searchRequest = usersStore.searchRequest
-    // const searchMode = usersStore.searchMode
     const usersToShow = filterMode && !searchMode ? filteredUsers : searchMode ? searchResults : users
     const currentPage = usersStore.currentPage
-    const usersPerPage = usersStore.usersCount
+    const itemsPerPage = usersStore.itemsPerPage
     const totalUsersCount = usersStore.totalUserCount
-    // const filterByStatusMode = usersStore.filterByStatusMode
-    // const filterByPhotoMode = usersStore.filterByPhotoMode
-    const fetchingUserId = usersStore.fetchingUserIds
+    const noSearchResults = searchMode && usersToShow.length === 0
 
-
-    const [isActive, setIsActive] = useState(false);
-
-
-    // const [isSearchMenuActive,
-    //     toggleSearchMenu] = useState(false)
 
     useEffect(() => {
-        if (isSearchMenuActive) {
-            setIsActive(true);
-        } else {
-            // Задержите исчезновение компонента, чтобы анимация завершилась
-            setTimeout(() => setIsActive(false), 300);
+        currentPath !== 'users' && appStore.setCurrentPath('users')
+
+        return () => {
+            appStore.setCurrentPath('')
         }
-    }, [isSearchMenuActive]);
+
+    }, []);
+
 
     useEffect(() => {
-        if (currentPage !== newPage) {
-            usersStore.getUsers(usersPerPage, newPage)
+        if (itemsPerPage !== newItemsPerPageValue || currentPage !== newPage) {
+            usersStore.getUsers(newItemsPerPageValue, newPage).then(() => void 0)
+            usersStore.setItemsPerPage(newItemsPerPageValue)
         }
         // enqueueSnackbar('Users loaded')
-    }, [usersPerPage,  newPage]);
+    }, [newItemsPerPageValue, newPage]);
 
-    useEffect(() => {
-        if (searchRequest === '') {
-            searchMode && toggleSearchMode(false)
-        } else {
-            !searchMode && toggleSearchMode(true)
-        }
-        searchUsers(searchRequest)
-    }, [searchRequest]);
-
-
-    // const handleUsersPerPage = (value: number) => usersStore.setUsersPerPage(value)
-    //
-    // const handleFilterByStatusMode = (value: string) => usersStore.changeFilterByStatusMode(value)
-    // const handleFilterByPhotoMode = (value: string) => usersStore.changeFilterByPhotoMode(value)
 
     const followUser = (userId: number, user: User) => usersStore.followUser(userId, user)
     const unfollowUser = (userId: number) => usersStore.unfollowUser(userId)
@@ -112,36 +80,14 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
 
     const followUserHandler = async (isFollowed: boolean, userId: number, user: User) => {
         if (isFollowed) {
-            unfollowUser(userId)
+            await unfollowUser(userId)
         } else {
-            followUser(userId, user)
+            await followUser(userId, user)
         }
     }
-
-    // const setSearchRequest = (value: string) => {
-    //     usersStore.setSearchRequest(value)
-    // }
-    //
-    // const toggleSearchMode = (toggle: boolean) => {
-    //     usersStore.toggleSearchMode(toggle)
-    // }
-    //
-    // const clearSearchRequest = () => usersStore.setSearchRequest('')
-    //
-    // const searchUsers = (value: string) => usersStore.searchUsers(value)
-
     const handleChangePage = (value: number) => {
         usersStore.setNewPage(value)
     }
-
-    // const {enqueueSnackbar, closeSnackbar} = useSnackbar()
-
-
-    // const handleSearchRequest: HandleSearchRequestType = (e) => {
-    //     const {value} = e.currentTarget;
-    //     setSearchRequest(value.toLowerCase())
-    // };
-
 
     return (
         <>
@@ -158,18 +104,18 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     clearSearchRequest={clearSearchRequest}
                     isUsersLoaded={isUsersLoaded}
                     handleSearchRequest={handleSearchRequest}
-                    usersPerPage={usersPerPage}
-                    handleUsersPerPage={handleUsersPerPage}
+                    usersPerPage={itemsPerPage}
+                    handleUsersPerPage={handleItemsPerPage}
                     filterByPhotoMode={filterByPhotoMode}
                     filterByStatusMode={filterByStatusMode}
                     handleFilterByPhotoMode={handleFilterByPhotoMode}
                     handleFilterByStatusMode={handleFilterByStatusMode}
-                    isSearchMenuActive={isActive}
+                    isSearchMenuActive={isSearchMenuActive}
                 />
                 <Paginator
                     currentPage={currentPage}
                     totalItems={totalUsersCount}
-                    itemsPerPage={usersPerPage}
+                    itemsPerPage={itemsPerPage}
                     handleChangePage={handleChangePage}
                     smallScreenMode={smallScreenMode}
                 />
@@ -179,7 +125,9 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     smallScreenMode={smallScreenMode}
                     isUsersLoaded={isUsersLoaded}
                     tinyScreenMode={tinyScreenMode}
+                    noSearchResults={noSearchResults}
                 />
+
             </PageContainer>
         </>
     )

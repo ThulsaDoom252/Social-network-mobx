@@ -12,7 +12,7 @@ import appStore from "./mobx/app"
 import {observer} from "mobx-react-lite";
 import AuthContainer from "./components/Auth/AuthContainer";
 import {initializeCurrentUser} from "./mobx/initializeCurrentUser";
-import UsersContainer from "./pages/users/UsersContainer";
+import UsersContainer from "./components/Users/UsersContainer";
 import Initialize from "./components/initialize";
 import StatusModal from "./components/Profile/StatusModal";
 import FriendsPageContainer from "./components/Friends/FriendsPageContainer";
@@ -33,6 +33,8 @@ const App: React.FC = observer(() => {
     const successMessage = appStore.successMessage
     const currentUserId = authStore.id
     const viewedUserId = profileStore.viewedUserId || currentUserId
+
+    const currentPath = appStore.currentPath
 
     //Screen sizes
     const smallScreenMode = appStore.smallScreen
@@ -196,11 +198,13 @@ const App: React.FC = observer(() => {
                                 <Route path={friendsRoute}
                                        element={<FriendsPageContainer mobileMode={smallScreenMode}
                                                                       isLogged={isLogged}
+                                                                      currentPath={currentPath}
                                                                       tinyScreenMode={tinyScreenMode}
 
                                        />}/>
                                 <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode}
                                                                                   tinyScreenMode={tinyScreenMode}
+                                                                                  currentPath={currentPath}
                                                                                   isLogged={isLogged}/>}/>
                                 <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>

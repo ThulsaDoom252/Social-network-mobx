@@ -4,21 +4,22 @@ import authHoc from "../../hoc/authHoc";
 import Friends from "./Friends";
 import {observer} from "mobx-react-lite";
 import {SearchContext} from "../../context/SearchContext";
-import SearchBar from "../search/SearchBar";
-import appStore from "../../mobx/app";
+import SearchBar from "../Search/SearchBar";
 import PageContainer from "../common/PageContainer";
 import {Button, Tooltip} from 'antd';
 import {InfoCircleOutlined} from "@ant-design/icons";
-import SearchMenuCloseOverlay from "../search/SearchMenuCloseOverlay";
+import SearchMenuCloseOverlay from "../Search/SearchMenuCloseOverlay";
+import appStore from "../../mobx/app"
 
 
 interface FriendsContainerProps {
     mobileMode: boolean,
     isLogged: boolean,
     tinyScreenMode: boolean,
+    currentPath:string,
 }
 
-const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileMode, isLogged, tinyScreenMode}) => {
+const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileMode, isLogged, tinyScreenMode, currentPath}) => {
     const searchContext = useContext(SearchContext)
 
     const {
@@ -28,27 +29,17 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         filterByStatusMode,
         filterByPhotoMode,
         currentSortTypeValue,
-        handleUsersPerPage,
+        handleItemsPerPage,
         handleFilterByStatusMode,
         handleFilterByPhotoMode,
-        toggleSearchMode,
-        searchUsers,
         isSearchMenuActive,
         setIsSearchMenuActive,
-        isSearchMenuOpened,
-        setIsSearchMenuOpened,
-        setSearchRequest,
-        setSearchResults,
-        setFilterByStatusMode,
-        setFilterByPhotoMode,
         handleSearchRequest,
         clearSearchRequest,
         sortByNameValue,
         sortByPhotoValue,
         handleCurrentSortType,
     } = searchContext
-
-    // const currentPath = appStore.currentPath
 
 
     const friendsToShow = searchMode ? searchResults : friendsStore.friends
@@ -58,12 +49,14 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         friendsStore.unFollowFriend(id).then(() => void 0)
     }
 
-    // useEffect(() => {
-    //     currentPath !== 'friends' && appStore.setCurrentPath('friends')
-    //     if (!isFriendsLoaded) {
-    //         friendsStore.getFriends().finally(() => void 0)
-    //     }
-    // }, []);
+    useEffect(() => {
+        currentPath !== 'friends' && appStore.setCurrentPath('friends')
+
+        return () => {
+            appStore.setCurrentPath('')
+        }
+
+    }, []);
 
 
     useEffect(() => {
@@ -97,7 +90,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
                 isUsersLoaded={isFriendsLoaded}
                 handleSearchRequest={handleSearchRequest}
                 usersPerPage={100}
-                handleUsersPerPage={handleUsersPerPage}
+                handleUsersPerPage={handleItemsPerPage}
                 filterByPhotoMode={filterByPhotoMode}
                 filterByStatusMode={filterByStatusMode}
                 handleFilterByPhotoMode={handleFilterByPhotoMode}

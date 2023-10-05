@@ -4,9 +4,9 @@ import anon from "../../public/anon.jpg";
 import {observer} from "mobx-react-lite";
 import {User} from "../../types";
 import {NavLink} from "react-router-dom";
-import SkeletonLoader from "../../components/context/SkeletonLoader";
 import {truncate} from "../../common/commonFuncs";
 import Button from 'antd/es/button';
+import {Skeleton, Space} from 'antd';
 
 interface UsersProps {
     smallScreenMode?: boolean
@@ -14,6 +14,7 @@ interface UsersProps {
     isUsersLoaded: boolean,
     followUserHandler: (isFollowed: boolean, userId: number, user: User) => void
     tinyScreenMode: boolean
+    noSearchResults: boolean,
 }
 
 const Users: React.FC<UsersProps> = observer(({
@@ -22,6 +23,7 @@ const Users: React.FC<UsersProps> = observer(({
                                                   isUsersLoaded,
                                                   followUserHandler,
                                                   tinyScreenMode,
+                                                  noSearchResults,
                                               }) => {
 
     return (
@@ -32,10 +34,10 @@ const Users: React.FC<UsersProps> = observer(({
             bg-gray-200
             mt-3
             p-5
-            ${!smallScreenMode && 'grid grid-cols-8 grid-rows-2 gap-3'}
+            ${!smallScreenMode && !noSearchResults && `grid ${isUsersLoaded ? 'grid-cols-8' : 'grid-cols-4'} grid-rows-2 gap-3`}
             `}>
-                {/*//Mapping users (if loaded)*/}
-                {isUsersLoaded ? usersToShow.map((user, index) =>
+                {/*//Mapping Users (if loaded)*/}
+                {isUsersLoaded ? usersToShow.map((user: User, index) =>
                         //User main block
                         <div key={index} className={`
                     flex
@@ -73,14 +75,26 @@ const Users: React.FC<UsersProps> = observer(({
                                     type="primary">{user.followed ? 'Unfollow' : 'Follow'}</Button>
                             </div>
                         </div>
-                    //Mapping dull array if users not loaded
+                    //Mapping dull array into skeleton if users not loaded
                 ) : dummyUsers.map((index) =>
                     <div key={index}>
-                        <SkeletonLoader>
-                            <rect x="0" y="88" rx="3" ry="3" width="178" height="6"/>
-                            <circle cx="20" cy="20" r="20"/>
-                        </SkeletonLoader>
+                        <Space className={`
+                            flex 
+                            ${smallScreenMode && !tinyScreenMode ? 'justify-between w-full' : tinyScreenMode ? 'flex-col mb-2' : 'flex-col justify-center items-center'}                                                                                                  
+                            `}>
+                            <Skeleton.Avatar active size={'large'}/>
+                            <Skeleton.Input active size={'small'}/>
+                            <Skeleton.Button className={'mt-2 w-5'} active shape={'round'}/>
+                        </Space>
                     </div>)}
+                {/*//No search results / no users block*/}
+                <div className={'w-full text-center'}>
+                    {noSearchResults
+                        ? ' No users match your criteria'
+                        : isUsersLoaded && usersToShow.length === 0
+                            ? 'No users...'
+                            : void 0}
+                </div>
             </div>
         </>
 

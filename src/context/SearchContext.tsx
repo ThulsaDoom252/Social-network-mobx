@@ -3,19 +3,23 @@ import {HandleSearchRequestType, User} from "../types";
 import usersStore from "../mobx/users";
 import friendStore from "../mobx/friends";
 import appStore from "../mobx/app";
-import {defaultPhotoFilterMode, defaultStatusFilterMode, withPhoto, withStatus} from "./filterModes";
+import {
+    defaultPhotoFilterMode,
+    defaultStatusFilterMode,
+    withoutStatus,
+    withPhoto,
+    withStatus
+} from "./filterModes";
 import {
     byNameAlphabet,
     byNameReverse,
     byNoPhoto,
     byPhoto,
-    sortByNameMode,
-    sortByPhotoMode,
     sortDefaultValue
 } from "./sortModes";
 import {observer} from "mobx-react-lite";
 
-// Определяем тип для данных, которые будут храниться в контексте
+// Set the data types stored in context
 export interface SearchContextData {
     searchResults: User[];
     currentSortTypeValue: string,
@@ -24,19 +28,12 @@ export interface SearchContextData {
     filterMode: boolean;
     filterByStatusMode: string;
     filterByPhotoMode: string;
-    handleUsersPerPage: (value: number) => void;
+    newItemsPerPageValue: number,
+    handleItemsPerPage: (value: number) => void;
     handleFilterByStatusMode: (value: string) => void;
     handleFilterByPhotoMode: (value: string) => void;
-    toggleSearchMode: Dispatch<SetStateAction<boolean>>;
-    searchUsers: (value: string) => void;
     isSearchMenuActive: boolean;
     setIsSearchMenuActive: Dispatch<SetStateAction<boolean>>;
-    isSearchMenuOpened: boolean;
-    setIsSearchMenuOpened: Dispatch<SetStateAction<boolean>>;
-    setSearchRequest: Dispatch<SetStateAction<string>>;
-    setSearchResults: Dispatch<SetStateAction<User[]>>;
-    setFilterByStatusMode: Dispatch<SetStateAction<string>>;
-    setFilterByPhotoMode: Dispatch<SetStateAction<string>>;
     handleSearchRequest: (e: ChangeEvent<HTMLInputElement>) => void;
     clearSearchRequest: () => void
     sortByNameValue: string,
@@ -55,10 +52,24 @@ interface SearchContextProviderProps {
 const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({children}) => {
     const currentPath = appStore.currentPath
     const friends = friendStore.friends
-    const [users, setUsers] = useState(usersStore.users);
-    const [filteredUsers, setFilteredUsers] = useState<User[]>([])
-    const [currentFilterType, setCurrentFilterType] = useState<string | null>(null)
 
+    const [users, setUsers] = useState(usersStore.users);
+
+    const [filteredUsers, setFilteredUsers] = useState<User[]>([])
+    const [searchResults, setSearchResults] = useState<User[]>([]);
+
+    const [searchMode, toggleSearchMode] = useState<boolean>(false);
+    const [filterMode, toggleFilterMode] = useState<boolean>(false)
+    const [isSearchMenuActive, setIsSearchMenuActive] = useState<boolean>(false);
+
+    const [newItemsPerPageValue, setNewItemsPerPageValue] = useState<number>(usersStore.itemsPerPage)
+
+    const [searchRequest, setSearchRequest] = useState<string>('');
+    const [currentSortTypeValue, setCurrentSortType] = useState<string>(sortDefaultValue)
+    const [sortByPhotoValue, setSortByPhotoValue] = useState<string>(sortDefaultValue)
+    const [sortByNameValue, setSortByNameValue] = useState<string>(sortDefaultValue)
+    const [filterByStatusMode, setFilterByStatusMode] = useState<string>(defaultStatusFilterMode);
+    const [filterByPhotoMode, setFilterByPhotoMode] = useState<string>(defaultPhotoFilterMode);
 
     useEffect(() => {
         if (usersStore.users.length > 0) {
@@ -66,122 +77,6 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         }
 
     }, [usersStore.users]);
-
-    (window as any).s1 = users
-
-    const [searchMode, toggleSearchMode] = useState<boolean>(false);
-    const [isSearchMenuActive, setIsSearchMenuActive] = useState<boolean>(false);
-    const [isSearchMenuOpened, setIsSearchMenuOpened] = useState<boolean>(false);
-    const [searchRequest, setSearchRequest] = useState<string>('');
-    const [searchResults, setSearchResults] = useState<User[]>([]);
-    const [filterMode, toggleFilterMode] = useState<boolean>(false)
-    const [currentSortTypeValue, setCurrentSortType] = useState<string>(sortDefaultValue)
-    const [sortByPhotoValue, setSortByPhotoValue] = useState<string>(sortDefaultValue)
-    const [sortByNameValue, setSortByNameValue] = useState<string>(sortDefaultValue)
-    const [filterByStatusMode, setFilterByStatusMode] = useState<string>(defaultStatusFilterMode);
-    const [filterByPhotoMode, setFilterByPhotoMode] = useState<string>(defaultPhotoFilterMode);
-
-    const clearSearchRequest = () => {
-        setSearchRequest('')
-    }
-
-
-    useEffect(() => {
-        if (isSearchMenuActive) {
-            setIsSearchMenuOpened(true);
-        } else {
-            // Задержите исчезновение компонента, чтобы анимация завершилась
-            setTimeout(() => setIsSearchMenuOpened(false), 300);
-        }
-    }, [isSearchMenuActive]);
-
-    useEffect(() => {
-        if (searchRequest === '') {
-            searchMode && toggleSearchMode(false);
-        } else {
-            !searchMode && toggleSearchMode(true);
-        }
-        searchUsers(searchRequest);
-    }, [searchRequest]);
-
-    const handleUsersPerPage = (value: number) => usersStore.setUsersPerPage(value);
-
-    const handleFilterByStatusMode = (value: string) => {
-        setFilterByStatusMode(value);
-        if (value !== defaultStatusFilterMode) {
-            let filteredResults: User[] = users
-            if (value === withStatus) {
-                filteredResults = filterMode
-                    ? filteredUsers.filter((user: User) => user.status)
-                    : users.filter((user: User) => user.status)
-            } else {
-                filteredResults = filterMode
-                    ? filteredUsers.filter((user: User) => !user.status)
-                    : users.filter((user: User) => !user.status)
-            }
-            setFilteredUsers(filteredResults)
-        }
-    }
-
-    const handleFilterByPhotoMode = (value: string) => {
-        setFilterByPhotoMode(value);
-        if (value !== defaultPhotoFilterMode) {
-            let filteredResults: User[] = users
-            if (value === withPhoto) {
-                   if(filterMode) {
-                       filteredResults = filteredUsers.filter((user: User) => user.photos.small)
-                   } else {
-                       filteredResults = users.filter((user: User) => user.photos.small)
-                   }
-            } else {
-                filteredResults = filterMode
-                    ? filteredUsers.filter((user: User) => !user.photos.small)
-                    : users.filter((user: User) => !user.photos.small)
-            }
-            setFilteredUsers(filteredResults)
-        }
-    }
-
-    const nullValues = defaultPhotoFilterMode || defaultStatusFilterMode
-
-    useEffect(() => {
-        if (filterByStatusMode !== defaultStatusFilterMode || filterByPhotoMode !== defaultPhotoFilterMode) {
-            !filterMode && toggleFilterMode(true)
-        } else {
-            filterMode && toggleFilterMode(false)
-        }
-
-    }, [filterByStatusMode, filterByPhotoMode]);
-
-
-    const handleCurrentSortTypeValue = (value: string) => {
-        setCurrentSortType(value)
-        if (value === byPhoto || value === byNoPhoto) {
-            setSortByPhotoValue(value)
-        } else if (value === byNameAlphabet || value === byNameReverse) {
-            setSortByNameValue(value)
-        } else {
-            sortByNameValue !== sortDefaultValue && setSortByNameValue(sortDefaultValue)
-            sortByPhotoValue !== sortDefaultValue && setSortByPhotoValue(sortByPhotoValue)
-        }
-    }
-
-    const handleSortByPhoto = (value: string) => {
-        setSortByPhotoValue(value)
-        friends.sort((a, b) => {
-            const hasPhotoA = !!a.photos.small;
-            const hasPhotoB = !!b.photos.small;
-            return value === byPhoto ? hasPhotoB ? 1 : hasPhotoA ? -1 : 0 : hasPhotoA ? 1 : hasPhotoB ? -1 : 0;
-        });
-    }
-    const handleSortByName = (value: string) => {
-        setSortByNameValue(value)
-        if (value === byNameAlphabet) {
-            friends.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-        } else if (value === byNameReverse) {
-            friends.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
-        }
-    }
 
     useEffect(() => {
         if (currentSortTypeValue === byPhoto || currentSortTypeValue === byNoPhoto) {
@@ -201,11 +96,80 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         }
     }, [currentSortTypeValue]);
 
+    useEffect(() => {
+        if (filterByStatusMode !== defaultStatusFilterMode || filterByPhotoMode !== defaultPhotoFilterMode) {
+            !filterMode && toggleFilterMode(true)
+        } else {
+            filterMode && toggleFilterMode(false)
+        }
 
-    const searchUsers = (value: string) => {
+    }, [filterByStatusMode, filterByPhotoMode]);
+
+
+    useEffect(() => {
+        if (searchRequest === '') {
+            searchMode && toggleSearchMode(false);
+        } else {
+            !searchMode && toggleSearchMode(true);
+        }
+        searchItems(searchRequest);
+    }, [searchRequest]);
+
+    useEffect(() => {
+        filterUsers()
+    }, [filterByStatusMode, filterByPhotoMode]);
+
+    const clearSearchRequest = () => {
+        setSearchRequest('')
+    }
+
+    const handleItemsPerPage = (value: number) => {
+        setNewItemsPerPageValue(value)
+    }
+
+    const handleFilterByStatusMode = (value: string) => {
+        setFilterByStatusMode(value)
+    }
+
+    const handleFilterByPhotoMode = (value: string) => {
+        setFilterByPhotoMode(value);
+    }
+
+    const filterUsers = () => {
+        let filteredUsers = users
+
+        if (filterByStatusMode !== defaultStatusFilterMode) {
+            if (filterByStatusMode === withStatus) {
+                filteredUsers = filteredUsers.filter((user) => user.status);
+            } else if (filterByStatusMode === withoutStatus) {
+                filteredUsers = filteredUsers.filter((user) => !user.status);
+            }
+        }
+
+        if (filterByPhotoMode !== defaultPhotoFilterMode) {
+            filteredUsers = filteredUsers.filter((user) => filterByPhotoMode === withPhoto
+                ? user.photos.small
+                : !user.photos.small);
+        }
+
+        setFilteredUsers(filteredUsers);
+    };
+
+    const handleCurrentSortTypeValue = (value: string) => {
+        setCurrentSortType(value)
+        if (value === byPhoto || value === byNoPhoto) {
+            setSortByPhotoValue(value)
+        } else if (value === byNameAlphabet || value === byNameReverse) {
+            setSortByNameValue(value)
+        } else {
+            sortByNameValue !== sortDefaultValue && setSortByNameValue(sortDefaultValue)
+            sortByPhotoValue !== sortDefaultValue && setSortByPhotoValue(sortByPhotoValue)
+        }
+    }
+
+    const searchItems = (value: string) => {
         if (currentPath === 'friends') {
-            if (filterMode)
-                setSearchResults(friends.filter(friend => friend.name?.toLowerCase().includes(value)))
+            setSearchResults(friends.filter(friend => friend.name?.toLowerCase().includes(value)))
         } else {
             if (filterMode) {
                 setSearchResults(filteredUsers.filter(user => user.name?.toLowerCase().includes(value)))
@@ -221,7 +185,6 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         setSearchRequest(value.toLowerCase());
     };
 
-
     const data: SearchContextData = {
         searchResults,
         searchRequest,
@@ -229,23 +192,16 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         filterMode,
         filterByStatusMode,
         filterByPhotoMode,
-        handleUsersPerPage,
+        handleItemsPerPage,
         handleFilterByStatusMode,
         handleFilterByPhotoMode,
-        toggleSearchMode,
-        searchUsers,
         isSearchMenuActive,
         setIsSearchMenuActive,
-        isSearchMenuOpened,
-        setIsSearchMenuOpened,
-        setSearchRequest,
-        setSearchResults,
-        setFilterByStatusMode,
-        setFilterByPhotoMode,
         handleSearchRequest,
         clearSearchRequest,
         currentSortTypeValue,
         sortByNameValue,
+        newItemsPerPageValue,
         sortByPhotoValue,
         handleCurrentSortType: handleCurrentSortTypeValue,
         users,
@@ -257,7 +213,6 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
             {children}
         </SearchContext.Provider>
     )
-
 });
 
 export {SearchContext, SearchContextProvider};
