@@ -13,6 +13,8 @@ interface FriendsPageProps {
     friends: User[],
     handleUnfollowFriend: (id: number) => void
     isFriendsLoaded: boolean,
+    noFriends: boolean,
+    noFriendsSearchResults: boolean,
 }
 
 const Friends: React.FC<FriendsPageProps> = ({
@@ -21,14 +23,20 @@ const Friends: React.FC<FriendsPageProps> = ({
                                                  handleUnfollowFriend,
                                                  isFriendsLoaded,
                                                  tinyScreenMode,
+                                                 noFriends,
+                                                 noFriendsSearchResults,
                                              }) => {
     return (
         <>
-            {isFriendsLoaded && friends.length === 0 &&
-                <div className={'w-96 mt-40 mx-auto flex justify-between'}>
-                    <div><TbFriendsOff size={30}/></div>
-                    <div>You got no friends yet..</div>
-                </div>}
+            {noFriends || noFriendsSearchResults &&
+            <div className={'w-96 mt-40 mx-auto flex justify-between'}>
+                <>
+                    <div ><TbFriendsOff size={30}/></div>
+                    <div>{noFriends ? 'No friends yet...' :
+                        noFriendsSearchResults ? 'No results match your criteria'
+                            : void 0}</div>
+                </>
+            </div>}
             {/*//List block*/}
             <div className={`
               w-full
@@ -155,7 +163,12 @@ const Friends: React.FC<FriendsPageProps> = ({
                                             <Space style={{display: 'flex'}}>
                                                 <Skeleton.Avatar size={'large'} active/>
                                                 <Space
-                                                    style={{display: 'flex', flexDirection: 'column', position: 'relative', top: '8px'}}>
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        position: 'relative',
+                                                        top: '8px'
+                                                    }}>
                                                     <Skeleton.Input active size={'small'}/>
                                                     <Skeleton.Button active size={'small'}/>
                                                 </Space>
@@ -165,7 +178,11 @@ const Friends: React.FC<FriendsPageProps> = ({
                                             </Space>
                                         </Space> : smallScreen && tinyScreenMode ?
                                             <Space
-                                                style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center'
+                                                }}>
                                                 <Skeleton.Avatar active size={'large'}/>
                                                 <Skeleton.Input active size={'small'}/>
                                                 <Skeleton.Input active size={'small'}/>
@@ -173,7 +190,11 @@ const Friends: React.FC<FriendsPageProps> = ({
 
                                             </Space> :
                                             <Space
-                                                style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center'
+                                                }}>
                                                 <Skeleton.Avatar size={'large'} active/>
                                                 <Skeleton.Input size={'small'} active/>
                                                 <Skeleton.Input size={'small'} active/>

@@ -98,6 +98,7 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
             '>Users({usersToShow.length})</h4>
                 <SearchBar
                     menuType={'users'}
+                    isItemsLoaded={isUsersLoaded}
                     isSearchMenuOpen={isSearchMenuActive}
                     toggleSearchMenu={setIsSearchMenuActive}
                     searchRequest={searchRequest}

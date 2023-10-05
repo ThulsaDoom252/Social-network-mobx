@@ -44,6 +44,8 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
 
     const friendsToShow = searchMode ? searchResults : friendsStore.friends
     const isFriendsLoaded = friendsStore.isFriendsLoaded
+    const noFriends = isFriendsLoaded && !searchMode && friendsToShow.length === 0
+    const noFriendsSearchResults = searchMode && friendsToShow.length === 0
 
     const handleUnfollowFriend = (id: number) => {
         friendsStore.unFollowFriend(id).then(() => void 0)
@@ -83,6 +85,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
                 </div>}
             <SearchBar
                 menuType={'friends'}
+                isItemsLoaded={isFriendsLoaded}
                 isSearchMenuOpen={isSearchMenuActive}
                 toggleSearchMenu={setIsSearchMenuActive}
                 searchRequest={searchRequest}
@@ -105,6 +108,8 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
                      handleUnfollowFriend={handleUnfollowFriend}
                      isFriendsLoaded={isFriendsLoaded}
                      tinyScreenMode={tinyScreenMode}
+                     noFriends={noFriends}
+                     noFriendsSearchResults={noFriendsSearchResults}
             />
         </PageContainer>
 

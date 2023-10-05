@@ -23,7 +23,8 @@ interface SearchBarProps {
     menuType: 'users' | 'friends',
     sortByNameValue?: string,
     sortByPhotoValue?: string,
-     handleCurrentSortTypeValue?: (value:string) => void
+    handleCurrentSortTypeValue?: (value: string) => void
+    isItemsLoaded: boolean
 
 }
 
@@ -45,12 +46,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                                  sortByNameValue,
                                                  sortByPhotoValue,
                                                  handleCurrentSortTypeValue,
+                                                 isItemsLoaded,
                                              }) => {
 
 
     return (
         <div className={`w-full mt-2 flex justify-center relative ${isSearchMenuActive ? 'active' : ''}`}>
-            <Input value={searchRequest} placeholder="default size" prefix={<UserOutlined/>}
+            <Input disabled={!isItemsLoaded} value={searchRequest} placeholder="default size" prefix={<UserOutlined/>}
                    onChange={handleSearchRequest}/>
             <div
 
@@ -88,23 +90,24 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 onClick={clearSearchRequest}
             >
                 <CloseOutlined/></div>
-            <div className={'absolute z-20 right-5 top-10 '}>
-                {menuType === 'users' ?
-                    <UsersSearchMenu isOpen={isSearchMenuOpen}
-                                     handleUsersPerPage={handleUsersPerPage}
-                                     usersPerPage={usersPerPage}
-                                     filterByStatusMode={filterByStatusMode}
-                                     filterByPhotoMode={filterByPhotoMode}
-                                     handleFilterByPhotoMode={handleFilterByPhotoMode}
-                                     handleFilterByStatusMode={handleFilterByStatusMode}
-                    /> : <FriendsSearchMenu isOpen={isSearchMenuOpen}
-                                            sortByNameValue={sortByNameValue}
-                                            sortByPhotoValue={sortByPhotoValue}
-                                            handleCurrentSortTypeValue={handleCurrentSortTypeValue}/>}
-                    </div>
+            {isItemsLoaded &&
+                <div className={'absolute z-20 right-5 top-10 '}>
+                    {menuType === 'users' ?
+                        <UsersSearchMenu isOpen={isSearchMenuOpen}
+                                         handleUsersPerPage={handleUsersPerPage}
+                                         usersPerPage={usersPerPage}
+                                         filterByStatusMode={filterByStatusMode}
+                                         filterByPhotoMode={filterByPhotoMode}
+                                         handleFilterByPhotoMode={handleFilterByPhotoMode}
+                                         handleFilterByStatusMode={handleFilterByStatusMode}
+                        /> : <FriendsSearchMenu isOpen={isSearchMenuOpen}
+                                                sortByNameValue={sortByNameValue}
+                                                sortByPhotoValue={sortByPhotoValue}
+                                                handleCurrentSortTypeValue={handleCurrentSortTypeValue}/>}
+                </div>}
 
-                    </div>
-                    );
-                };
+        </div>
+    );
+};
 
-                export default SearchBar;
+export default SearchBar;
