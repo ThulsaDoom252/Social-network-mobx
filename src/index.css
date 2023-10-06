@@ -1,13 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "fonts.css";
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #ceb4b4;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.header {
+  background: rgb(100,99,119);
+  background: linear-gradient(90deg, rgba(100,99,119,1) 0%, rgba(206,206,230,1) 32%, rgba(255,255,255,1) 85%, rgba(217,232,235,1) 100%);
+}
+
+/*//Search menu animation*/
+.menu-entering,
+.menu-exiting {
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.menu-entered,
+.menu-exited {
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+/*//Search bar*/
+.search-bar {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.search-bar.active {
+    opacity: 1;
+    transform: translateY(0);
 }
