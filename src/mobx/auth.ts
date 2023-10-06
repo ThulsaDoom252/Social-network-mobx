@@ -1,8 +1,9 @@
-import { makeAutoObservable } from "mobx";
-import { authApi } from "../api/api";
+import {makeAutoObservable} from "mobx";
+import {authApi} from "../api/api";
 import profileStore from "./profile";
 import appStore from "./app";
-import { delay } from "../common/commonFuncs";
+import {delay} from "../common/commonFuncs";
+import friendsStore from "./friends";
 
 // Define the AuthStore class
 class AuthStore {
@@ -73,8 +74,9 @@ class AuthStore {
                     this.toggleCaptcha(false);
                     this.setCaptchaUrl('');
                 }
+                this.setUserData(result.data.userId, result.data.email, result.data.login);
                 await profileStore.getCurrentUserData(result.data.userId);
-                this.setUserId(result.data.userId);
+                await friendsStore.getFriends();
                 this.toggleLoggedStatus(true);
                 this.setAuthError('');
             } else {

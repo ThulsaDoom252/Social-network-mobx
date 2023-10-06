@@ -1,12 +1,12 @@
 import React from 'react';
-import { dummyUsers, profileRoute } from "../../common";
+import {dummyUsers, profileRoute} from "../../common";
 import anon from "../../public/anon.jpg";
-import { observer } from "mobx-react-lite";
-import { User } from "../../types";
-import { NavLink } from "react-router-dom";
-import { truncate } from "../../common/commonFuncs";
+import {observer} from "mobx-react-lite";
+import {User} from "../../types";
+import {NavLink} from "react-router-dom";
+import {truncate} from "../../common/commonFuncs";
 import Button from 'antd/es/button';
-import { Skeleton, Space } from 'antd';
+import {Skeleton, Space} from 'antd';
 
 // Props interface for the Users component
 interface UsersProps {
@@ -36,7 +36,7 @@ const Users: React.FC<UsersProps> = observer(({
                 bg-gray-200
                 mt-3
                 p-5
-                ${!smallScreenMode && !noSearchResults && `grid ${isUsersLoaded 
+                ${!smallScreenMode && !noSearchResults && `grid ${isUsersLoaded
                 ? 'grid-cols-8' : 'grid-cols-4'} grid-rows-2 gap-3`}
             `}>
                 {/* Mapping Users (if loaded) */}
@@ -49,12 +49,12 @@ const Users: React.FC<UsersProps> = observer(({
                             rounded-md
                             p-5
                             border-gray-400
-                            ${smallScreenMode && !tinyScreenMode 
-                            ? 'justify-between mt-2' : tinyScreenMode 
+                            ${smallScreenMode && !tinyScreenMode
+                            ? 'justify-between mt-2' : tinyScreenMode
                                 ? 'flex-col items-center' : 'justify-center flex-col items-center'} 
                         `}>
                             {/* Image Container */}
-                            <div className={`${smallScreenMode ? 'w-24' : 'max-w-20 max-h-20'}`}>
+                            <div className={`${smallScreenMode ? 'w-24' : 'max-w-14'}`}>
                                 <NavLink to={`${profileRoute}/${user.id}`}>
                                     <img className='w-full h-full cursor-pointer rounded-full'
                                          src={user.photos.small || anon}
@@ -70,7 +70,7 @@ const Users: React.FC<UsersProps> = observer(({
                                 <div>{user.status ? truncate(user.status, (smallScreenMode ? 20 : 10)) : 'no status'}</div>
                                 <Button
                                     onClick={() => followUserHandler(user.followed || false, user.id || 0,
-                                        { ...user }
+                                        {...user}
                                     )}
                                     shape={"round"}
                                     size={`${smallScreenMode ? 'middle' : 'small'}`}

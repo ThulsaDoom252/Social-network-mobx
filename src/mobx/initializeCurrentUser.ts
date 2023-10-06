@@ -1,7 +1,7 @@
 import authStore from "./auth";
 import profileStore from "./profile";
 import appStore from "./app";
-import { authApi } from "../api/api";
+import {authApi} from "../api/api";
 import friendsStore from "../mobx/friends";
 
 // Function to initialize the current user
@@ -14,7 +14,7 @@ export const initializeCurrentUser = async () => {
             const isAuthResponse = await authApi.checkAuth();
             if (isAuthResponse.resultCode === 0) {
                 // If authenticated, retrieve user data and friends
-                const { data } = isAuthResponse;
+                const {data} = isAuthResponse;
                 authStore.setUserData(data.id, data.email, data.login);
                 await profileStore.getCurrentUserData(data.id);
                 await friendsStore.getFriends();
