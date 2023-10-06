@@ -1,7 +1,7 @@
 import React from 'react';
 import anon from "../public/anon.jpg"
 import Navbar from "./Navbar";
-import authStore from "../mobx/auth/auth"
+import authStore from "../mobx/auth"
 import {Button, Skeleton, Space} from "antd";
 import {NavLink} from "react-router-dom";
 
@@ -18,7 +18,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
                                            smallScreenMode = true,
-                                           // setIsOpen,
                                            avatar,
                                            currentUserId,
                                            currentUserName,
@@ -28,8 +27,9 @@ const Header: React.FC<HeaderProps> = ({
                                            handleOpenModal,
                                        }) => {
 
+    //Logout current user.
     const handleLogOut = () => {
-        authStore.signOut()
+        authStore.signOut().then(() => void 0)
     }
 
     const absoluteSpaceStyle: React.CSSProperties = {
@@ -43,10 +43,9 @@ const Header: React.FC<HeaderProps> = ({
         left: '50px',
     }
 
-
     return (
         <>
-
+            {/*//Render header interface and current user avatar/name if current user profile is loaded*/}
             {isCurrentUserDataLoaded ?
                 <div
                     hidden={!authStore.isLogged}
@@ -100,7 +99,9 @@ const Header: React.FC<HeaderProps> = ({
                                             disabled={false}
                                             onClick={handleOpenModal}>Edit Profile</Button>}
 
-                            </div> : <>
+                            </div> :
+                            //If data is not loaded - render an antDesign skeleton
+                            <>
                                 <Space>
                                     <Skeleton.Avatar active size={'large'} shape={'circle'}/>
                                     <Skeleton.Input active size={'large'} style={{height: '20px'}}/>
@@ -115,6 +116,7 @@ const Header: React.FC<HeaderProps> = ({
                             </>
 
                         }
+                        {/*//Navbar (only in desktop resolution mode)*/}
                         <div className='
                 flex
                 w-full

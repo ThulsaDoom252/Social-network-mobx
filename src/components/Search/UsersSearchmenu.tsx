@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'antd/es/select';
-import {Transition} from 'react-transition-group';
+import {Transition} from '@headlessui/react';
 import {Slider} from 'antd';
 import {
     defaultPhotoFilterMode,
@@ -42,10 +42,16 @@ const UsersSearchMenu: React.FC<UsersSearchMenuProps> = ({
     };
 
     return (
-        <Transition in={isOpen} timeout={1000}>
-            {(state) =>
-                isOpen ? (
-                    <div className={`menu ${state}`}>
+        <Transition show={isOpen}
+                    enter={'transition ease-out duration-300'}
+                    enterFrom={"opacity-0"}
+                    enterTo={"opacity-100"}
+                    leave={"transition ease-in duration-200"}
+                    leaveFrom={"opacity-100"}
+                    leaveTo={"opacity-0"}
+
+        >
+                    <div className={`menu`}>
                         <div className="bg-white w-64 p-2 rounded-md flex flex-col items-center">
                             <div className="w-full flex flex-col items-center">
                                 <div>
@@ -77,8 +83,6 @@ const UsersSearchMenu: React.FC<UsersSearchMenuProps> = ({
                             </div>
                         </div>
                     </div>
-                ) : null
-            }
         </Transition>
     );
 };

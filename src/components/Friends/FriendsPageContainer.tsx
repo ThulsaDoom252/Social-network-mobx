@@ -1,27 +1,31 @@
-import React, {useContext, useEffect} from 'react';
-import friendsStore from "../../mobx/friends"
+import React, { useContext, useEffect } from 'react';
+import friendsStore from "../../mobx/friends";
 import authHoc from "../../hoc/authHoc";
 import Friends from "./Friends";
-import {observer} from "mobx-react-lite";
-import {SearchContext} from "../../context/SearchContext";
+import { observer } from "mobx-react-lite";
+import { SearchContext } from "../../context/SearchContext";
 import SearchBar from "../Search/SearchBar";
-import PageContainer from "../common/PageContainer";
-import {Button, Tooltip} from 'antd';
-import {InfoCircleOutlined} from "@ant-design/icons";
+import PageContainer from "../Common/PageContainer";
+import { Button, Tooltip } from 'antd';
+import { InfoCircleOutlined } from "@ant-design/icons";
 import SearchMenuCloseOverlay from "../Search/SearchMenuCloseOverlay";
-import appStore from "../../mobx/app"
+import appStore from "../../mobx/app";
 
-
+// Props interface for the FriendsPageContainer component
 interface FriendsContainerProps {
-    mobileMode: boolean,
-    isLogged: boolean,
-    tinyScreenMode: boolean,
-    currentPath:string,
+    mobileMode: boolean;        // Flag for mobile mode
+    isLogged: boolean;          // Flag indicating if the user is logged in. Needed for AuthHook
+    tinyScreenMode: boolean;    // Flag for tiny screen mode
+    currentPath: string;        // Current path
 }
 
-const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileMode, isLogged, tinyScreenMode, currentPath}) => {
-    const searchContext = useContext(SearchContext)
+const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({
+                                                                            mobileMode,
+                                                                            tinyScreenMode,
+                                                                            currentPath }) => {
+    const searchContext = useContext(SearchContext);
 
+    // Destructuring properties from the SearchContext
     const {
         searchResults,
         searchRequest,
@@ -39,50 +43,59 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
         sortByNameValue,
         sortByPhotoValue,
         handleCurrentSortType,
-    } = searchContext
+    } = searchContext;
 
+    // Determine which set of friends to display based on search mode
+    const friendsToShow = searchMode ? searchResults : friendsStore.friends;
+    const isFriendsLoaded = friendsStore.isFriendsLoaded;
 
-    const friendsToShow = searchMode ? searchResults : friendsStore.friends
-    const isFriendsLoaded = friendsStore.isFriendsLoaded
-    const noFriends = isFriendsLoaded && !searchMode && friendsToShow.length === 0
-    const noFriendsSearchResults = searchMode && friendsToShow.length === 0
+    // Check if there are no friends in the list
+    const noFriends = isFriendsLoaded && !searchMode && friendsToShow.length === 0;
+    // Check if there are no friends matching search request
+    const noFriendsSearchResults = searchMode && friendsToShow.length === 0;
 
-    const handleUnfollowFriend = (id: number) => {
-        friendsStore.unFollowFriend(id).then(() => void 0)
-    }
-
+    // Set the current path in mobx app store when the component mounts
     useEffect(() => {
-        currentPath !== 'friends' && appStore.setCurrentPath('friends')
-
+        currentPath !== 'friends' && appStore.setCurrentPath('friends');
+        // Clean up by resetting the current path when the component unmounts
         return () => {
-            appStore.setCurrentPath('')
+            appStore.setCurrentPath('');
         }
-
     }, []);
 
-
+    // Initialize the sort type when friends are loaded
     useEffect(() => {
         if (isFriendsLoaded) {
-            handleCurrentSortType(currentSortTypeValue)
+            handleCurrentSortType(currentSortTypeValue);
         }
     }, []);
+
+    // Handle unfollowing a friend
+    const handleUnfollowFriend = (id: number) => {
+        friendsStore.unFollowFriend(id).then(() => void 0);
+    }
 
     return (
         <PageContainer>
-            {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={() => setIsSearchMenuActive(false)}/>}
+            {/* Display search menu close overlay if active */}
+            {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={() => setIsSearchMenuActive(false)} />}
+
+            {/* Display the number of friends if available */}
             {isFriendsLoaded && friendsToShow.length !== 0 &&
-                <div className={'flex items-center justify-center'}><h4 className='
-            font-bold
-            '>You have {friendsToShow.length} friends</h4>
+                <div className={'flex items-center justify-center'}>
+                    <h4 className='font-bold'>You have {friendsToShow.length} friends</h4>
                     <Tooltip title="Maximum 100">
                         <Button
                             type="default"
-                            icon={<InfoCircleOutlined color={'gray'}/>}
+                            icon={<InfoCircleOutlined color={'gray'} />}
                             shape="circle"
-                            className={'bg-transparent border-0'}>
+                            className={'bg-transparent border-0'}
+                        >
                         </Button>
                     </Tooltip>
                 </div>}
+
+            {/* Display the search bar */}
             <SearchBar
                 menuType={'friends'}
                 isItemsLoaded={isFriendsLoaded}
@@ -90,7 +103,6 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
                 toggleSearchMenu={setIsSearchMenuActive}
                 searchRequest={searchRequest}
                 clearSearchRequest={clearSearchRequest}
-                isUsersLoaded={isFriendsLoaded}
                 handleSearchRequest={handleSearchRequest}
                 usersPerPage={100}
                 handleUsersPerPage={handleItemsPerPage}
@@ -103,18 +115,19 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({mobileM
                 sortByPhotoValue={sortByPhotoValue}
                 handleCurrentSortTypeValue={handleCurrentSortType}
             />
-            <Friends smallScreen={mobileMode}
-                     friends={friendsToShow}
-                     handleUnfollowFriend={handleUnfollowFriend}
-                     isFriendsLoaded={isFriendsLoaded}
-                     tinyScreenMode={tinyScreenMode}
-                     noFriends={noFriends}
-                     noFriendsSearchResults={noFriendsSearchResults}
+
+            {/* Display the Friends component */}
+            <Friends
+                smallScreen={mobileMode}
+                friends={friendsToShow}
+                handleUnfollowFriend={handleUnfollowFriend}
+                isFriendsLoaded={isFriendsLoaded}
+                tinyScreenMode={tinyScreenMode}
+                noFriends={noFriends}
+                noFriendsSearchResults={noFriendsSearchResults}
             />
         </PageContainer>
-
-    )
-
+    );
 });
 
 export default authHoc(FriendsPageContainer);

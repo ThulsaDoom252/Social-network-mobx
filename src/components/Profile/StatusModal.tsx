@@ -1,29 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import {Modal, Input, Button} from 'antd';
-import {CheckCircleOutlined} from '@ant-design/icons';
 
 interface StatusModalProps {
     visible: boolean;
     currentUserStatus: string,
     onClose: () => void;
-    // status: string,
     handleChangeStatus: (status: string) => void
 }
 
 const StatusModal: React.FC<StatusModalProps> = ({
                                                      visible,
                                                      onClose,
-                                                     // status,
                                                      handleChangeStatus,
                                                      currentUserStatus,
                                                  }) => {
+
+    // status value and status error states
     const [status, setStatus] = useState<string | null>(currentUserStatus)
     const [statusError, setStatusError] = useState<string | null>(null);
 
+    //Setting current user status on component mounting/state updating
     useEffect(() => {
         setStatus(currentUserStatus)
     }, [currentUserStatus]);
 
+    //Change/update handlers
     const handleStatusChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
         setStatus(value);
@@ -35,7 +36,6 @@ const StatusModal: React.FC<StatusModalProps> = ({
     };
 
     const handleUpdateStatus = () => {
-        // Добавьте здесь логику обновления статуса
         handleChangeStatus(status ? status : '')
         onClose();
     };

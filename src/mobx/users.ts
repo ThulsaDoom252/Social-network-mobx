@@ -1,134 +1,97 @@
 import {makeAutoObservable} from "mobx";
 import {usersApi} from "../api/api";
 import {User} from "../types";
-import {defaultPhotoFilterMode, defaultStatusFilterMode, withPhoto, withStatus} from "../context/filterModes";
-import friendsStore from "./friends"
-import appStore from "./app"
+import friendsStore from "./friends";
+import appStore from "./app";
 
+// Define the UsersStore class
 class UsersStore {
-    itemsPerPage: number = 20
-    newPage: number = 1
-    currentPage: number  = 0
-    totalUserCount: number = 0
-    filterByStatusMode: string = defaultStatusFilterMode
-    filterByPhotoMode: string = defaultPhotoFilterMode
-    searchMode: boolean = false
-    searchRequest: string = ''
-    searchResults: [] | User[] = []
-    users: [] | User[] = [];
-    isUsersLoaded: boolean = false
-    fetchingUserIds: number[] = []
+    itemsPerPage: number = 20; // Number of items per page
+    newPage: number = 1; // New page for pagination
+    currentPage: number = 0; // Current page
+    totalUserCount: number = 0; // Total count of users
+    users: [] | User[] = []; // Array of users
+    isUsersLoaded: boolean = false; // Tracks if users are loaded
+    fetchingUserIds: number[] = []; // IDs of users being fetched
 
     constructor() {
-        makeAutoObservable(this)
+        // Initialize MobX observables for all properties
+        makeAutoObservable(this);
     }
 
+    // Set the total count of users
     setTotalUsersCount(value: number) {
-        this.totalUserCount = value
+        this.totalUserCount = value;
     }
 
-    changeFilterByPhotoMode(value: string) {
-        this.filterByPhotoMode = value
+    // Set the current page
+    setCurrentPage(value: number) {
+        this.currentPage = value;
     }
 
-    changeFilterByStatusMode(value: string) {
-        this.filterByStatusMode = value
-    }
-
-    setCurrentPage(value:number) {
-        this.currentPage = value
-    }
-
+    // Set the array of users
     setUsers(users: any) {
-        this.users = users
+        this.users = users;
     }
 
+    // Set the new page for pagination
     setNewPage(value: number) {
-        this.newPage = value
+        this.newPage = value;
     }
 
+    // Set the number of items per page
     setItemsPerPage(value: number) {
-        this.itemsPerPage = value
+        this.itemsPerPage = value;
     }
 
-    setSearchRequest(value: string) {
-        this.searchRequest = value
-    }
-
-    toggleSearchMode(toggle: boolean) {
-        this.searchMode = toggle
-    }
-
-    searchUsers(request: string) {
-        this.searchRequest = request; // Обновляем поле searchRequest
-        // @ts-ignore
-        this.searchResults = this.users.filter(user => user.name.toLowerCase().includes(request)); // Обновляем searchResults
-    }
-
+    // Toggle the users loaded status
     toggleUsersIsLoaded(toggle: boolean) {
-        this.isUsersLoaded = toggle
+        this.isUsersLoaded = toggle;
     }
 
+    // Follow a user
     async followUser(userId: number, user: User) {
-        debugger
         try {
-            debugger
-            // this.fetchingUserIds.push(userId)
-            await usersApi.followUser(userId)
-            friendsStore.isFriendsLoaded && friendsStore.addFriendToList(user)
-            debugger
-            this.users = this.users.map(user => user.id === userId ? {...user, followed: true} : user)
-            this.fetchingUserIds = this.fetchingUserIds.filter(id => id !== userId);
-            debugger
+            await usersApi.followUser(userId);
+            friendsStore.isFriendsLoaded && friendsStore.addFriendToList(user);
+            this.users = this.users.map((user) =>
+                user.id === userId ? {...user, followed: true} : user
+            );
+            this.fetchingUserIds = this.fetchingUserIds.filter((id) => id !== userId);
         } catch (e) {
-            debugger
-            appStore.setApiError(`Error following user: ${e}`)
+            appStore.setApiError(`Error following user: ${e}`);
         }
     }
 
+    // Unfollow a user
     async unfollowUser(userId: number) {
         try {
-            this.fetchingUserIds.push(userId)
-            await usersApi.unFollowUser(userId)
-            // setLocalStorageData(userId.toString(), 'notFollowing')
-            friendsStore.isFriendsLoaded && friendsStore.deleteFriendFromList(userId)
-            this.users = this.users.map(user => user.id === userId ? {...user, followed: false} : user)
-            this.fetchingUserIds.filter(id => id !== userId)
+            this.fetchingUserIds.push(userId);
+            await usersApi.unFollowUser(userId);
+            friendsStore.isFriendsLoaded && friendsStore.deleteFriendFromList(userId);
+            this.users = this.users.map((user) =>
+                user.id === userId ? {...user, followed: false} : user
+            );
+            this.fetchingUserIds.filter((id) => id !== userId);
         } catch (e) {
-            appStore.setApiError(`Error unfollowing user: ${e}`)
+            appStore.setApiError(`Error unfollowing user: ${e}`);
         }
     }
 
-    async getUsers(count: number, page: number, quarry?: string) {
-        this.toggleUsersIsLoaded(false)
+    // Get a list of users
+    async getUsers(count: number, page: number, query?: string) {
+        this.toggleUsersIsLoaded(false);
         try {
-            const result = await usersApi.getUsers(count, page, quarry)
-            this.setTotalUsersCount(result.totalCount)
-            let filteredUsers: User[] = result.items
-
-            if (this.filterByStatusMode !== defaultStatusFilterMode) {
-                if (this.filterByStatusMode === withStatus) {
-                    filteredUsers = filteredUsers.filter((user: User) => user.status)
-                } else {
-                    filteredUsers = filteredUsers.filter((user: User) => !user.status)
-                }
-            }
-
-            if (this.filterByPhotoMode !== defaultPhotoFilterMode) {
-                if (this.filterByPhotoMode === withPhoto) {
-                    filteredUsers = filteredUsers.filter((user: User) => user.photos.small)
-                } else {
-                    filteredUsers = filteredUsers.filter((user: User) => !user.photos.small)
-                }
-            }
-            this.setUsers(filteredUsers)
-            this.setCurrentPage(page)
-            this.toggleUsersIsLoaded(true)
+            const result = await usersApi.getUsers(count, page, query);
+            this.setTotalUsersCount(result.totalCount);
+            this.setUsers(result.items);
+            this.setCurrentPage(page);
+            this.toggleUsersIsLoaded(true);
         } catch (e) {
-            appStore.setApiError(`Error loading users: ${e}`)
+            appStore.setApiError(`Error loading users: ${e}`);
         }
     }
 }
 
-
-export default new UsersStore()
+// Export a new instance of the UsersStore class
+export default new UsersStore();

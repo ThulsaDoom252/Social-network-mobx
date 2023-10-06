@@ -1,58 +1,44 @@
 import React from 'react';
-import {Skeleton} from "antd";
+import { Skeleton } from "antd";
 
 interface AboutProps {
-    aboutProps: any
-    isProfileDataLoaded: boolean
+    aboutProps: any;
+    isProfileDataLoaded: boolean;
 }
 
-const About: React.FC<AboutProps> = ({aboutProps, isProfileDataLoaded}) => {
+const About: React.FC<AboutProps> = ({ aboutProps, isProfileDataLoaded }) => {
 
-    //Destructuring  props
-    const [userId, lookingForAJobDescription, website, currentUserEmail, isCurrentUser] = aboutProps
+    // Destructuring props
+    const [userId, lookingForAJobDescription, website, currentUserEmail, isCurrentUser] = aboutProps;
 
     return (
-        //Main block
-        <div className='
-        bg-white
-        p-3
-        rounded-md
-        w-60
-        flex
-        flex-col
-        justify-start
-        items-start
-        '>
+        // Main block
+        <div className='bg-white p-3 rounded-md w-60 flex flex-col justify-start items-start'>
             {isProfileDataLoaded ?
                 <>
-                    {/*// Id*/}
+                    {/* Id */}
                     <div>
                         <h4 className='font-bold'>Id</h4>
                         <div>{userId}</div>
                     </div>
-                    {/*Job description*/}
-                    <div className='
-            mt-4'>
-
-                        <h4 className='font-bold'>{lookingForAJobDescription ? 'Skills/job related info' : 'No Skills/job related info'}</h4>
-                        <div>{lookingForAJobDescription}
-                        </div>
+                    {/* Job description */}
+                    <div className='mt-4'>
+                        <h4 className='font-bold'>{lookingForAJobDescription
+                            ? 'Skills/job related info'
+                            : 'No Skills/job related info'}</h4>
+                        <div>{lookingForAJobDescription}</div>
                     </div>
-                    <div className='
-            mt-4
-            '>
+                    <div className='mt-4'>
                         {isCurrentUser &&
                             // Email
                             <>
                                 <h4 className={'font-bold'}>Email</h4>
-                                <div>{currentUserEmail}
-                                </div>
-                            </>}
+                                <div>{currentUserEmail}</div>
+                            </>
+                        }
                     </div>
-                    {/*// Website*/}
-                    <div className='
-            mt-4
-            '>
+                    {/* Website */}
+                    <div className='mt-4'>
                         {website ?
                             <>
                                 <h4 className={'font-bold'}>Website</h4>
@@ -61,7 +47,7 @@ const About: React.FC<AboutProps> = ({aboutProps, isProfileDataLoaded}) => {
                         }
                     </div>
                 </> :
-               <Skeleton/>
+                <Skeleton />
             }
         </div>
     );

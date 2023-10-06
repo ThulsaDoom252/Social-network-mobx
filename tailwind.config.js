@@ -9,14 +9,15 @@ module.exports = {
                 'auth': "url('components/Auth/BG.png')"
             },
             width: {
-                auth: '800px',
+                auth: '900px',
+                leftAuthPart: '500px',
                 profile: '880px',
                 editModal: '1000px',
                 mobileAuthModal: '80vw',
                 desktopAuthModal: '450px',
             },
             maxWidth: {
-                container: '1300px',
+                container: '1400px',
             },
             inset: {
                 mobileNavbar: '-1px',
@@ -26,6 +27,7 @@ module.exports = {
             height: {
                 '90vh': '90vh',
                 'auth': '400px',
+                leftAuthPart: '600px',
                 'authRightBlock': '500px',
             },
             minHeight: {

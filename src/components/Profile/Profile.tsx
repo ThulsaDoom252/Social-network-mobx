@@ -8,6 +8,7 @@ import {
     AiFillYoutube
 } from "react-icons/ai";
 import {Button, Skeleton, Space} from "antd";
+import {contactUrlCheck} from "../../common/common";
 
 interface ProfileProps {
     smallScreenMode?: boolean
@@ -18,7 +19,7 @@ interface ProfileProps {
     isUserFollowed: boolean,
     noContacts: boolean,
     handleOpenModal: (e: React.MouseEvent) => void
-    handleFollowUser: (id:number, isFollowed:boolean) => void
+    handleFollowUser: (id: number, isFollowed: boolean) => void
 }
 
 const Profile: React.FC<ProfileProps> = ({
@@ -34,8 +35,11 @@ const Profile: React.FC<ProfileProps> = ({
                                          }) => {
 
 
-    const [userContacts,
-        aboutMe, lookingForAJobDescription, isLookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUser, userId] = profileProps
+    const [userContacts, aboutMe,
+        lookingForAJobDescription,
+        isLookingForAJob, fullName,
+        photos, handleOpenStatusModal,
+        isCurrentUser, userId] = profileProps
 
     const [github, facebook, instagram, twitter, youtube] = userContacts
 
@@ -47,10 +51,10 @@ const Profile: React.FC<ProfileProps> = ({
         {icon: <AiFillTwitterSquare size={25}/>, src: twitter, color: 'text-blue-300'},
     ]
 
-
     return (
         <div className={`
          bg-white
+         rounded-md
         overflow-y-auto
         ${!smallScreenMode ? 'ml-2 mr-2 w-profile rounded-md'
             : 'w-full'}'}
@@ -60,8 +64,6 @@ const Profile: React.FC<ProfileProps> = ({
             flex            
             w-full
             p-2
-            border-t
-            border-black
             ${tinyScreenMode ? 'h-screen' : 'h-96'}
             ${tinyScreenMode && 'flex-col items-center'}
             ${smallScreenMode && 'pt-4'}
@@ -116,7 +118,8 @@ const Profile: React.FC<ProfileProps> = ({
                                         onClick={handleOpenModal}
                                 >Edit Profile</Button>}
                             <div hidden={isCurrentUser || tinyScreenMode}>
-                                <Button size={'small'} type={'primary'} className={'bg-blue-400'} onClick={() => handleFollowUser(userId, isUserFollowed)}>
+                                <Button size={'small'} type={'primary'} className={'bg-blue-400'}
+                                        onClick={() => handleFollowUser(userId, isUserFollowed)}>
                                     {isUserFollowed ? 'Unfollow' : 'Follow'}
                                 </Button>
                             </div>
@@ -153,7 +156,7 @@ const Profile: React.FC<ProfileProps> = ({
                         </div>
                         <div className={'w-full flex flex-col items-center justify-center mt-2'}>
                             <div
-                                className={`${!noContacts && 'font-bold'}`}>{!noContacts ? 'Contact me' : 'No contacts'}</div>
+                                className={`${!noContacts && 'font-bold'}`}>{!noContacts ? 'Contacts:' : 'No contacts'}</div>
                             <div className={`
                     flex
                      p-4
@@ -161,17 +164,17 @@ const Profile: React.FC<ProfileProps> = ({
                      justify-center 
                      h-fit
                     `}>
-                                <div className={'w-1/2 flex justify-between flex-wrap '}>
-                                    {isProfileDataLoaded && contacts.map((contact, index) => contact.src !== null ?
-                                        <a key={index} title={contact.src}
-                                           className={`${contact.color}`}
-                                           href={contact.src}
-                                           target={'_blank'}
-                                        >{contact.icon}</a> : void 0)}
+                                <div className={'w-1/2 flex justify-center'}>
+                                    {isProfileDataLoaded && contacts.map((contact, index) =>
+                                        (contact.src && contact.src !== '' && contactUrlCheck.test(contact.src)) ?
+                                            <a key={index} title={contact.src}
+                                               className={`${contact.color} mr-2 ml-2`}
+                                               href={contact.src}
+                                               target={'_blank'}
+                                            >{contact.icon}</a> : void 0)}
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 

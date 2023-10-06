@@ -1,14 +1,20 @@
 import React, {useEffect} from 'react';
 import Header from "./components/Header";
-import Info from "./pages/Info";
+import Info from "./components/Info";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import ProfilePage from "./components/Profile/ProfileContainer";
 import MobileNavbar from "./components/MobileNavbar";
-import {authRoute, friendsRoute, infoRoute, rootRoute, usersRoute} from "./common";
+import {
+    authRoute,
+    friendsRoute,
+    infoRoute,
+    rootRoute,
+    usersRoute,
+} from "./common";
 import EditProfileModal from "./components/Profile/EditProfileModal";
-import authStore from "./mobx/auth/auth"
-import profileStore from "./mobx/profile"
-import appStore from "./mobx/app"
+import authStore from "./mobx/auth";
+import profileStore from "./mobx/profile";
+import appStore from "./mobx/app";
 import {observer} from "mobx-react-lite";
 import AuthContainer from "./components/Auth/AuthContainer";
 import {initializeCurrentUser} from "./mobx/initializeCurrentUser";
@@ -19,82 +25,83 @@ import FriendsPageContainer from "./components/Friends/FriendsPageContainer";
 import {useSnackbar} from "notistack";
 
 const App: React.FC = observer(() => {
+    // Snackbar notifications
+    const {enqueueSnackbar} = useSnackbar();
 
-    const {enqueueSnackbar} = useSnackbar()
+    // Current page path
+    const currentPath = appStore.currentPath;
 
-    const isLogged = authStore.isLogged
-    const profileData = profileStore.profileData
-    const isAvatarUpdating = profileStore.isAvatarUpdating
-    const isUserDataUpdating = profileStore.isUserDataUpdating
-    const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded
+    // Authentication state
+    const isLogged = authStore.isLogged;
+    const isLoggedOutByUser = authStore.isLoggedOutByUser;
 
-    const isLoggedOutByUser = authStore.isLoggedOutByUser
-    const apiError = appStore.apiError
-    const successMessage = appStore.successMessage
-    const currentUserId = authStore.id
-    const viewedUserId = profileStore.viewedUserId || currentUserId
+    // Current user info
+    const currentUserEmail = authStore.email;
+    const currentUserId = authStore.id;
+    const currentUserName = profileStore.currentUserProfileData?.fullName;
+    const currentUserAvatar = profileStore.currentUserProfileData?.photos?.large;
+    const viewedUserId = profileStore.viewedUserId || currentUserId;
 
-    const currentPath = appStore.currentPath
+    // Loading current user data
+    const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded;
+    const currentUserProfileData = profileStore.currentUserProfileData;
 
-    //Screen sizes
-    const smallScreenMode = appStore.smallScreen
-    const tinyScreenMode = appStore.tinyScreen
-    const isEditDataModalOpen = appStore.isEditProfileModalOpen
-    const currentUserEmail = authStore.email
-    const isProfileDataLoaded = profileStore.isProfileDataLoaded
-    const currentUserStatus = profileStore.currentUserStatus
-    const currentUserProfileData = profileStore.currentUserProfileData
-    const isStatusModalOpen = profileStore.isStatusModalOpen
-    const isCurrentUserProfile = profileStore.isCurrentUserProfile
+    // Loading user data
+    const isProfileDataLoaded = profileStore.isProfileDataLoaded;
+    const profileData = profileStore.profileData;
+    const currentUserStatus = profileStore.status;
 
-    const handleCloseStatusModal = () => {
-        profileStore.toggleStatusModal(false)
-    }
+    // Is current user profile
+    const isCurrentUserProfile = profileStore.isCurrentUserProfile;
 
-    const handleOpenEditModal = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        appStore.toggleIsEditProfileModalOpen(true)
-    }
-    const handleChangeStatus = (status: string) => {
-        profileStore.updateStatus(status).finally(() => void 0)
-    }
+    // User data update states
+    const isAvatarUpdating = profileStore.isAvatarUpdating;
+    const isUserDataUpdating = profileStore.isUserDataUpdating;
 
-    const currentUsername = profileStore.currentUserProfileData?.fullName
-    const currentUserAvatar = profileStore.currentUserProfileData?.photos?.large
+    // Errors and success messages
+    const apiError = appStore.apiError;
+    const successMessage = appStore.successMessage;
 
+    // Modal states
+    const isEditDataModalOpen = appStore.isEditProfileModalOpen;
+    const isStatusModalOpen = profileStore.isStatusModalOpen;
 
-    //Проверяем авторизацию пользователя, получаем данные пользователя если он авторизирован
+    // Screen sizes
+    const smallScreenMode = appStore.smallScreen;
+    const tinyScreenMode = appStore.tinyScreen;
+
+    // Initializing current user profile if they are authorized
     useEffect(() => {
         if (!isLoggedOutByUser) {
-            initializeCurrentUser().then(() => void 0)
+            initializeCurrentUser().then(() => void 0);
         }
     }, [isLogged]);
 
+    // Toggle snackBar error message depending on apiError value
     useEffect(() => {
         if (apiError) {
-            console.error(`Contacts developer for this error - ${apiError}`)
+            console.error(`Contacts developer for this error - ${apiError}`);
             enqueueSnackbar(`${apiError} . See console for details`, {
-
                 autoHideDuration: 3000,
                 variant: 'error',
             });
         }
     }, [apiError]);
 
+    // Toggle snackbar success message depending on successMessage value
     useEffect(() => {
         if (successMessage) {
-            enqueueSnackbar(successMessage, {autoHideDuration: 1500})
-            appStore.setSuccessMessage(null)
+            enqueueSnackbar(successMessage, {autoHideDuration: 1500});
+            appStore.setSuccessMessage(null);
         }
-
     }, [successMessage]);
 
-    //Подписуемся на изменения размеров экрана, переключая переменную smallScreen
+    // Subscribing to screen size changes by modifying smallScreenMode/TinyScreenMode variables.
     useEffect(() => {
         const handleResize = () => {
             const screenWidth = window.innerWidth;
             appStore.toggleSmallScreen(screenWidth < 1000);
-            appStore.toggleTinyScreen(screenWidth < 481)
+            appStore.toggleTinyScreen(screenWidth < 481);
         };
 
         window.addEventListener("resize", handleResize);
@@ -102,110 +109,170 @@ const App: React.FC = observer(() => {
 
         return () => {
             window.removeEventListener("resize", handleResize);
-        }
+        };
     }, []);
 
-    // Закрываем модульное окно для редактирования данных
-    const handleCloseModal = () => {
-        isEditDataModalOpen && appStore.toggleIsEditProfileModalOpen(false)
-    }
+    // Open/close status modal
+    const handleOpenStatusModal = () => {
+        profileStore.toggleStatusModal(true);
+    };
+    const handleCloseStatusModal = () => {
+        profileStore.toggleStatusModal(false);
+    };
 
+    const handleOpenEditModal = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        appStore.toggleIsEditProfileModalOpen(true);
+    };
+
+    // Change current user status
+    const handleChangeStatus = (status: string) => {
+        profileStore.updateStatus(status).finally(() => void 0);
+    };
+
+    // Closing Edit profile modal by clicking on close btn/empty space
+    const handleCloseModal = () => {
+        isEditDataModalOpen && appStore.toggleIsEditProfileModalOpen(false);
+    };
+    // Initializing component
     if (!appStore.isInitialized) {
-        return <Initialize/>
+        return <Initialize/>;
     }
 
     return (
         <BrowserRouter>
-            <div className={`
+            <div
+                className={`
               w-screen
         h-screen
         ${!isLogged && 'flex justify-center'}
             `}
-                 onClick={handleCloseModal}
+                onClick={handleCloseModal}
             >
-                {isCurrentUserDataLoaded &&
+                {/*///Edit data modal*/}
+                {isCurrentUserDataLoaded && (
                     <EditProfileModal
-                        isCurrentUserDataLoaded={isCurrentUserDataLoaded}
                         isAvatarUpdating={isAvatarUpdating}
                         isUserDataUpdating={isUserDataUpdating}
                         currentUserProfileData={currentUserProfileData}
+                        handleCloseModal={handleCloseModal}
                         smallScreen={smallScreenMode}
-                        // setIsOpen={setIsIsModalOpen}
-                        isOpen={isEditDataModalOpen}/>}
-                <StatusModal visible={isStatusModalOpen}
-                             currentUserStatus={currentUserStatus}
-                             onClose={handleCloseStatusModal}
-                             handleChangeStatus={handleChangeStatus}/>
-                <div className={`
+                        isOpen={isEditDataModalOpen}
+                    />
+                )}
+                <StatusModal
+                    visible={isStatusModalOpen}
+                    currentUserStatus={currentUserStatus}
+                    onClose={handleCloseStatusModal}
+                    handleChangeStatus={handleChangeStatus}
+                />
+                <div
+                    className={`
                 ${isLogged && `  
                 mx-auto
                 max-w-container
-          container
-            bg-blue-200
-          min-h-full
-          overflow-y-scroll`}
+                bg-blue-200
+                min-h-full
+               overflow-y-hidden`}
                     `}
                 >
-                    {isLogged && <Header
-                        currentUserId={currentUserId}
-                        userId={viewedUserId}
-                        handleOpenModal={handleOpenEditModal}
-                        smallScreenMode={smallScreenMode}
-                        avatar={currentUserAvatar}
-                        currentUserName={currentUsername}
-                        tinyScreenMode={tinyScreenMode}
-                        isCurrentUserDataLoaded={isCurrentUserDataLoaded}/>
-                    }
-                    <div className={`
+                    {/*Header*/}
+                    {isLogged && (
+                        <Header
+                            currentUserId={currentUserId}
+                            userId={viewedUserId}
+                            handleOpenModal={handleOpenEditModal}
+                            smallScreenMode={smallScreenMode}
+                            avatar={currentUserAvatar}
+                            currentUserName={currentUserName}
+                            tinyScreenMode={tinyScreenMode}
+                            isCurrentUserDataLoaded={isCurrentUserDataLoaded}
+                        />
+                    )}
+                    <div
+                        className={`
                          ${smallScreenMode ? 'p-0' : 'p-1'}
-                        `}>
-                        <div className={`
+                        `}
+                    >
+                        <div
+                            className={`
                     flex
                     justify-between
                     ${smallScreenMode ? 'flex-col' : 'pt-2'}
-                    `}>
-                            {isLogged && smallScreenMode && <div className={`
+                    `}
+                        >
+                            {isLogged && smallScreenMode && (
+                                <div
+                                    className={`
                             relative
                             w-full
                             h-12
-                            `}>
-
-                                {smallScreenMode && !isEditDataModalOpen &&
-                                    <MobileNavbar viewedUserId={viewedUserId}/>}
-                            </div>}
+                            `}
+                                >
+                                    {/*//SmallScreen navbar */}
+                                    {smallScreenMode && !isEditDataModalOpen && (
+                                        <MobileNavbar viewedUserId={viewedUserId}/>
+                                    )}
+                                </div>
+                            )}
                             <Routes>
-                                <Route path={rootRoute} element={<Navigate to={`/profile/${currentUserId}`}/>}/>
-                                <Route path={authRoute} element={<AuthContainer isLogged={isLogged}
-                                                                                smallScreenMode={smallScreenMode}
-                                                                                currentUserId={currentUserId}
-                                />}/>
-                                <Route path={`/profile/:useridParam?`}
-                                       element={<ProfilePage
-                                           isCurrentUserProfile={isCurrentUserProfile}
-                                           handleOpenModal={handleOpenEditModal}
-                                           tinyScreenMode={tinyScreenMode}
-                                           isLogged={isLogged}
-                                           isCurrentUserDataLoaded={isCurrentUserDataLoaded}
-                                           isProfileDataLoaded={isProfileDataLoaded}
-                                           smallScreenMode={smallScreenMode}
-                                           profileData={profileData}
-                                           currentUserProfileData={currentUserProfileData}
-                                           currentUserId={currentUserId}
-                                           currentUserEmail={currentUserEmail}
-                                           currentUserStatus={currentUserStatus}
-                                           viewedUserId={viewedUserId}
-                                       />}/>
-                                <Route path={friendsRoute}
-                                       element={<FriendsPageContainer mobileMode={smallScreenMode}
-                                                                      isLogged={isLogged}
-                                                                      currentPath={currentPath}
-                                                                      tinyScreenMode={tinyScreenMode}
-
-                                       />}/>
-                                <Route path={usersRoute} element={<UsersContainer smallScreenMode={smallScreenMode}
-                                                                                  tinyScreenMode={tinyScreenMode}
-                                                                                  currentPath={currentPath}
-                                                                                  isLogged={isLogged}/>}/>
+                                <Route
+                                    path={rootRoute}
+                                    element={<Navigate to={`/profile/${currentUserId}`}/>}
+                                />
+                                <Route
+                                    path={authRoute}
+                                    element={
+                                        <AuthContainer
+                                            isLogged={isLogged}
+                                            smallScreenMode={smallScreenMode}
+                                            currentUserId={currentUserId}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path={`/profile/:useridParam?`}
+                                    element={
+                                        <ProfilePage
+                                            isCurrentUserProfile={isCurrentUserProfile}
+                                            handleOpenModal={handleOpenEditModal}
+                                            handleOpenStatusModal={handleOpenStatusModal}
+                                            tinyScreenMode={tinyScreenMode}
+                                            isLogged={isLogged}
+                                            isCurrentUserDataLoaded={isCurrentUserDataLoaded}
+                                            isProfileDataLoaded={isProfileDataLoaded}
+                                            smallScreenMode={smallScreenMode}
+                                            profileData={profileData}
+                                            currentUserProfileData={currentUserProfileData}
+                                            currentUserId={currentUserId}
+                                            currentUserEmail={currentUserEmail}
+                                            currentUserStatus={currentUserStatus}
+                                            viewedUserId={viewedUserId}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path={friendsRoute}
+                                    element={
+                                        <FriendsPageContainer
+                                            mobileMode={smallScreenMode}
+                                            isLogged={isLogged}
+                                            currentPath={currentPath}
+                                            tinyScreenMode={tinyScreenMode}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path={usersRoute}
+                                    element={
+                                        <UsersContainer
+                                            smallScreenMode={smallScreenMode}
+                                            tinyScreenMode={tinyScreenMode}
+                                            currentPath={currentPath}
+                                            isLogged={isLogged}
+                                        />
+                                    }
+                                />
                                 <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
                             </Routes>
                         </div>
@@ -213,8 +280,7 @@ const App: React.FC = observer(() => {
                 </div>
             </div>
         </BrowserRouter>
-
     );
-})
+});
 
 export default App;

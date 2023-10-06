@@ -3,33 +3,28 @@ import {Transition} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
 import {stopPropagation} from "../../common";
 import anon from "../../public/anon.jpg"
-import appStore from "../../mobx/app"
 import {ProfileData} from "../../types";
 import {Button, Form, Input, Select} from "antd";
 import profileStore from "../../mobx/profile";
 import TextArea from "antd/es/input/TextArea";
-import {useSnackbar} from "notistack";
 
 interface EditProfileModalProps {
     isOpen: boolean,
     currentUserProfileData: Partial<ProfileData>
-    // setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     smallScreen?: boolean,
     isAvatarUpdating: boolean,
     isUserDataUpdating: boolean,
-    isCurrentUserDataLoaded: boolean,
+    handleCloseModal: () => void,
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
-                                                               isCurrentUserDataLoaded,
                                                                isOpen,
                                                                smallScreen = false,
                                                                isAvatarUpdating,
-                                                               // setIsOpen,
                                                                isUserDataUpdating,
                                                                currentUserProfileData,
+                                                               handleCloseModal,
                                                            }) => {
-
     //Destructuring props
     const {
         fullName,
@@ -40,23 +35,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         userId,
         photos,
     } = currentUserProfileData as ProfileData
-
-    // Using snackbar
-    const {enqueueSnackbar} = useSnackbar()
-
-    //Setting looking for a job value - to be changeable in form
-    const [lookingForAJobValue, setIsLookingForAJobValue] = useState<('Yes' | 'No') | undefined>(lookingForAJob ? 'Yes' : 'No');
-
-    //Ant design native hook form
-    const [form] = Form.useForm();
-
-    //Ref for hidden file input
-    const hiddenFileInput = useRef<HTMLInputElement>(null);
-
-    if (!isCurrentUserDataLoaded) {
-        return <></>
-    }
-
     const {
         github, twitter,
         facebook, mainLink, website,
@@ -64,7 +42,16 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     } = contacts
     const {large: largePhoto} = photos
 
-    //Contacts array for mapping
+    //Ant design native hook form
+    const [form] = Form.useForm();
+
+    //Setting looking for a job value - to be changeable in form
+    const [lookingForAJobValue, setIsLookingForAJobValue] = useState<('Yes' | 'No') | undefined>(lookingForAJob ? 'Yes' : 'No');
+
+    //Ref for hidden file input
+    const hiddenFileInput = useRef<HTMLInputElement>(null);
+
+    //Contacts array for mapping in form
     const contactsArray = [
         {
             label: 'Instagram',
@@ -102,10 +89,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     const mainTitleStyle: string = `bg-gray-200 w-full border-b border-gray-400`
     const titlesStyle: string = `font-semibold mt-2 cursor-default`
 
-    //Close modal on empty space or close btn click
-    const handleClose = () => appStore.toggleIsEditProfileModalOpen(false);
-
-    //Avatar upload logic
+    //Avatar change handler
     const updateAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files && e.target.files[0];
         if (selectedFile) {
@@ -147,7 +131,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             values.youtube,
             values.mainLink
         );
-        // handleClose()
     };
 
     //Input change handler
@@ -170,6 +153,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     };
 
     return (
+        // Enter/Exit modal animation
         <Transition
             show={isOpen}
             enter={'transition ease-out duration-300'}
@@ -180,10 +164,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             leaveTo={"opacity-0"}
             className={'fixed inset-0 z-10 overflow-y-auto'}
         >
-
-
             <div className="flex items-center justify-center min-h-screen">
-
                 <div className="fixed inset-0 bg-black opacity-30"/>
                 {/*********************Main container*/}
                 <div style={{background: 'rgb(191,191,218)'}}
@@ -196,7 +177,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                      onClick={stopPropagation}
                 >
                     <div
-                        onClick={handleClose}
+                        onClick={handleCloseModal}
                         className={'text-gray-500 absolute top-0 right-1 cursor-pointer'}>
                         <IoClose size={18}/>
                     </div>
@@ -269,7 +250,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                                            },
                                                        ]}
                                                        validateTrigger="onBlur"
-
                                             >
                                                 <Input
                                                     onChange={handleChangeInput}
@@ -288,8 +268,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                                            },
                                                        ]}
                                                        validateTrigger="onBlur"
-
-
                                             >
                                                 <TextArea
                                                     onChange={handleChangeTextArea}
@@ -364,7 +342,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                         </div>
                     </div>
                 </div>
-
             </div>
         </Transition>
     );

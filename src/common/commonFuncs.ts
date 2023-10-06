@@ -8,7 +8,6 @@ export const truncate = (text: string, maxCharacters = 15) => {
         return text
     }
 }
-
 export const delay = (ms: number): Promise<void> => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -17,5 +16,3 @@ export const delay = (ms: number): Promise<void> => {
     });
 };
 
-
-export const setLocalStorageData = (key: string, data: string) => localStorage.setItem(key, data)

@@ -4,30 +4,32 @@ import authHoc from "../../hoc/authHoc";
 import usersStore from "../../mobx/users"
 import {User} from "../../types";
 import {observer} from "mobx-react-lite";
-import PageContainer from "../common/PageContainer";
-import Paginator from "../Paginator/Paginator";
+import PageContainer from "../Common/PageContainer";
+import Paginator from "../Paginator";
 import SearchMenuCloseOverlay from "../Search/SearchMenuCloseOverlay";
 import SearchBar from "../Search/SearchBar";
 import {SearchContext} from "../../context/SearchContext";
 import appStore from "../../mobx/app"
 
-
+// Props interface for the UsersContainer component
 interface UsersContainerProps {
-    smallScreenMode: boolean
-    tinyScreenMode: boolean
-    isLogged: boolean,
-    currentPath: string,
+    smallScreenMode: boolean;       // Indicates if in small screen mode
+    tinyScreenMode: boolean;        // Indicates if in tiny screen mode
+    isLogged: boolean;              // Indicates if the user is logged in
+    currentPath: string;            // Current path
 }
 
+// UsersContainer component
 const UsersContainer: React.FC<UsersContainerProps> = observer(({
                                                                     smallScreenMode,
                                                                     tinyScreenMode,
                                                                     currentPath,
                                                                 }) => {
+    // Access the SearchContext
     const searchContext = useContext(SearchContext)
 
+    // Extract variables and functions from the SearchContext
     const newPage = usersStore.newPage
-
     const {
         searchResults,
         searchRequest,
@@ -47,55 +49,55 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
         filterMode
     } = searchContext
 
+    // Determine users to display based on search and filter settings
     const isUsersLoaded = usersStore.isUsersLoaded
     const usersToShow = filterMode && !searchMode ? filteredUsers : searchMode ? searchResults : users
     const currentPage = usersStore.currentPage
     const itemsPerPage = usersStore.itemsPerPage
     const totalUsersCount = usersStore.totalUserCount
-    const noSearchResults = searchMode && usersToShow.length === 0
+    const noSearchResults = (searchMode || filterMode) && usersToShow.length === 0
 
-
+    // Set current path when component mounts
     useEffect(() => {
         currentPath !== 'users' && appStore.setCurrentPath('users')
-
         return () => {
             appStore.setCurrentPath('')
         }
-
     }, []);
 
-
+    // Load users when items per page or page number changes. Maintain loaded page number on new component mount
     useEffect(() => {
         if (itemsPerPage !== newItemsPerPageValue || currentPage !== newPage) {
             usersStore.getUsers(newItemsPerPageValue, newPage).then(() => void 0)
             usersStore.setItemsPerPage(newItemsPerPageValue)
         }
-        // enqueueSnackbar('Users loaded')
     }, [newItemsPerPageValue, newPage]);
 
 
-    const followUser = (userId: number, user: User) => usersStore.followUser(userId, user)
-    const unfollowUser = (userId: number) => usersStore.unfollowUser(userId)
-
-
-    const followUserHandler = async (isFollowed: boolean, userId: number, user: User) => {
+    // Toggle follow/unfollow user and update the  store
+    const followUserHandler = (isFollowed: boolean, userId: number, user: User) => {
         if (isFollowed) {
-            await unfollowUser(userId)
+            usersStore.unfollowUser(userId).then(() => void 0)
         } else {
-            await followUser(userId, user)
+            usersStore.followUser(userId, user).then(() => void 0)
         }
     }
+
     const handleChangePage = (value: number) => {
         usersStore.setNewPage(value)
     }
 
     return (
         <>
+            {/* Display search menu close overlay */}
             {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={() => setIsSearchMenuActive(false)}/>}
+
+            {/* Page container */}
             <PageContainer>
-                <h4 className='
-            w-full text-center font-bold
-            '>Users({usersToShow.length})</h4>
+                {/* Display the total number of users */}
+                <h4 className='w-full text-center font-bold'>Users({usersToShow.length})</h4>
+
+                {/* Search bar component */}
                 <SearchBar
                     menuType={'users'}
                     isItemsLoaded={isUsersLoaded}
@@ -103,7 +105,6 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     toggleSearchMenu={setIsSearchMenuActive}
                     searchRequest={searchRequest}
                     clearSearchRequest={clearSearchRequest}
-                    isUsersLoaded={isUsersLoaded}
                     handleSearchRequest={handleSearchRequest}
                     usersPerPage={itemsPerPage}
                     handleUsersPerPage={handleItemsPerPage}
@@ -113,6 +114,8 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     handleFilterByStatusMode={handleFilterByStatusMode}
                     isSearchMenuActive={isSearchMenuActive}
                 />
+
+                {/* Paginator component */}
                 <Paginator
                     currentPage={currentPage}
                     totalItems={totalUsersCount}
@@ -120,6 +123,8 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     handleChangePage={handleChangePage}
                     smallScreenMode={smallScreenMode}
                 />
+
+                {/* Users component */}
                 <Users
                     followUserHandler={followUserHandler}
                     usersToShow={usersToShow}
@@ -128,7 +133,6 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
                     tinyScreenMode={tinyScreenMode}
                     noSearchResults={noSearchResults}
                 />
-
             </PageContainer>
         </>
     )

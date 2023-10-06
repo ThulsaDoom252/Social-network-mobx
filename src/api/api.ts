@@ -12,16 +12,10 @@ export const usersApi = {
     },
 
     getFriends: async (count: number = 100) => {
-        debugger
         return instance.get(`users?friend=true&count=${count}`)
             .then(response => response.data)
     },
 
-    getIsUserFollowedInfo: async (userId: number) => {
-        return instance.get(`follow/${userId}`)
-            .then(response => response.data)
-
-    },
 
     followUser: async (userId: number) => {
         return instance.post(`follow/${userId}`, {})

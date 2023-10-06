@@ -1,5 +1,5 @@
 import React from 'react';
-import {Transition} from "react-transition-group";
+import {Transition} from "@headlessui/react";
 import Select from "antd/es/select";
 import {
     byNameAlphabet,
@@ -9,12 +9,12 @@ import {
     sortDefaultValue
 } from "../../context/sortModes";
 
-
+// Props interface for the FriendsSearchMenu component
 interface FriendsMenuProps {
-    isOpen: boolean;
-    sortByNameValue?: string,
-    sortByPhotoValue?: string,
-    handleCurrentSortTypeValue?: (value: string) => void,
+    isOpen: boolean;                               // Flag to indicate if the menu is open
+    sortByNameValue?: string;                      // Value for sorting by name
+    sortByPhotoValue?: string;                     // Value for sorting by photo
+    handleCurrentSortTypeValue?: (value: string) => void;   // Function to handle sorting type change
 }
 
 const FriendsSearchMenu: React.FC<FriendsMenuProps> = ({
@@ -24,33 +24,47 @@ const FriendsSearchMenu: React.FC<FriendsMenuProps> = ({
                                                            handleCurrentSortTypeValue,
                                                        }) => {
     return (
-        <Transition in={isOpen} timeout={1000}>
-            {(state) =>
-                isOpen ? (
-                    <div className={`menu ${state}`}>
-                        <div className="bg-white w-64 p-2 rounded-md flex flex-col items-center">
-                            <div className="w-full flex flex-col items-center">
-                                <div>
-                                    <p>Sort by name:</p>
-                                    <Select size="small" value={sortByNameValue} style={{width: 200}}
-                                            onChange={ handleCurrentSortTypeValue}>
-                                        <Select.Option value={byNameAlphabet}>Alphabet order</Select.Option>
-                                        <Select.Option value={byNameReverse}>Reverse order</Select.Option>
-                                        <Select.Option value={sortDefaultValue}>Default</Select.Option>
-                                    </Select>
-                                    <p>Sort by photo:</p>
-                                    <Select size="small" value={sortByPhotoValue} style={{width: 200}}
-                                            onChange={handleCurrentSortTypeValue}>
-                                        <Select.Option value={byPhoto}>With Photo</Select.Option>
-                                        <Select.Option value={byNoPhoto}>Without photo</Select.Option>
-                                        <Select.Option value={sortDefaultValue}>Default</Select.Option>
-                                    </Select>
-                                </div>
-                            </div>
+        <Transition show={isOpen}
+                    enter={'transition ease-out duration-300'}
+                    enterFrom={"opacity-0"}
+                    enterTo={"opacity-100"}
+                    leave={"transition ease-in duration-200"}
+                    leaveFrom={"opacity-100"}
+                    leaveTo={"opacity-0"}
+
+        >
+            <div className={`menu`}>
+                <div className="bg-white w-64 p-2 rounded-md flex flex-col items-center">
+                    <div className="w-full flex flex-col items-center">
+                        <div>
+                            <p>Sort by name:</p>
+                            {/* Dropdown to select sorting by name */}
+                            <Select
+                                size="small"
+                                value={sortByNameValue}
+                                style={{width: 200}}
+                                onChange={handleCurrentSortTypeValue}
+                            >
+                                <Select.Option value={byNameAlphabet}>Alphabet order</Select.Option>
+                                <Select.Option value={byNameReverse}>Reverse order</Select.Option>
+                                <Select.Option value={sortDefaultValue}>Default</Select.Option>
+                            </Select>
+                            <p>Sort by photo:</p>
+                            {/* Dropdown to select sorting by photo presence */}
+                            <Select
+                                size="small"
+                                value={sortByPhotoValue}
+                                style={{width: 200}}
+                                onChange={handleCurrentSortTypeValue}
+                            >
+                                <Select.Option value={byPhoto}>With Photo</Select.Option>
+                                <Select.Option value={byNoPhoto}>Without photo</Select.Option>
+                                <Select.Option value={sortDefaultValue}>Default</Select.Option>
+                            </Select>
                         </div>
                     </div>
-                ) : null
-            }
+                </div>
+            </div>
         </Transition>
     );
 };

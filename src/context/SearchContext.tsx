@@ -41,29 +41,30 @@ export interface SearchContextData {
     handleCurrentSortType: (value: string) => void,
     users: User[],
     filteredUsers: User[],
+
 }
 
+// Create a context to hold search-related data
 const SearchContext = createContext<SearchContextData>({} as SearchContextData);
+
 
 interface SearchContextProviderProps {
     children: ReactNode;
 }
 
 const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({children}) => {
+    // Access some store and initial state data
     const currentPath = appStore.currentPath
     const friends = friendStore.friends
 
+    // Define state variables
     const [users, setUsers] = useState(usersStore.users);
-
     const [filteredUsers, setFilteredUsers] = useState<User[]>([])
     const [searchResults, setSearchResults] = useState<User[]>([]);
-
     const [searchMode, toggleSearchMode] = useState<boolean>(false);
     const [filterMode, toggleFilterMode] = useState<boolean>(false)
     const [isSearchMenuActive, setIsSearchMenuActive] = useState<boolean>(false);
-
     const [newItemsPerPageValue, setNewItemsPerPageValue] = useState<number>(usersStore.itemsPerPage)
-
     const [searchRequest, setSearchRequest] = useState<string>('');
     const [currentSortTypeValue, setCurrentSortType] = useState<string>(sortDefaultValue)
     const [sortByPhotoValue, setSortByPhotoValue] = useState<string>(sortDefaultValue)
@@ -71,13 +72,16 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
     const [filterByStatusMode, setFilterByStatusMode] = useState<string>(defaultStatusFilterMode);
     const [filterByPhotoMode, setFilterByPhotoMode] = useState<string>(defaultPhotoFilterMode);
 
+    //Update users state depending on users from store change
     useEffect(() => {
         if (usersStore.users.length > 0) {
             setUsers(usersStore.users)
+            filterMode && filterUsers()
         }
 
     }, [usersStore.users]);
 
+    //Sorting friends items depending on currentSortTypeValue
     useEffect(() => {
         if (currentSortTypeValue === byPhoto || currentSortTypeValue === byNoPhoto) {
             sortByNameValue !== sortDefaultValue && setSortByNameValue(sortDefaultValue)
@@ -96,6 +100,7 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         }
     }, [currentSortTypeValue]);
 
+    //Toggle filter mode based on filter criteria
     useEffect(() => {
         if (filterByStatusMode !== defaultStatusFilterMode || filterByPhotoMode !== defaultPhotoFilterMode) {
             !filterMode && toggleFilterMode(true)
@@ -106,6 +111,7 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
     }, [filterByStatusMode, filterByPhotoMode]);
 
 
+    //Toggle search mode is search request is not empty
     useEffect(() => {
         if (searchRequest === '') {
             searchMode && toggleSearchMode(false);
@@ -115,6 +121,8 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         searchItems(searchRequest);
     }, [searchRequest]);
 
+
+    // Filter users depending on filterMode
     useEffect(() => {
         filterUsers()
     }, [filterByStatusMode, filterByPhotoMode]);
@@ -185,6 +193,7 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({c
         setSearchRequest(value.toLowerCase());
     };
 
+    // Define the data to be provided by the context
     const data: SearchContextData = {
         searchResults,
         searchRequest,

@@ -7,10 +7,8 @@ import {
     withPhoto,
     withStatus
 } from "./context/filterModes";
-import {byNameAlphabet, byNameReverse, byNoPhoto, byPhoto} from "./context/sortModes";
 
 //AuthContainer
-
 export type OnFinishFunction = (values: {
     email: string;
     password: string;

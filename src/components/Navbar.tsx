@@ -16,56 +16,50 @@ const Navbar: React.FC<NavbarProps> = ({
                                            width,
                                            userId,
                                        }) => {
-    const isActiveStyle: string = `text-black`;
-    const inactiveStyle: string = `text-gray-500 no-underline !important'}`;
+
+    const activeStyle: string = `text-black underline`;
+    const inactiveStyle: string = `text-gray-500 no-underline`;
+    const navItemStyle: string = 'm-2 flex items-center'
 
     return (
         <div className={`       
         flex
         justify-between
         items-center
+        text-xl
         ${width}
         `
         }
         >
-            <p className={`
-            flex
-            items-center
-            `}>
+            <p className={navItemStyle}>
                 {showIcons && <ImProfile/>}
 
                 <NavLink className={navData =>
-                    navData.isActive ? isActiveStyle : inactiveStyle}
+                    navData.isActive ? activeStyle : inactiveStyle}
                          to={`/profile/${userId}`}>
                     Profile
                 </NavLink>
             </p>
-            <p className='
-            flex
-            items-center'>
+            <p className={navItemStyle}>
                 {showIcons && <FaUserFriends/>}
                 <NavLink className={navData =>
-                    navData.isActive ? isActiveStyle : inactiveStyle}
+                    navData.isActive ? activeStyle : inactiveStyle}
                          to={friendsRoute}>
                     Friends
                 </NavLink>
             </p>
-            <p className='
-            flex
-            items-center'>
+            <p className={navItemStyle}>
                 {showIcons && <FaUsers/>}
                 <NavLink className={navData =>
-                    navData.isActive ? isActiveStyle : inactiveStyle}
+                    navData.isActive ? activeStyle : inactiveStyle}
                          to={usersRoute}>
                     Users
                 </NavLink>
             </p>
-            <p className='
-            flex
-            items-center'>
+            <p className={navItemStyle}>
                 {showIcons && <FaCircleInfo/>}
                 <NavLink className={navData =>
-                    navData.isActive ? isActiveStyle : inactiveStyle}
+                    navData.isActive ? activeStyle : inactiveStyle}
                          to={infoRoute}>
                     Info
                 </NavLink>

@@ -2,9 +2,7 @@ import React from 'react';
 
 interface searchMenuCloseOverlayProps {
     toggleSearchMenu: React.Dispatch<React.SetStateAction<boolean>>
-
 }
-
 
 const SearchMenuCloseOverlay: React.FC<searchMenuCloseOverlayProps> = ({toggleSearchMenu}) => {
     return (
