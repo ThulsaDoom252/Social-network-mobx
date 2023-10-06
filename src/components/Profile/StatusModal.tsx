@@ -54,7 +54,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                     key="update"
                     type="primary"
                     onClick={handleUpdateStatus}
-                    disabled={statusError !== null || status === null || status.length === 0}
+                    disabled={statusError !== null || status === null || status.length === 0 || currentUserStatus === status}
                 >
                     Update
                 </Button>,
