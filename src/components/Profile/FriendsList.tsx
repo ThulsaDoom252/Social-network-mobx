@@ -12,8 +12,10 @@ interface FriendsListProps {
 }
 
 const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => {
+    const noFriends = isFriendsLoaded && friends.length === 0
+
     return (
-        <div className='
+        <div className={`
             flex
             p-2
             w-60
@@ -21,10 +23,10 @@ const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => 
             rounded-md
             bg-white
             flex-col
-            items-start
-            justify-start
-        '>
-            {isFriendsLoaded && <div>{friends.length !== 0 ? `Friends(${friends.length})` : 'No friends yet'}</div>}
+            ${noFriends ? 'items-center justify-center' : 'items-start justify-start'}
+        `}>
+            {isFriendsLoaded && <div
+                className={'w-full text-center'}>{friends.length !== 0 ? `Friends(${friends.length})` : 'No friends yet'}</div>}
 
             {/* Grid layout for friend avatars */}
             <div className='
@@ -55,21 +57,22 @@ const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => 
 
             {/* Display "Go to list" button if friends are loaded */}
             {isFriendsLoaded && <>
-                <hr className='
+                {!noFriends &&
+                    <hr className='
                     mt-5
-                    border-2
+                    border
                     rounded
                     border-gray-400
                     w-full
-                '/>
+                '/>}
                 <div className='
                     h-full
                     w-full
                     flex
-                    items-center
+                    items-end
                     justify-center
                 '>
-                    {friends.length !== 0 &&
+                    {!noFriends &&
                         <NavLink to={friendsRoute} className={'mt-2'}>
                             <Button type={'primary'} size={'middle'} className={'bg-blue-400'}>Go to list</Button>
                         </NavLink>}
