@@ -1,7 +1,7 @@
 import React from 'react';
-import { HandleSearchRequestType } from "../../types";
-import { Input } from "antd";
-import { CloseOutlined, ControlOutlined, UserOutlined } from "@ant-design/icons";
+import {HandleSearchRequestType} from "../../types";
+import {Input} from "antd";
+import {CloseOutlined, ControlOutlined, UserOutlined} from "@ant-design/icons";
 import UsersSearchMenu from "./UsersSearchmenu";
 import FriendsSearchMenu from "./FriendsSearchMenu";
 
@@ -24,6 +24,8 @@ interface SearchBarProps {
     sortByPhotoValue?: string;                                   // Value for sorting by photo
     handleCurrentSortTypeValue?: (value: string) => void;         // Function to handle current sort type change
     isItemsLoaded: boolean;                                      // Flag indicating if items are loaded
+    noItems: boolean
+    placeholder: string
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -44,16 +46,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                                  sortByPhotoValue,
                                                  handleCurrentSortTypeValue,
                                                  isItemsLoaded,
+                                                 noItems,
+                                                 placeholder,
                                              }) => {
 
     return (
         <div className={`w-full mt-2 flex justify-center relative ${isSearchMenuActive ? 'active' : ''}`}>
             {/* Input for search query */}
             <Input
-                disabled={!isItemsLoaded}
+                disabled={noItems || !isItemsLoaded}
                 value={searchRequest}
-                placeholder="default size"
-                prefix={<UserOutlined />}
+                placeholder={placeholder}
+                prefix={<UserOutlined/>}
                 onChange={handleSearchRequest}
             />
             {/* Button to toggle search menu */}
@@ -65,14 +69,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 } transition-all duration-300`}
                 onClick={() => toggleSearchMenu(!isSearchMenuOpen)}
             >
-                <ControlOutlined />
+                <ControlOutlined/>
             </div>
             {/* Button to clear search query */}
             <div
                 className={`right-2 top-1 text-gray-400 absolute z-20 hover:cursor-pointer hover:text-gray-500 transition-all duration-300`}
                 onClick={clearSearchRequest}
             >
-                <CloseOutlined />
+                <CloseOutlined/>
             </div>
             {isItemsLoaded && (
                 <div className={'absolute z-20 right-5 top-10 '}>

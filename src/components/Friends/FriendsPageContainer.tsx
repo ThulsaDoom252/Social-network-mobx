@@ -1,13 +1,13 @@
-import React, { useContext, useEffect } from 'react';
+import React, {useContext, useEffect} from 'react';
 import friendsStore from "../../mobx/friends";
 import authHoc from "../../hoc/authHoc";
 import Friends from "./Friends";
-import { observer } from "mobx-react-lite";
-import { SearchContext } from "../../context/SearchContext";
+import {observer} from "mobx-react-lite";
+import {SearchContext} from "../../context/SearchContext";
 import SearchBar from "../Search/SearchBar";
 import PageContainer from "../Common/PageContainer";
-import { Button, Tooltip } from 'antd';
-import { InfoCircleOutlined } from "@ant-design/icons";
+import {Button, Tooltip} from 'antd';
+import {InfoCircleOutlined} from "@ant-design/icons";
 import SearchMenuCloseOverlay from "../Search/SearchMenuCloseOverlay";
 import appStore from "../../mobx/app";
 
@@ -22,7 +22,8 @@ interface FriendsContainerProps {
 const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({
                                                                             mobileMode,
                                                                             tinyScreenMode,
-                                                                            currentPath }) => {
+                                                                            currentPath
+                                                                        }) => {
     const searchContext = useContext(SearchContext);
 
     // Destructuring properties from the SearchContext
@@ -78,7 +79,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({
     return (
         <PageContainer>
             {/* Display search menu close overlay if active */}
-            {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={() => setIsSearchMenuActive(false)} />}
+            {isSearchMenuActive && <SearchMenuCloseOverlay toggleSearchMenu={() => setIsSearchMenuActive(false)}/>}
 
             {/* Display the number of friends if available */}
             {isFriendsLoaded && friendsToShow.length !== 0 &&
@@ -87,7 +88,7 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({
                     <Tooltip title="Maximum 100">
                         <Button
                             type="default"
-                            icon={<InfoCircleOutlined color={'gray'} />}
+                            icon={<InfoCircleOutlined color={'gray'}/>}
                             shape="circle"
                             className={'bg-transparent border-0'}
                         >
@@ -97,11 +98,13 @@ const FriendsPageContainer: React.FC<FriendsContainerProps> = observer(({
 
             {/* Display the search bar */}
             <SearchBar
+                placeholder={'Search friends'}
                 menuType={'friends'}
                 isItemsLoaded={isFriendsLoaded}
                 isSearchMenuOpen={isSearchMenuActive}
                 toggleSearchMenu={setIsSearchMenuActive}
                 searchRequest={searchRequest}
+                noItems={noFriends}
                 clearSearchRequest={clearSearchRequest}
                 handleSearchRequest={handleSearchRequest}
                 usersPerPage={100}

@@ -99,11 +99,13 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
 
                 {/* Search bar component */}
                 <SearchBar
+                    placeholder={'Search users'}
                     menuType={'users'}
                     isItemsLoaded={isUsersLoaded}
                     isSearchMenuOpen={isSearchMenuActive}
                     toggleSearchMenu={setIsSearchMenuActive}
                     searchRequest={searchRequest}
+                    noItems={users.length === 0}
                     clearSearchRequest={clearSearchRequest}
                     handleSearchRequest={handleSearchRequest}
                     usersPerPage={itemsPerPage}

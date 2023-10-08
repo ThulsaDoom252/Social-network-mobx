@@ -1,10 +1,8 @@
 import axios from "axios";
-
 export const instance = axios.create({
     withCredentials: true,
     baseURL: "https://social-network.samuraijs.com/api/1.0/",
 });
-
 export const usersApi = {
     getUsers: async (count: number = 10, page: number = 1, quarry?: string) => {
         return instance.get(`users?page=${page}&count=${count}`)

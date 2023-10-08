@@ -26,17 +26,19 @@ const Friends: React.FC<FriendsPageProps> = ({
                                                  noFriends,
                                                  noFriendsSearchResults,
                                              }) => {
+
+    (window as any).s1 = noFriends
     return (
         <>
-            {noFriends || noFriendsSearchResults &&
-            <div className={'w-96 mt-40 mx-auto flex justify-between'}>
-                <>
-                    <div ><TbFriendsOff size={30}/></div>
-                    <div>{noFriends ? 'No friends yet...' :
-                        noFriendsSearchResults ? 'No results match your criteria'
-                            : void 0}</div>
-                </>
-            </div>}
+            {(noFriends || noFriendsSearchResults) &&
+                <div className={'w-full mt-40 mx-auto flex justify-center'}>
+                    <>
+                        <div><TbFriendsOff size={30}/></div>
+                        <div className={'ml-2'}>{noFriends ? 'No friends yet...' :
+                            noFriendsSearchResults ? 'No results match your criteria'
+                                : void 0}</div>
+                    </>
+                </div>}
             {/*//List block*/}
             <div className={`
               w-full
