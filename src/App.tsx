@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import Header from "./components/Header";
-import Info from "./components/Info";
+import Info from "./components/Info/Info";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import ProfilePage from "./components/Profile/ProfileContainer";
 import MobileNavbar from "./components/MobileNavbar";
@@ -273,7 +273,12 @@ const App: React.FC = observer(() => {
                                         />
                                     }
                                 />
-                                <Route path={infoRoute} element={<Info isLogged={isLogged}/>}/>
+                                <Route path={infoRoute}
+                                       element={<Info isLogged={isLogged}
+                                                      smallScreenMode={smallScreenMode}
+                                                      tinyScreenMode={tinyScreenMode}
+
+                                       />}/>
                             </Routes>
                         </div>
                     </div>

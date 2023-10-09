@@ -12,6 +12,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
                                                          height,
                                                          children,
                                                          smallScreenMode,
+
                                                      }) => {
     return (
         <div className={`
