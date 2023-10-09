@@ -80,8 +80,11 @@ const App: React.FC = observer(() => {
     // Toggle snackBar error message depending on apiError value
     useEffect(() => {
         if (apiError) {
-            console.error(`Contacts developer for this error - ${apiError}`);
-            enqueueSnackbar(`${apiError} . See console for details`, {
+            const isNotApiError = apiError === 'You have changed nothing'
+            {
+                !isNotApiError && console.error(`Contacts developer for this error - ${apiError}`);
+            }
+            enqueueSnackbar(`${apiError}  ${!isNotApiError ? 'see console for detail' : ''}`, {
                 autoHideDuration: 3000,
                 variant: 'error',
             });
@@ -275,7 +278,6 @@ const App: React.FC = observer(() => {
                                 />
                                 <Route path={infoRoute}
                                        element={<Info isLogged={isLogged}
-                                                      smallScreenMode={smallScreenMode}
                                                       tinyScreenMode={tinyScreenMode}
 
                                        />}/>

@@ -68,7 +68,6 @@ const UsersContainer: React.FC<UsersContainerProps> = observer(({
     // Load users when items per page or page number changes. Maintain loaded page number on new component mount
     useEffect(() => {
         if (itemsPerPage !== newItemsPerPageValue || currentPage !== newPage) {
-            debugger
             usersStore.getUsers(newItemsPerPageValue, newPage).then(() => void 0)
             usersStore.setItemsPerPage(newItemsPerPageValue)
         }

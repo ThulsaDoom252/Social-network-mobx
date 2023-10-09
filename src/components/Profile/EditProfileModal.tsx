@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {Transition} from '@headlessui/react';
 import {IoClose} from "react-icons/io5";
 import {stopPropagation} from "../../common";
@@ -8,6 +8,8 @@ import {Button, Form, Input, Select} from "antd";
 import profileStore from "../../mobx/profile";
 import TextArea from "antd/es/input/TextArea";
 import {contactUrlCheck} from "../../common/common";
+import appStore from "../../mobx/app"
+import {delay} from "../../common/commonFuncs";
 
 interface EditProfileModalProps {
     isOpen: boolean,
@@ -47,6 +49,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     //Ant design native hook form
     const [form] = Form.useForm();
+
+    const [initialFormValues, setInitialFormValues] = useState<Partial<Record<string, any>>>({});
+
 
     //Setting looking for a job value - to be changeable in form
     const [lookingForAJobValue, setIsLookingForAJobValue] = useState<('Yes' | 'No') | undefined>(lookingForAJob ? 'Yes' : 'No');
@@ -116,9 +121,37 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         youtube,
     })
 
+    useEffect(() => {
+        if (isOpen) {
+            setInitialFormValues({
+                fullName,
+                aboutMe,
+                lookingForAJob: lookingForAJob ? 'Yes' : 'No',
+                lookingForAJobDescription,
+                github,
+                twitter,
+                facebook,
+                instagram,
+                website,
+                youtube,
+            });
+        }
+    }, [isOpen, fullName, aboutMe, lookingForAJob, lookingForAJobDescription,
+        github, twitter, facebook, instagram, website, youtube]);
+
 
     //Handle submit form
     const onFinish = async (values: any) => {
+        const formChanged = Object.keys(values).some(key => values[key] !== initialFormValues[key]);
+
+        if (!formChanged) {
+            appStore.setApiError('You have changed nothing')
+            await delay(100)
+            appStore.setApiError('')
+            return
+        }
+
+
         // Refreshing mobx state depending on form values
         await profileStore.updateUserData(
             userId.toString(),
