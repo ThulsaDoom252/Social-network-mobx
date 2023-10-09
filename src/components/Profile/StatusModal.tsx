@@ -27,7 +27,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
     //Change/update handlers
     const handleStatusChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
-        setStatus(value);
+        setStatus( value);
         if (value.length > 300) {
             setStatusError('Status should not exceed 300 characters.');
         } else {
@@ -54,7 +54,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                     key="update"
                     type="primary"
                     onClick={handleUpdateStatus}
-                    disabled={statusError !== null || status === null || status.length === 0}
+                    disabled={statusError !== null || status === null || currentUserStatus === status}
                 >
                     Update
                 </Button>,

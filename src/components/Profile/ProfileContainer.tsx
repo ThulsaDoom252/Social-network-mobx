@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import About from "./About";
 import Profile from "./Profile";
 import FriendsList from "./FriendsList";
 import authHoc from "../../hoc/authHoc";
 import profileStore from "../../mobx/profile";
 import friendsStore from "../../mobx/friends";
-import { ProfileData } from "../../types";
-import { useParams } from "react-router-dom";
+import {ProfileData} from "../../types";
+import {useParams} from "react-router-dom";
 import usersStore from "../../mobx/users";
-import { observer } from "mobx-react-lite";
-import { contactUrlCheck } from "../../common/common";
+import {observer} from "mobx-react-lite";
+import {contactUrlCheck} from "../../common/common";
 
 // Props interface for the ProfileContainer component
 interface ProfilePageProps {
@@ -42,7 +42,8 @@ const ProfileContainer: React.FC<ProfilePageProps> = observer(({
                                                                    isCurrentUserDataLoaded,
                                                                    isCurrentUserProfile,
                                                                    viewedUserId,
-                                                                   handleOpenStatusModal }) => {
+                                                                   handleOpenStatusModal
+                                                               }) => {
 
     // Destructuring props
     const {
@@ -56,10 +57,19 @@ const ProfileContainer: React.FC<ProfilePageProps> = observer(({
     } = (isCurrentUserProfile ? currentUserProfileData : profileData) as ProfileData || {};
 
     // Destructuring contacts
-    const { github, facebook, instagram, twitter, website, youtube } = contacts || {};
+    const {github, facebook, instagram, twitter, website, youtube} = contacts || {};
+
+    // Arrays of props for child components
+    const aboutProps = [userId, lookingForAJobDescription, website, currentUserEmail,
+        isCurrentUserProfile, isProfileDataLoaded];
+    const userContacts = [github, facebook, instagram, twitter, youtube];
+
+    const profileProps = [userContacts, aboutMe, lookingForAJobDescription,
+        lookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUserProfile, userId];
+
 
     // Getting the user ID parameter from the URL
-    const { useridParam } = useParams();
+    const {useridParam} = useParams();
     const parsedUserIdParam = parseInt(useridParam || '0');
 
     // States to handle empty contacts
@@ -73,6 +83,8 @@ const ProfileContainer: React.FC<ProfilePageProps> = observer(({
 
     // Check if data is loaded for the current user
     const isDataLoaded = isCurrentUserProfile ? isCurrentUserDataLoaded : isProfileDataLoaded;
+
+    const isCurrentProfileUpdated = profileStore.isCurrentProfileUpdated
 
     // Toggle if the profile belongs to the current user
     useEffect(() => {
@@ -94,19 +106,19 @@ const ProfileContainer: React.FC<ProfilePageProps> = observer(({
     // Checking if the user has contacts in the proper URL format (only gitРub, facebook, instagram, Twitter, YouTube)
     useEffect(() => {
         emptyContacts !== 0 && setEmptyContacts(0);
-        if (isProfileDataLoaded) {
+        if (isDataLoaded) {
             noContacts && setIsNoContacts(false);
             userContacts.forEach(contact => (!contact || contact === '' || !contactUrlCheck.test(contact))
                 && setEmptyContacts(prevValue => prevValue + 1));
         }
-    }, [isProfileDataLoaded]);
+    }, [isProfileDataLoaded, isCurrentProfileUpdated, userContacts]);
 
     // Set a flag if there are no contacts
     useEffect(() => {
         if (emptyContacts === 5) {
             setIsNoContacts(true);
         }
-    }, [emptyContacts]);
+    }, [emptyContacts, userContacts]);
 
     // Function to handle following/unfollowing a user
     const handleFollowUser = async (id: number, isFollowed: boolean) => {
@@ -125,17 +137,9 @@ const ProfileContainer: React.FC<ProfilePageProps> = observer(({
         await profileStore.getIsUserFollowedInfo(id);
     };
 
-    // Arrays of props for child components
-    const aboutProps = [userId, lookingForAJobDescription, website, currentUserEmail,
-        isCurrentUserProfile, isProfileDataLoaded];
-    const userContacts = [github, facebook, instagram, twitter, youtube];
-
-    const profileProps = [userContacts, aboutMe, lookingForAJobDescription,
-        lookingForAJob, fullName, photos, handleOpenStatusModal, isCurrentUserProfile, userId];
-
     return (
         <>
-            {!smallScreenMode && <About isProfileDataLoaded={isDataLoaded} aboutProps={aboutProps} />}
+            {!smallScreenMode && <About isProfileDataLoaded={isDataLoaded} aboutProps={aboutProps}/>}
             <Profile
                 smallScreenMode={smallScreenMode}
                 profileProps={profileProps}
@@ -147,7 +151,7 @@ const ProfileContainer: React.FC<ProfilePageProps> = observer(({
                 handleOpenModal={handleOpenModal}
                 handleFollowUser={handleFollowUser}
             />
-            {!smallScreenMode && <FriendsList friends={friends} isFriendsLoaded={isFriendsLoaded} />}
+            {!smallScreenMode && <FriendsList friends={friends} isFriendsLoaded={isFriendsLoaded}/>}
         </>
     );
 });

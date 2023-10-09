@@ -3,6 +3,7 @@ import {profileApi} from "../api/api";
 import {ProfileData} from "../types";
 import appStore from "./app";
 import friendsStore from "../mobx/friends";
+import {delay} from "../common/commonFuncs";
 
 // Define the profileStore class
 class profileStore {
@@ -19,6 +20,7 @@ class profileStore {
     isUserDataUpdating: boolean = false;               // Tracks user data update status
     isCurrentUserProfileDataLoaded: boolean = false;   // Tracks if current user profile data is loaded
     isStatusModalOpen: boolean = false;                // Tracks status modal open status
+    isCurrentProfileUpdated: boolean = false;           // Tracks  current profile update status
 
     constructor() {
         // Initialize MobX observables for all properties
@@ -28,6 +30,10 @@ class profileStore {
     // Set the current user's profile data
     setCurrentUserProfileData(data: object) {
         this.currentUserProfileData = data;
+    }
+
+    setIsCurrentProfileUpdated(value: boolean) {
+        this.isCurrentProfileUpdated = value
     }
 
     // Set the viewed user's ID
@@ -109,13 +115,12 @@ class profileStore {
                          lookingForAJobDescription: string,
                          fullName: string,
                          github: string,
-                         vk: string,
                          facebook: string,
                          instagram: string,
                          twitter: string,
                          website: string,
                          youtube: string,
-                         mainLink: string) {
+                         ) {
         this.toggleIsUserDataUpdating(true);
         try {
             const updateDataResponse = await profileApi.updateUserData(
@@ -125,13 +130,13 @@ class profileStore {
                 lookingForAJobDescription,
                 fullName,
                 github,
-                vk,
+                '',
                 facebook,
                 instagram,
                 twitter,
                 website,
                 youtube,
-                mainLink
+                ''
             );
             if (updateDataResponse.resultCode === 0) {
                 this.setCurrentUserProfileData({
@@ -140,15 +145,20 @@ class profileStore {
                     lookingForAJob,
                     lookingForAJobDescription,
                     fullName,
-                    github,
-                    vk,
-                    facebook,
-                    instagram,
-                    twitter,
-                    website,
-                    youtube,
-                    mainLink,
+                    contacts: {
+                        ...this.currentUserProfileData.contacts,
+                        github,
+                        facebook,
+                        instagram,
+                        twitter,
+                        website,
+                        youtube,
+                    },
+
                 });
+                this.setIsCurrentProfileUpdated(true)
+                await delay(100)
+                this.setIsCurrentProfileUpdated(false)
                 appStore.setSuccessMessage('Data successfully updated');
             } else {
                 console.error(`Update data error - ${updateDataResponse}`);

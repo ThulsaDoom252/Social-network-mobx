@@ -7,6 +7,7 @@ import {ProfileData} from "../../types";
 import {Button, Form, Input, Select} from "antd";
 import profileStore from "../../mobx/profile";
 import TextArea from "antd/es/input/TextArea";
+import {contactUrlCheck} from "../../common/common";
 
 interface EditProfileModalProps {
     isOpen: boolean,
@@ -37,10 +38,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     } = currentUserProfileData as ProfileData
     const {
         github, twitter,
-        facebook, mainLink, website,
-        youtube, instagram
+        facebook, website,
+        youtube, instagram,
     } = contacts
+
     const {large: largePhoto} = photos
+
 
     //Ant design native hook form
     const [form] = Form.useForm();
@@ -98,6 +101,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     };
     const handleAvatarClick = () => hiddenFileInput.current && hiddenFileInput.current.click()
 
+
     //Setting props values in form values
     form.setFieldsValue({
         fullName,
@@ -110,8 +114,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         instagram,
         website,
         youtube,
-        mainLink,
     })
+
 
     //Handle submit form
     const onFinish = async (values: any) => {
@@ -123,13 +127,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             values.lookingForAJobDescription,
             values.fullName,
             values.github,
-            values.vk,
-            values.twitter,
             values.facebook,
             values.instagram,
+            values.twitter,
             values.website,
             values.youtube,
-            values.mainLink
         );
     };
 
@@ -320,7 +322,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                     {contactsArray.map((contact, index) => <div key={index}>
                                         <label>{contact.label}</label>
                                         <Form.Item name={contact.contactType} rules={[{
-                                            pattern: /^(https?|ftp):\/\/[^\s/$.?#].\S*$/,
+                                            pattern: contactUrlCheck,
                                             message: 'Please enter a valid URL'
 
                                         }]} validateTrigger="onBlur">
