@@ -23,6 +23,7 @@ import Initialize from "./components/initialize";
 import StatusModal from "./components/Profile/StatusModal";
 import FriendsPageContainer from "./components/Friends/FriendsPageContainer";
 import {useSnackbar} from "notistack";
+import NotFound from "./components/NotFound";
 
 const App: React.FC = observer(() => {
     // Snackbar notifications
@@ -281,6 +282,7 @@ const App: React.FC = observer(() => {
                                                       tinyScreenMode={tinyScreenMode}
 
                                        />}/>
+                                <Route path={'*'} element={<NotFound/>}/>
                             </Routes>
                         </div>
                     </div>
