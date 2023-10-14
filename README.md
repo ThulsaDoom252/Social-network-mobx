@@ -1,4 +1,3 @@
-markdown
 # Samurai Social Network
 
 Version: 2.0
@@ -18,20 +17,10 @@ Version: 2.0
 ### Search Users
 - Filter users by photo or status
 
-
 ## Technologies Used
-![React](public/reactImg.png) |
-![TypeScript](public/tsImg.png) | 
-![MobX](public/mobxImg.png)  |
-![And Design](public/antImg.png) | 
-![Tailwind CSS](public/tailwindImg.png)|
-|---|---|---| 
+
+![React](public/reactImg.png) | ![TypeScript](public/tsImg.png) | ![MobX](public/mobxImg.png) | ![And Design](public/antImg.png) | ![Tailwind CSS](public/tailwindImg.png)
 
 ## Overview
-![screenShot01](public/shot0.jpg) |
-![screenShot02]](public/shot01.jpg) |
-![screenShot03]](public/shot02.jpg) |
-![screenShot04]](public/shot03.jpg) |
-![screenShot05]](public/shot04.jpg) |
 
-
+![screenShot01](public/shot0.jpg) | ![screenShot02](public/shot01.jpg) | ![screenShot03](public/shot02.jpg) | ![screenShot04](public/shot03.jpg) | ![screenShot05](public/shot04.jpg)
