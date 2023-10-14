@@ -40,7 +40,6 @@ type Photos = {
     small: string;
 }
 
-// Определение типа для данных профиля
 export type ProfileData = {
     aboutMe: string,
     userId: number;
@@ -50,7 +49,6 @@ export type ProfileData = {
     contacts: Contacts;
     photos: Photos
 };
-
 
 export type User = {
     id?: number;
@@ -62,6 +60,7 @@ export type User = {
     status?: string;
     uniqueUrlName?: string;
     followed?: boolean;
+    followRequest?: boolean;
 };
 
 export type HandleSearchRequestType = (e: ChangeEvent<HTMLInputElement>) => void;

@@ -3,6 +3,7 @@ import {usersApi} from "../api/api";
 import {User} from "../types";
 import friendsStore from "./friends";
 import appStore from "./app";
+import users from "../components/Users/Users";
 
 // Define the UsersStore class
 class UsersStore {
@@ -49,8 +50,15 @@ class UsersStore {
         this.isUsersLoaded = toggle;
     }
 
+    handleFollowUserRequest(userId: number, ongoing: boolean) {
+        this.setUsers((this.users as User[]).map((user: User) =>
+            userId === user.id ? {...user, followRequest: ongoing} : user
+        ));
+    }
+
     // Follow a user
     async followUser(userId: number, user: User) {
+        this.handleFollowUserRequest(userId, true)
         try {
             await usersApi.followUser(userId);
             friendsStore.isFriendsLoaded && friendsStore.addFriendToList(user);
@@ -61,10 +69,14 @@ class UsersStore {
         } catch (e) {
             appStore.setApiError(`Error following user: ${e}`);
         }
+        this.handleFollowUserRequest(userId, false)
+
+
     }
 
     // Unfollow a user
     async unfollowUser(userId: number) {
+        this.handleFollowUserRequest(userId, true)
         try {
             this.fetchingUserIds.push(userId);
             await usersApi.unFollowUser(userId);
@@ -76,6 +88,8 @@ class UsersStore {
         } catch (e) {
             appStore.setApiError(`Error unfollowing user: ${e}`);
         }
+        this.handleFollowUserRequest(userId, false)
+
     }
 
     // Get a list of users
@@ -84,7 +98,8 @@ class UsersStore {
         try {
             const result = await usersApi.getUsers(count, page, query);
             this.setTotalUsersCount(result.totalCount);
-            this.setUsers(result.items);
+            const modifiedUsers = result.items.map((user: User) => ({...user, followRequest: false}))
+            this.setUsers(modifiedUsers);
             this.setCurrentPage(page);
             this.toggleUsersIsLoaded(true);
         } catch (e) {

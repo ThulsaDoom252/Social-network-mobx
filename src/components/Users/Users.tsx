@@ -69,6 +69,7 @@ const Users: React.FC<UsersProps> = observer(({
                                 <div>{user.name && truncate(user.name, (smallScreenMode ? 20 : 10))}</div>
                                 <div>{user.status ? truncate(user.status, (smallScreenMode ? 20 : 10)) : 'no status'}</div>
                                 <Button
+                                    disabled={user.followRequest}
                                     onClick={() => followUserHandler(user.followed || false, user.id || 0,
                                         {...user}
                                     )}
