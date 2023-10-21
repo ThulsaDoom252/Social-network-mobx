@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
-import Logo from '../../public/logo.png'
+import Logo from '../../images/logo.png'
 import { type AuthField, type OnFinishFunction } from '../../types'
 
 interface DesktopLayoutProps {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { profileRoute, dummyUsers } from '../../common/common'
-import anon from '../../public/anon.jpg'
+import anon from '../../images/anon.jpg'
 import { type User } from '../../types'
 import { Button, Skeleton, Space } from 'antd'
 import { NavLink } from 'react-router-dom'

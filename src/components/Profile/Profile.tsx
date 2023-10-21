@@ -1,5 +1,5 @@
 import React from 'react'
-import anon from '../../public/anon.jpg'
+import anon from '../../images/anon.jpg'
 import {
   AiFillFacebook,
   AiFillGithub,

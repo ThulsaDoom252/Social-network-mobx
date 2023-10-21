@@ -1,6 +1,6 @@
 import React from 'react'
 import { dummyUsers, profileRoute } from '../../common/common'
-import anon from '../../public/anon.jpg'
+import anon from '../../images/anon.jpg'
 import { observer } from 'mobx-react-lite'
 import { type User } from '../../types'
 import { NavLink } from 'react-router-dom'

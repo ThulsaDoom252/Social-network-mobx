@@ -1,7 +1,7 @@
 import React, { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { IoClose } from 'react-icons/io5'
-import anon from '../../public/anon.jpg'
+import anon from '../../images/anon.jpg'
 import { type ProfileData } from '../../types'
 import { Button, Form, Input, Select } from 'antd'
 import profileStore from '../../mobx/profile'

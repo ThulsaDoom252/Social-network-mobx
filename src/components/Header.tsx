@@ -1,5 +1,5 @@
 import React from 'react'
-import anon from '../public/anon.jpg'
+import anon from '../images/anon.jpg'
 import Navbar from './Navbar'
 import authStore from '../mobx/auth'
 import { Button, Skeleton, Space } from 'antd'
