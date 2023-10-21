@@ -1,20 +1,20 @@
-import React from 'react';
-import anon from "../../public/anon.jpg"
-import {dummyUsers, friendsRoute, profileRoute} from "../../common";
-import {User} from "../../types";
-import {Button, Skeleton} from "antd";
-import {NavLink} from "react-router-dom";
+import React from 'react'
+import anon from '../../public/anon.jpg'
+import { dummyUsers, friendsRoute, profileRoute } from '../../common/common'
+import { type User } from '../../types'
+import { Button, Skeleton } from 'antd'
+import { NavLink } from 'react-router-dom'
 
 // Props interface for the FriendsList component
 interface FriendsListProps {
-    friends: User[];            // List зof friends
-    isFriendsLoaded: boolean;   // Flag indicating if friends data is loaded
+  friends: User[] // List зof friends
+  isFriendsLoaded: boolean // Flag indicating if friends data is loaded
 }
 
-const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => {
-    const noFriends = isFriendsLoaded && friends.length === 0
+const FriendsList: React.FC<FriendsListProps> = ({ friends, isFriendsLoaded }) => {
+  const noFriends = isFriendsLoaded && friends.length === 0
 
-    return (
+  return (
         <div className={`
             flex
             p-2
@@ -35,7 +35,8 @@ const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => 
                 gap-1
                 grid-cols-3
             '>
-                {!isFriendsLoaded ? dummyUsers.map((_, index) =>
+                {!isFriendsLoaded
+                  ? dummyUsers.map((_, index) =>
                     <div key={index} className='
                         w-12
                         h-12
@@ -43,16 +44,18 @@ const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => 
                     '>
                         <Skeleton avatar active/>
                     </div>
-                ) : friends.map((friend, index) => index <= 11 ?
-                    <div key={index} className={`
+                  )
+                  : friends.map((friend, index) => index <= 11
+                    ? <div key={index} className={`
                         w-12
                         h-12
                     `}>
                         <NavLink to={`${profileRoute}/${friend.id}`}>
                             <img className={'w-full h-full m-2'} src={friend.photos.small || anon} alt="friend-photo"/>
                         </NavLink>
-                    </div> : void 0
-                )}
+                    </div>
+                    : void 0
+                  )}
             </div>
 
             {/* Display "Go to list" button if friends are loaded */}
@@ -79,7 +82,7 @@ const FriendsList: React.FC<FriendsListProps> = ({friends, isFriendsLoaded}) => 
                 </div>
             </>}
         </div>
-    );
-};
+  )
+}
 
-export default FriendsList;
+export default FriendsList

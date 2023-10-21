@@ -1,23 +1,22 @@
-import React from 'react';
+import React from 'react'
 
 // Props interface for PageContainer component
 interface PageContainerProps {
-    children: React.ReactNode; // Content to be rendered inside the container
-    height?: string; // Optional height customization
-    smallScreenMode?: boolean; // Optional flag for small screen mode
-    centerContent?: boolean;
+  children: React.ReactNode // Content to be rendered inside the container
+  height?: string // Optional height customization
+  smallScreenMode?: boolean // Optional flag for small screen mode
+  centerContent?: boolean
 }
 
 // PageContainer component
 const PageContainer: React.FC<PageContainerProps> = ({
-                                                         height,
-                                                         children,
-                                                         smallScreenMode,
-                                                         centerContent,
+  height,
+  children,
+  smallScreenMode,
+  centerContent
 
-
-                                                     }) => {
-    return (
+}) => {
+  return (
         <div className={`
             w-full
             bg-white
@@ -33,7 +32,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
         `}>
             {children} {/* Render the content provided as children */}
         </div>
-    );
-};
+  )
+}
 
-export default PageContainer;
+export default PageContainer

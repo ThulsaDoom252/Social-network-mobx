@@ -1,4 +1,4 @@
-//Filter by status mode types
+// Filter by status mode types
 export const withStatus: string = 'with status' as const
 export const withoutStatus: string = 'without status' as const
 export const defaultStatusFilterMode: string = 'both' as const

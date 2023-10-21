@@ -1,18 +1,17 @@
-import React from 'react';
-import {NavLink} from "react-router-dom";
-import {friendsRoute, infoRoute, profileRoute, usersRoute} from "../common";
-
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import { friendsRoute, infoRoute, profileRoute, usersRoute } from '../common/common'
 
 interface mobileNavbarProps {
-    viewedUserId: number
+  viewedUserId: number
 }
 
-const MobileNavbar: React.FC<mobileNavbarProps> = ({viewedUserId}) => {
-    const commonStyle: string = 'flex no-underline text-black p-2 border-t-2 border-gray-600'
-    const activeStyle: string = `bg-white  border-t-2 border-t-blue-600 z-10 h-11 transition-all duration-200`;
-    const inactiveStyle: string = `bg-gray-400  border-b border-b-black border-t-black'}`;
+const MobileNavbar: React.FC<mobileNavbarProps> = ({ viewedUserId }) => {
+  const commonStyle: string = 'flex no-underline text-black p-2 border-t-2 border-gray-600'
+  const activeStyle: string = 'bg-white  border-t-2 border-t-blue-600 z-10 h-11 transition-all duration-200'
+  const inactiveStyle: string = 'bg-gray-400  border-b border-b-black border-t-black\'}'
 
-    return (
+  return (
         <div className={`
         absolute
         left-4
@@ -43,9 +42,7 @@ const MobileNavbar: React.FC<mobileNavbarProps> = ({viewedUserId}) => {
             </NavLink>
 
         </div>
-    )
-
-
+  )
 }
 
-export default MobileNavbar;
+export default MobileNavbar

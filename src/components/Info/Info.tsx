@@ -1,39 +1,39 @@
-import React, {useState} from 'react';
-import PageContainer from "../Common/PageContainer";
-import AuthHoc from "../../hoc/authHoc";
-import logo from "../../public/infoLogo.png"
-import mobxLogo from "./mobxImg.png"
-import tsLogo from "./tsImg.png"
-import twLogo from "./tailwindImg.png"
-import {Col, Divider, Row} from "antd";
-import {DownOutlined, UpOutlined} from '@ant-design/icons';
+import React, { useState } from 'react'
+import PageContainer from '../Common/PageContainer'
+import AuthHoc from '../../hoc/authHoc'
+import logo from './infoLogo.png'
+import mobxLogo from './mobxImg.png'
+import tsLogo from './tsImg.png'
+import twLogo from './tailwindImg.png'
+import { Col, Divider, Row } from 'antd'
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
 
 interface InfoProps {
-    tinyScreenMode: boolean;
-    isLogged: boolean;
+  tinyScreenMode: boolean
+  isLogged: boolean
 }
 
-const Info: React.FC<InfoProps> = ({tinyScreenMode}) => {
-    const itemStyle = `text-2xl mb4`
-    const headerItemStyle = 'text-1xl font-bold'
-    const totalIconsCount = [
-        {src: mobxLogo},
-        {src: tsLogo},
-        {src: twLogo}
-    ]
+const Info: React.FC<InfoProps> = ({ tinyScreenMode }) => {
+  const itemStyle = 'text-2xl mb4'
+  const headerItemStyle = 'text-1xl font-bold'
+  const totalIconsCount = [
+    { src: mobxLogo },
+    { src: tsLogo },
+    { src: twLogo }
+  ]
 
-    const [profileOpen, setProfileOpen] = useState(true);
-    const [friendsOpen, setFriendsOpen] = useState(true);
+  const [profileOpen, setProfileOpen] = useState(true)
+  const [friendsOpen, setFriendsOpen] = useState(true)
 
-    const toggleProfile = () => {
-        setProfileOpen(!profileOpen);
-    }
+  const toggleProfile = () => {
+    setProfileOpen(!profileOpen)
+  }
 
-    const toggleFriends = () => {
-        setFriendsOpen(!friendsOpen);
-    }
+  const toggleFriends = () => {
+    setFriendsOpen(!friendsOpen)
+  }
 
-    return (
+  return (
         <PageContainer>
             <div className={`         
                 rounded-md
@@ -79,10 +79,10 @@ const Info: React.FC<InfoProps> = ({tinyScreenMode}) => {
                     </>
                 )}
                 <Divider className={'mt-2 font-bold'} orientation={'center'}>Tech stack</Divider>
-                <div className={`w-full flex justify-center items-center`}>
-                    <Row style={{width: '400px'}} className={'mt-2 flex items-center justify-center'}
+                <div className={'w-full flex justify-center items-center'}>
+                    <Row style={{ width: '400px' }} className={'mt-2 flex items-center justify-center'}
                          gutter={40}>
-                        {totalIconsCount.map((image, index) => <Col key={index} className={"gutter-row"} span={6}><img
+                        {totalIconsCount.map((image, index) => <Col key={index} className={'gutter-row'} span={6}><img
                             alt={'icon'}
                             className={'w-full h-full object-cover'}
                             src={image.src}/></Col>)}
@@ -90,7 +90,7 @@ const Info: React.FC<InfoProps> = ({tinyScreenMode}) => {
                 </div>
             </div>
         </PageContainer>
-    );
-};
+  )
+}
 
-export default AuthHoc(Info);
+export default AuthHoc(Info)

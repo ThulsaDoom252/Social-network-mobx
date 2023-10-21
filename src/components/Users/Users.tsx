@@ -1,34 +1,32 @@
-import React from 'react';
-import {dummyUsers, profileRoute} from "../../common";
-import anon from "../../public/anon.jpg";
-import {observer} from "mobx-react-lite";
-import {User} from "../../types";
-import {NavLink} from "react-router-dom";
-import {truncate} from "../../common/commonFuncs";
-import Button from 'antd/es/button';
-import {Skeleton, Space} from 'antd';
+import React from 'react'
+import { dummyUsers, profileRoute } from '../../common/common'
+import anon from '../../public/anon.jpg'
+import { observer } from 'mobx-react-lite'
+import { type User } from '../../types'
+import { NavLink } from 'react-router-dom'
+import Button from 'antd/es/button'
+import { Skeleton, Space } from 'antd'
 
 // Props interface for the Users component
 interface UsersProps {
-    smallScreenMode?: boolean;             // Indicates if in small screen mode
-    usersToShow: User[];                   // Array of users to display
-    isUsersLoaded: boolean;                // Indicates if users are loaded
-    followUserHandler: (isFollowed: boolean, userId: number, user: User) => void; // Function to handle follow/unfollow
-    tinyScreenMode: boolean;               // Indicates if in tiny screen mode
-    noSearchResults: boolean;              // Indicates if there are no search results
+  smallScreenMode?: boolean // Indicates if in small screen mode
+  usersToShow: User[] // Array of users to display
+  isUsersLoaded: boolean // Indicates if users are loaded
+  followUserHandler: (isFollowed: boolean, userId: number, user: User) => void // Function to handle follow/unfollow
+  tinyScreenMode: boolean // Indicates if in tiny screen mode
+  noSearchResults: boolean // Indicates if there are no search results
 }
 
 // Users component
 const Users: React.FC<UsersProps> = observer(({
-                                                  smallScreenMode,
-                                                  usersToShow,
-                                                  isUsersLoaded,
-                                                  followUserHandler,
-                                                  tinyScreenMode,
-                                                  noSearchResults,
-                                              }) => {
-
-    return (
+  smallScreenMode,
+  usersToShow,
+  isUsersLoaded,
+  followUserHandler,
+  tinyScreenMode,
+  noSearchResults
+}) => {
+  return (
         <>
             {/* Users list block */}
             <div className={`   
@@ -37,7 +35,8 @@ const Users: React.FC<UsersProps> = observer(({
                 mt-3
                 p-5
                 ${!smallScreenMode && !noSearchResults && `grid ${isUsersLoaded
-                ? 'grid-cols-8' : 'grid-cols-4'} grid-rows-2 gap-3`}
+                ? 'grid-cols-8'
+: 'grid-cols-4'} grid-rows-2 gap-3`}
             `}>
                 {/* Mapping Users (if loaded) */}
                 {isUsersLoaded ? usersToShow.map((user: User, index) =>
@@ -50,8 +49,10 @@ const Users: React.FC<UsersProps> = observer(({
                             p-5
                             border-gray-400
                             ${smallScreenMode && !tinyScreenMode
-                            ? 'justify-between mt-2' : tinyScreenMode
-                                ? 'flex-col items-center' : 'justify-center flex-col items-center'} 
+                            ? 'justify-between mt-2'
+: tinyScreenMode
+                                ? 'flex-col items-center'
+: 'justify-center flex-col items-center'} 
                         `}>
                             {/* Image Container */}
                             <div className={`${smallScreenMode ? 'w-24' : 'max-w-14'}`}>
@@ -66,14 +67,16 @@ const Users: React.FC<UsersProps> = observer(({
                                 w-full
                                 text-center
                             '>
-                                <div>{user.name && truncate(user.name, (smallScreenMode ? 20 : 10))}</div>
-                                <div>{user.status ? truncate(user.status, (smallScreenMode ? 20 : 10)) : 'no status'}</div>
+                                <div className={'truncate'}>{user.name}</div>
+                                <div className={'truncate'}>{user.status}</div>
                                 <Button
                                     disabled={user.followRequest}
-                                    onClick={() => followUserHandler(user.followed || false, user.id || 0,
-                                        {...user}
-                                    )}
-                                    shape={"round"}
+                                    onClick={() => {
+                                      followUserHandler(user.followed || false, user.id || 0,
+                                        { ...user }
+                                      )
+                                    }}
+                                    shape={'round'}
                                     size={`${smallScreenMode ? 'middle' : 'small'}`}
                                     className={`bg-blue-400 
                                         ${!tinyScreenMode && 'absolute'} 
@@ -82,7 +85,7 @@ const Users: React.FC<UsersProps> = observer(({
                                 </Button>
                             </div>
                         </div>
-                    // Mapping dummy array into skeleton if users not loaded
+                  // Mapping dummy array into skeleton if users not loaded
                 ) : dummyUsers.map((index) =>
                     <div key={index}>
                         <Space className={`
@@ -97,14 +100,14 @@ const Users: React.FC<UsersProps> = observer(({
                 {/* No search results / no users block */}
                 <div className={'w-full text-center'}>
                     {noSearchResults
-                        ? ' No users match your criteria'
-                        : isUsersLoaded && usersToShow.length === 0
-                            ? 'No users...'
-                            : void 0}
+                      ? ' No users match your criteria'
+                      : isUsersLoaded && usersToShow.length === 0
+                        ? 'No users...'
+                        : void 0}
                 </div>
             </div>
         </>
-    );
-});
+  )
+})
 
-export default Users;
+export default Users
