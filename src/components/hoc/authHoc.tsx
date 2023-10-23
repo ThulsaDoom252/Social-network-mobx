@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { authRoute } from '../common/common'
+import { authRoute } from '../../common/common'
 
 // Define a Props interface for the AuthHoc component
 interface AuthHocProps {
