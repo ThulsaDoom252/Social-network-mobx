@@ -1,6 +1,7 @@
 import React from 'react'
 import anon from '../../images/anon.jpg'
-import { dummyUsers, friendsRoute, profileRoute } from '../../common/common'
+import { dummyUsersForSkeletonLoading} from '../../common/common'
+import {routesConfig} from "../../config/routesConfig";
 import { type User } from '../../types'
 import { Button, Skeleton } from 'antd'
 import { NavLink } from 'react-router-dom'
@@ -36,7 +37,7 @@ const FriendsList: React.FC<FriendsListProps> = ({ friends, isFriendsLoaded }) =
                 grid-cols-3
             '>
                 {!isFriendsLoaded
-                  ? dummyUsers.map((_, index) =>
+                  ? dummyUsersForSkeletonLoading.map((_, index) =>
                     <div key={index} className='
                         w-12
                         h-12
@@ -50,7 +51,7 @@ const FriendsList: React.FC<FriendsListProps> = ({ friends, isFriendsLoaded }) =
                         w-12
                         h-12
                     `}>
-                        <NavLink to={`${profileRoute}/${friend.id}`}>
+                        <NavLink to={`${routesConfig.profileRoute}/${friend.id}`}>
                             <img className={'w-full h-full m-2'} src={friend.photos.small || anon} alt="friend-photo"/>
                         </NavLink>
                     </div>
@@ -76,7 +77,7 @@ const FriendsList: React.FC<FriendsListProps> = ({ friends, isFriendsLoaded }) =
                     justify-center
                 '>
                     {!noFriends &&
-                        <NavLink to={friendsRoute} className={'mt-2'}>
+                        <NavLink to={routesConfig.friendsRoute} className={'mt-2'}>
                             <Button type={'primary'} size={'middle'} className={'bg-blue-400'}>Go to list</Button>
                         </NavLink>}
                 </div>

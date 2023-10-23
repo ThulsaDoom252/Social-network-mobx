@@ -31,6 +31,16 @@ interface Photos {
   small: string
 }
 
+
+export interface Routes {
+    profileRoute: string,
+    rootRoute: string,
+    authRoute: string,
+    friendsRoute: string,
+    usersRoute: string,
+    infoRoute: string,
+}
+
 export interface ProfileData {
   aboutMe: string
   userId: number

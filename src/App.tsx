@@ -1,149 +1,146 @@
-import React, { useEffect } from 'react'
+import React, {useEffect} from 'react'
 import Header from './components/Header'
 import Info from './components/Info/Info'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
 import ProfilePage from './components/Profile/ProfileContainer'
 import MobileNavbar from './components/MobileNavbar'
-import {
-  authRoute,
-  friendsRoute,
-  infoRoute,
-  rootRoute,
-  usersRoute
-} from './common/common'
+import {routesConfig} from "./config/routesConfig";
 import EditProfileModal from './components/Profile/EditProfileModal'
 import authStore from './mobx/auth'
 import profileStore from './mobx/profile'
 import appStore from './mobx/app'
-import { observer } from 'mobx-react-lite'
+import {observer} from 'mobx-react-lite'
 import AuthContainer from './components/Auth/AuthContainer'
-import { initializeCurrentUser } from './mobx/initializeCurrentUser'
+import {initializeCurrentUser} from './mobx/initializeCurrentUser'
 import UsersContainer from './components/Users/UsersContainer'
 import Initialize from './components/initialize/initialize'
 import StatusModal from './components/Profile/StatusModal'
 import FriendsPageContainer from './components/Friends/FriendsPageContainer'
-import { useSnackbar } from 'notistack'
+import {useSnackbar} from 'notistack'
 import NotFound from './components/NotFound'
 
 const App: React.FC = observer(() => {
-  // Snackbar notifications
-  const { enqueueSnackbar } = useSnackbar()
 
-  // Current page path
-  const currentPath = appStore.currentPath
+    const {authRoute, usersRoute, friendsRoute, rootRoute, infoRoute} = routesConfig
 
-  // Authentication state
-  const isLogged = authStore.isLogged
-  const isLoggedOutByUser = authStore.isLoggedOutByUser
+    // Snackbar notifications
+    const {enqueueSnackbar} = useSnackbar()
 
-  // Current user info
-  const currentUserEmail = authStore.email
-  const currentUserId = authStore.id
-  const currentUserName = profileStore.currentUserProfileData?.fullName
-  const currentUserAvatar = profileStore.currentUserProfileData?.photos?.large
-  const viewedUserId = profileStore.viewedUserId || currentUserId
+    // Current page path
+    const currentPath = appStore.currentPath
 
-  // Loading current user data
-  const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded
-  const currentUserProfileData = profileStore.currentUserProfileData
+    // Authentication state
+    const isLogged = authStore.isLogged
+    const isLoggedOutByUser = authStore.isLoggedOutByUser
 
-  // Loading user data
-  const isProfileDataLoaded = profileStore.isProfileDataLoaded
-  const profileData = profileStore.profileData
-  const currentUserStatus = profileStore.status
+    // Current user info
+    const currentUserEmail = authStore.email
+    const currentUserId = authStore.id
+    const currentUserName = profileStore.currentUserProfileData?.fullName
+    const currentUserAvatar = profileStore.currentUserProfileData?.photos?.large
+    const viewedUserId = profileStore.viewedUserId || currentUserId
 
-  // Is current user profile
-  const isCurrentUserProfile = profileStore.isCurrentUserProfile
+    // Loading current user data
+    const isCurrentUserDataLoaded = profileStore.isCurrentUserDataLoaded
+    const currentUserProfileData = profileStore.currentUserProfileData
 
-  // User data update states
-  const isAvatarUpdating = profileStore.isAvatarUpdating
-  const isUserDataUpdating = profileStore.isUserDataUpdating
+    // Loading user data
+    const isProfileDataLoaded = profileStore.isProfileDataLoaded
+    const profileData = profileStore.profileData
+    const currentUserStatus = profileStore.status
 
-  // Errors and success messages
-  const apiError = appStore.apiError
-  const successMessage = appStore.successMessage
+    // Is current user profile
+    const isCurrentUserProfile = profileStore.isCurrentUserProfile
 
-  // Modal states
-  const isEditDataModalOpen = appStore.isEditProfileModalOpen
-  const isStatusModalOpen = profileStore.isStatusModalOpen
+    // User data update states
+    const isAvatarUpdating = profileStore.isAvatarUpdating
+    const isUserDataUpdating = profileStore.isUserDataUpdating
 
-  // Screen sizes
-  const smallScreenMode = appStore.smallScreen
-  const tinyScreenMode = appStore.tinyScreen
+    // Errors and success messages
+    const apiError = appStore.apiError
+    const successMessage = appStore.successMessage
 
-  // Initializing current user profile if they are authorized
-  useEffect(() => {
-    if (!isLoggedOutByUser) {
-      initializeCurrentUser().then(() => void 0)
+    // Modal states
+    const isEditDataModalOpen = appStore.isEditProfileModalOpen
+    const isStatusModalOpen = profileStore.isStatusModalOpen
+
+    // Screen sizes
+    const smallScreenMode = appStore.smallScreen
+    const tinyScreenMode = appStore.tinyScreen
+
+    // Initializing current user profile if they are authorized
+    useEffect(() => {
+        if (!isLoggedOutByUser) {
+            initializeCurrentUser().then(() => void 0)
+        }
+    }, [isLogged])
+
+    // Toggle snackBar error message depending on apiError value
+    useEffect(() => {
+        if (apiError) {
+            const isNotApiError = apiError === 'You have changed nothing'
+            {
+                !isNotApiError && console.error(`Contacts developer for this error - ${apiError}`)
+            }
+            enqueueSnackbar(`${apiError}  ${!isNotApiError ? 'see console for detail' : ''}`, {
+                autoHideDuration: 3000,
+                variant: 'error'
+            })
+        }
+    }, [apiError])
+
+    // Toggle snackbar success message depending on successMessage value
+    useEffect(() => {
+        if (successMessage) {
+            enqueueSnackbar(successMessage, {autoHideDuration: 1500})
+            appStore.setSuccessMessage(null)
+        }
+    }, [successMessage])
+
+    // Subscribing to screen size changes by modifying smallScreenMode/TinyScreenMode variables.
+    useEffect(() => {
+        const handleResize = () => {
+            const screenWidth = window.innerWidth
+            appStore.toggleSmallScreen(screenWidth < 1000)
+            appStore.toggleTinyScreen(screenWidth < 481)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize() // проверяем размер экрана при первой загрузке компонента
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
+    // Open/close status modal
+    const handleOpenStatusModal = () => {
+        profileStore.toggleStatusModal(true)
     }
-  }, [isLogged])
-
-  // Toggle snackBar error message depending on apiError value
-  useEffect(() => {
-    if (apiError) {
-      const isNotApiError = apiError === 'You have changed nothing'
-      {
-        !isNotApiError && console.error(`Contacts developer for this error - ${apiError}`)
-      }
-      enqueueSnackbar(`${apiError}  ${!isNotApiError ? 'see console for detail' : ''}`, {
-        autoHideDuration: 3000,
-        variant: 'error'
-      })
-    }
-  }, [apiError])
-
-  // Toggle snackbar success message depending on successMessage value
-  useEffect(() => {
-    if (successMessage) {
-      enqueueSnackbar(successMessage, { autoHideDuration: 1500 })
-      appStore.setSuccessMessage(null)
-    }
-  }, [successMessage])
-
-  // Subscribing to screen size changes by modifying smallScreenMode/TinyScreenMode variables.
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth
-      appStore.toggleSmallScreen(screenWidth < 1000)
-      appStore.toggleTinyScreen(screenWidth < 481)
+    const handleCloseStatusModal = () => {
+        profileStore.toggleStatusModal(false)
     }
 
-    window.addEventListener('resize', handleResize)
-    handleResize() // проверяем размер экрана при первой загрузке компонента
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
+    const handleOpenEditModal = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        appStore.toggleIsEditProfileModalOpen(true)
     }
-  }, [])
 
-  // Open/close status modal
-  const handleOpenStatusModal = () => {
-    profileStore.toggleStatusModal(true)
-  }
-  const handleCloseStatusModal = () => {
-    profileStore.toggleStatusModal(false)
-  }
+    // Change current user status
+    const handleChangeStatus = (status: string) => {
+        profileStore.updateStatus(status).finally(() => void 0)
+    }
 
-  const handleOpenEditModal = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    appStore.toggleIsEditProfileModalOpen(true)
-  }
+    // Closing Edit profile modal by clicking on close btn/empty space
+    const handleCloseModal = () => {
+        isEditDataModalOpen && appStore.toggleIsEditProfileModalOpen(false)
+    }
+    // Initializing component
+    if (!appStore.isInitialized) {
+        return <Initialize/>
+    }
 
-  // Change current user status
-  const handleChangeStatus = (status: string) => {
-    profileStore.updateStatus(status).finally(() => void 0)
-  }
-
-  // Closing Edit profile modal by clicking on close btn/empty space
-  const handleCloseModal = () => {
-    isEditDataModalOpen && appStore.toggleIsEditProfileModalOpen(false)
-  }
-  // Initializing component
-  if (!appStore.isInitialized) {
-    return <Initialize/>
-  }
-
-  return (
+    return (
         <BrowserRouter>
             <div
                 className={`
@@ -289,7 +286,7 @@ const App: React.FC = observer(() => {
                 </div>
             </div>
         </BrowserRouter>
-  )
+    )
 })
 
 export default App

@@ -1,5 +1,6 @@
 import React from 'react'
-import { dummyUsers, profileRoute } from '../../common/common'
+import { dummyUsersForSkeletonLoading} from '../../common/common'
+import {routesConfig} from "../../config/routesConfig";
 import anon from '../../images/anon.jpg'
 import { observer } from 'mobx-react-lite'
 import { type User } from '../../types'
@@ -56,7 +57,7 @@ const Users: React.FC<UsersProps> = observer(({
                         `}>
                             {/* Image Container */}
                             <div className={`${smallScreenMode ? 'w-24' : 'max-w-14'}`}>
-                                <NavLink to={`${profileRoute}/${user.id}`}>
+                                <NavLink to={`${routesConfig.profileRoute}/${user.id}`}>
                                     <img className='w-full h-full cursor-pointer rounded-full'
                                          src={user.photos.small || anon}
                                          alt={'friend-photo'}/>
@@ -86,7 +87,7 @@ const Users: React.FC<UsersProps> = observer(({
                             </div>
                         </div>
                   // Mapping dummy array into skeleton if users not loaded
-                ) : dummyUsers.map((index) =>
+                ) : dummyUsersForSkeletonLoading.map((index) =>
                     <div key={index}>
                         <Space className={`
                             flex 

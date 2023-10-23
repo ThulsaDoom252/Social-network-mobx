@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { friendsRoute, infoRoute, profileRoute, usersRoute } from '../common/common'
+import {routesConfig} from "../config/routesConfig";
 
 interface mobileNavbarProps {
   viewedUserId: number
@@ -23,20 +23,20 @@ const MobileNavbar: React.FC<mobileNavbarProps> = ({ viewedUserId }) => {
         justify-start
         z-10
         `}>
-            <NavLink to={`${profileRoute}/${viewedUserId}`}
+            <NavLink to={`${routesConfig.profileRoute}/${viewedUserId}`}
                      className={navData =>
                          `border-r-2 border-l-2 ${commonStyle} ${navData.isActive ? activeStyle : inactiveStyle}`}>
                 Profile
             </NavLink>
-            <NavLink to={friendsRoute} className={navData =>
+            <NavLink to={routesConfig.friendsRoute} className={navData =>
                 `border-r-2  ${commonStyle} ${navData.isActive ? activeStyle : inactiveStyle}`}>
                 Friends
             </NavLink>
-            <NavLink to={usersRoute} className={navData =>
+            <NavLink to={routesConfig.usersRoute} className={navData =>
                 `border-r-2  ${commonStyle} ${navData.isActive ? activeStyle : inactiveStyle}`}>
                 Users
             </NavLink>
-            <NavLink to={infoRoute} className={navData =>
+            <NavLink to={routesConfig.infoRoute} className={navData =>
                 `border-r-2 ${commonStyle} ${navData.isActive ? activeStyle : inactiveStyle}`}>
                 Info
             </NavLink>
