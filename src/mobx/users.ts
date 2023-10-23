@@ -3,7 +3,6 @@ import { usersApi } from '../api/api'
 import { type User } from '../types'
 import friendsStore from './friends'
 import appStore from './app'
-import users from '../components/Users/Users'
 
 // Define the UsersStore class
 class UsersStore {
@@ -90,10 +89,10 @@ class UsersStore {
   }
 
   // Get a list of users
-  async getUsers (count: number, page: number, query?: string) {
+  async getUsers (count: number, page: number) {
     this.toggleUsersIsLoaded(false)
     try {
-      const result = await usersApi.getUsers(count, page, query)
+      const result = await usersApi.getUsers(count, page)
       this.setTotalUsersCount(result.totalCount)
       const modifiedUsers = result.items.map((user: User) => ({ ...user, followRequest: false }))
       this.setUsers(modifiedUsers)
