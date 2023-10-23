@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import Users from './Users'
-import authHoc from '../hoc/authHoc'
+import authHoc from '../../hoc/authHoc'
 import usersStore from '../../mobx/users'
 import { type User } from '../../types'
 import { observer } from 'mobx-react-lite'

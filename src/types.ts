@@ -1,12 +1,4 @@
 import { type ChangeEvent } from 'react'
-import {
-  type defaultPhotoFilterMode,
-  type defaultStatusFilterMode,
-  type withoutPhoto,
-  type withoutStatus,
-  type withPhoto,
-  type withStatus
-} from './context/filterModes'
 
 // AuthContainer
 export type OnFinishFunction = (values: {
@@ -64,6 +56,3 @@ export interface User {
 
 export type HandleSearchRequestType = (e: ChangeEvent<HTMLInputElement>) => void
 
-export type FilterStatusModeTypes = typeof withStatus | typeof withoutStatus | typeof defaultStatusFilterMode
-
-export type FilterPhotoModeTypes = typeof withPhoto | typeof withoutPhoto | typeof defaultPhotoFilterMode

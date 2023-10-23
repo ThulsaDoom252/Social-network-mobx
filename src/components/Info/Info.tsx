@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PageContainer from '../Common/PageContainer'
-import AuthHoc from '../hoc/authHoc'
+import AuthHoc from '../../hoc/authHoc'
 import logo from './infoLogo.png'
 import mobxLogo from './mobxImg.png'
 import tsLogo from './tsImg.png'

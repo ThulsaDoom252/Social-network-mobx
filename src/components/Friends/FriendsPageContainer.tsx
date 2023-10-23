@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import friendsStore from '../../mobx/friends'
-import authHoc from '../hoc/authHoc'
+import authHoc from '../../hoc/authHoc'
 import Friends from './Friends'
 import { observer } from 'mobx-react-lite'
 import { SearchContext } from '../../context/SearchContext'
