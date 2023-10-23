@@ -1,4 +1,4 @@
-export const contactUrlCheck = /^(https?|ftp):\/\/[^\s/$.?#].\S*$/
+export const contactUrlCheck = /^(https|http):\/\/[\w.-]+\.\w+$/
 
 export const dummyUsers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
