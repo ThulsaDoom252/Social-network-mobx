@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { profileApi } from '../api/api'
-import { type ProfileData } from '../types'
+import {type ProfileData, IUpdateProfileDataParams} from '../types'
 import appStore from './app'
 import friendsStore from '../mobx/friends'
 import { delay } from '../common/common'
@@ -109,52 +109,17 @@ class profileStore {
   }
 
   // Update user data
-  async updateUserData (userId: string,
-    aboutMe: string,
-    lookingForAJob: boolean,
-    lookingForAJobDescription: string,
-    fullName: string,
-    github: string,
-    facebook: string,
-    instagram: string,
-    twitter: string,
-    website: string,
-    youtube: string
+  async updateUserData (data: IUpdateProfileDataParams
   ) {
     this.toggleIsUserDataUpdating(true)
     try {
       const updateDataResponse = await profileApi.updateUserData(
-        userId,
-        aboutMe,
-        lookingForAJob,
-        lookingForAJobDescription,
-        fullName,
-        github,
-        '',
-        facebook,
-        instagram,
-        twitter,
-        website,
-        youtube,
-        ''
+       data
       )
       if (updateDataResponse.resultCode === 0) {
         this.setCurrentUserProfileData({
           ...this.currentUserProfileData,
-          aboutMe,
-          lookingForAJob,
-          lookingForAJobDescription,
-          fullName,
-          contacts: {
-            ...this.currentUserProfileData.contacts,
-            github,
-            facebook,
-            instagram,
-            twitter,
-            website,
-            youtube
-          }
-
+          ...data
         })
         this.setIsCurrentProfileUpdated(true)
         await delay(100)

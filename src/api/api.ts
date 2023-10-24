@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {appConfig} from "../config/config";
+import {IUpdateProfileDataParams} from "../types";
 
 export const instance = axios.create({
     withCredentials: true,
@@ -52,33 +53,11 @@ export const profileApi = {
         })
     },
 
-    updateUserData: async (userId: string,
-                         aboutMe: string,
-                         lookingForAJob: boolean,
-                         lookingForAJobDescription: string,
-                         fullName: string,
-                         github: string,
-                         vk: string,
-                         facebook: string,
-                         instagram: string,
-                         twitter: string,
-                         website: string,
-                         youtube: string,
-                         mainLink: string
-    )=> {
-        return await instance.put('/profile', {
-            userId,
-            lookingForAJob,
-            lookingForAJobDescription,
-            fullName,
-            aboutMe,
-            contacts: {
-                github, facebook, vk, instagram, twitter, website, youtube, mainLink
-            }
-        })
+    updateUserData: async (data: IUpdateProfileDataParams
+    ) => {
+        return await instance.put('/profile', data)
             .then(response => response.data)
     }
-
 }
 
 export const authApi = {
