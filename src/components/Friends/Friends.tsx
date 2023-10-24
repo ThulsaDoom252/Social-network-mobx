@@ -1,10 +1,11 @@
 import React from 'react'
-import { profileRoute, dummyUsers } from '../../common/common'
+import {routesConfig} from "../../config/routesConfig";
 import anon from '../../images/anon.jpg'
 import { type User } from '../../types'
 import { Button, Skeleton, Space } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { TbFriendsOff } from 'react-icons/tb'
+import {dummyUsersForSkeletonLoading} from "../../common/common";
 
 interface FriendsPageProps {
   smallScreen: boolean
@@ -25,7 +26,6 @@ const Friends: React.FC<FriendsPageProps> = ({
   noFriends,
   noFriendsSearchResults
 }) => {
-  (window as any).s1 = noFriends
   return (
         <>
             {(noFriends || noFriendsSearchResults) &&
@@ -77,7 +77,7 @@ const Friends: React.FC<FriendsPageProps> = ({
                                             {/* //Img container */}
                                             <div
                                                 className={' w-20 h-20'}>
-                                                <NavLink to={`${profileRoute}/${friend.id}`}>
+                                                <NavLink to={`${routesConfig.profileRoute}/${friend.id}`}>
                                                     <img className={`
                                         rounded-full                  
                                         h-full
@@ -133,7 +133,7 @@ const Friends: React.FC<FriendsPageProps> = ({
                 max-w-20
                 max-h-20
                 '>
-                                        <NavLink to={`${profileRoute}/${friend.id}`}>
+                                        <NavLink to={`${routesConfig.profileRoute}/${friend.id}`}>
                                             <img className='w-full h-full'
                                                  src={friend.photos.small || anon}
                                                  alt={'friend-photo'}/>
@@ -153,7 +153,7 @@ const Friends: React.FC<FriendsPageProps> = ({
                     )
                   }
                 }
-                ) : dummyUsers.map(() => {
+                ) : dummyUsersForSkeletonLoading.map(() => {
                   {
                     return (
                             <div className={'w-full h-29 mt-2 flex justify-center items-center'}>
@@ -210,7 +210,6 @@ const Friends: React.FC<FriendsPageProps> = ({
                 })}
             </div>
         </>
-
   )
 }
 

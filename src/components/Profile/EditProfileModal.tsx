@@ -146,19 +146,23 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
 
     // Refreshing mobx state depending on form values
-    await profileStore.updateUserData(
-      userId.toString(),
-      values.aboutMe,
-      lookingForAJobValue === 'Yes',
-      values.lookingForAJobDescription,
-      values.fullName,
-      values.github,
-      values.facebook,
-      values.instagram,
-      values.twitter,
-      values.website,
-      values.youtube
-    )
+      await profileStore.updateUserData({
+          userId: userId.toString(),
+          aboutMe: values.aboutMe,
+          lookingForAJob: lookingForAJobValue === 'Yes',
+          lookingForAJobDescription: values.lookingForAJobDescription,
+          fullName: values.fullName,
+          contacts: {
+              github: values.github,
+              facebook: values.facebook,
+              instagram: values.instagram,
+              twitter: values.twitter,
+              website: values.website,
+              youtube: values.youtube,
+              mainLink: '',
+              vk: '',
+          }
+      })
   }
 
   // Input change handler

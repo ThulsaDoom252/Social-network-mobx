@@ -1,47 +1,47 @@
-import React, { useEffect, useState } from 'react'
-import { Modal, Input, Button } from 'antd'
+import React, {useEffect, useState} from 'react'
+import {Modal, Input, Button} from 'antd'
 
 interface StatusModalProps {
-  visible: boolean
-  currentUserStatus: string
-  onClose: () => void
-  handleChangeStatus: (status: string) => void
+    visible: boolean
+    currentUserStatus: string
+    onClose: () => void
+    handleChangeStatus: (status: string) => void
 }
 
 const StatusModal: React.FC<StatusModalProps> = ({
-  visible,
-  onClose,
-  handleChangeStatus,
-  currentUserStatus
-}) => {
-  // status value and status error states
-  const [status, setStatus] = useState<string | null>(currentUserStatus)
-  const [statusError, setStatusError] = useState<string | null>(null)
+                                                     visible,
+                                                     onClose,
+                                                     handleChangeStatus,
+                                                     currentUserStatus
+                                                 }) => {
+    // status value and status error states
+    const [status, setStatus] = useState<string | null>(currentUserStatus)
+    const [statusError, setStatusError] = useState<string | null>(null)
 
-  const maxStatusLength: number = 300
+    const maxStatusLength: number = 300
 
-  // Setting current user status on component mounting/state updating
-  useEffect(() => {
-    setStatus(currentUserStatus)
-  }, [currentUserStatus])
+    // Setting current user status on component mounting/state updating
+    useEffect(() => {
+        setStatus(currentUserStatus)
+    }, [currentUserStatus])
 
-  // Change/update handlers
-  const handleStatusChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    setStatus(value)
-    if (value.length > maxStatusLength) {
-      setStatusError('Status should not exceed 300 characters.')
-    } else {
-      setStatusError(null)
+    // Change/update handlers
+    const handleStatusChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value
+        setStatus(value)
+        if (value.length > maxStatusLength) {
+            setStatusError('Status should not exceed 300 characters.')
+        } else {
+            setStatusError(null)
+        }
     }
-  }
 
-  const handleUpdateStatus = () => {
-    handleChangeStatus(status || '')
-    onClose()
-  }
+    const handleUpdateStatus = () => {
+        handleChangeStatus(status || '')
+        onClose()
+    }
 
-  return (
+    return (
         <Modal
             title="Status"
             open={visible}
@@ -63,7 +63,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
         >
             <div className="status-modal-content">
                 <Input.TextArea
-                    style={{ resize: 'none' }}
+                    style={{resize: 'none'}}
                     rows={4}
                     placeholder="My status"
                     value={status || ''}
@@ -72,7 +72,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                 {statusError && <div className="status-error">{statusError}</div>}
             </div>
         </Modal>
-  )
+    )
 }
 
 export default StatusModal

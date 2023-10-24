@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { authRoute } from '../common/common'
+import {routesConfig} from "../config/routesConfig";
 
 // Define a Props interface for the AuthHoc component
 interface AuthHocProps {
@@ -12,7 +12,7 @@ const authHoc = <P extends AuthHocProps>(Component: React.ComponentType<P>) => {
     if (props.isLogged) {
       return <Component {...props} />
     } else {
-      return <Navigate to={authRoute} />
+      return <Navigate to={routesConfig.authRoute} />
     }
   }
 }

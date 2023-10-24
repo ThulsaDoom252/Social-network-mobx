@@ -1,23 +1,19 @@
-import React, { type ChangeEvent, createContext, type Dispatch, type ReactNode, type SetStateAction, useEffect, useState } from 'react'
-import { type HandleSearchRequestType, type User } from '../types'
+import React, {
+  type ChangeEvent,
+  createContext,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useEffect,
+  useState
+} from 'react'
+import {type HandleSearchRequestType, type User} from '../types'
 import usersStore from '../mobx/users'
 import friendStore from '../mobx/friends'
 import appStore from '../mobx/app'
-import {
-  defaultPhotoFilterMode,
-  defaultStatusFilterMode,
-  withoutStatus,
-  withPhoto,
-  withStatus
-} from './filterModes'
-import {
-  byNameAlphabet,
-  byNameReverse,
-  byNoPhoto,
-  byPhoto,
-  sortDefaultValue
-} from './sortModes'
-import { observer } from 'mobx-react-lite'
+import {photoFilterEnum, statusFilterEnum,} from './filterModes'
+import {byNameAlphabet, byNameReverse, byNoPhoto, byPhoto, sortDefaultValue} from './sortModes'
+import {observer} from 'mobx-react-lite'
 
 // Set the data types stored in context
 export interface SearchContextData {
@@ -26,12 +22,12 @@ export interface SearchContextData {
   searchRequest: string
   searchMode: boolean
   filterMode: boolean
-  filterByStatusMode: string
-  filterByPhotoMode: string
+  filterByStatusMode: statusFilterEnum
+  filterByPhotoMode: photoFilterEnum
   newItemsPerPageValue: number
   handleItemsPerPage: (value: number) => void
-  handleFilterByStatusMode: (value: string) => void
-  handleFilterByPhotoMode: (value: string) => void
+  handleFilterByStatusMode: (value: statusFilterEnum) => void
+  handleFilterByPhotoMode: (value: photoFilterEnum) => void
   isSearchMenuActive: boolean
   setIsSearchMenuActive: Dispatch<SetStateAction<boolean>>
   handleSearchRequest: (e: ChangeEvent<HTMLInputElement>) => void
@@ -68,8 +64,8 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({ 
   const [currentSortTypeValue, setCurrentSortType] = useState<string>(sortDefaultValue)
   const [sortByPhotoValue, setSortByPhotoValue] = useState<string>(sortDefaultValue)
   const [sortByNameValue, setSortByNameValue] = useState<string>(sortDefaultValue)
-  const [filterByStatusMode, setFilterByStatusMode] = useState<string>(defaultStatusFilterMode)
-  const [filterByPhotoMode, setFilterByPhotoMode] = useState<string>(defaultPhotoFilterMode)
+  const [filterByStatusMode, setFilterByStatusMode] = useState<statusFilterEnum>(statusFilterEnum.Default)
+  const [filterByPhotoMode, setFilterByPhotoMode] = useState<photoFilterEnum>(photoFilterEnum.Default)
 
   // Update users state depending on users from store change
   useEffect(() => {
@@ -100,7 +96,7 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({ 
 
   // Toggle filter mode based on filter criteria
   useEffect(() => {
-    if (filterByStatusMode !== defaultStatusFilterMode || filterByPhotoMode !== defaultPhotoFilterMode) {
+    if (filterByStatusMode !== statusFilterEnum.Default || filterByPhotoMode !== photoFilterEnum.Default) {
       !filterMode && toggleFilterMode(true)
     } else {
       filterMode && toggleFilterMode(false)
@@ -130,27 +126,27 @@ const SearchContextProvider: React.FC<SearchContextProviderProps> = observer(({ 
     setNewItemsPerPageValue(value)
   }
 
-  const handleFilterByStatusMode = (value: string) => {
+  const handleFilterByStatusMode = (value:statusFilterEnum) => {
     setFilterByStatusMode(value)
   }
 
-  const handleFilterByPhotoMode = (value: string) => {
+  const handleFilterByPhotoMode = (value:photoFilterEnum) => {
     setFilterByPhotoMode(value)
   }
 
   const filterUsers = () => {
     let filteredUsers = users
 
-    if (filterByStatusMode !== defaultStatusFilterMode) {
-      if (filterByStatusMode === withStatus) {
+    if (filterByStatusMode !== statusFilterEnum.Default) {
+      if (filterByStatusMode === statusFilterEnum.WithStatus) {
         filteredUsers = filteredUsers.filter((user) => user.status)
-      } else if (filterByStatusMode === withoutStatus) {
+      } else if (filterByStatusMode === statusFilterEnum.WithoutStatus) {
         filteredUsers = filteredUsers.filter((user) => !user.status)
       }
     }
 
-    if (filterByPhotoMode !== defaultPhotoFilterMode) {
-      filteredUsers = filteredUsers.filter((user) => filterByPhotoMode === withPhoto
+    if (filterByPhotoMode !== photoFilterEnum.Default) {
+      filteredUsers = filteredUsers.filter((user) => filterByPhotoMode === photoFilterEnum.WithPhoto
         ? user.photos.small
         : !user.photos.small)
     }

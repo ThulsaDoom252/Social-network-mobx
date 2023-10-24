@@ -3,7 +3,7 @@ import { ImProfile } from 'react-icons/im'
 import { FaUserFriends, FaUsers } from 'react-icons/fa'
 import { FaCircleInfo } from 'react-icons/fa6'
 import { NavLink } from 'react-router-dom'
-import { friendsRoute, infoRoute, usersRoute } from '../common/common'
+import {routesConfig} from "../config/routesConfig";
 
 interface NavbarProps {
   width?: string
@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 {showIcons && <FaUserFriends/>}
                 <NavLink className={navData =>
                   navData.isActive ? activeStyle : inactiveStyle}
-                         to={friendsRoute}>
+                         to={routesConfig.friendsRoute}>
                     Friends
                 </NavLink>
             </p>
@@ -51,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 {showIcons && <FaUsers/>}
                 <NavLink className={navData =>
                   navData.isActive ? activeStyle : inactiveStyle}
-                         to={usersRoute}>
+                         to={routesConfig.usersRoute}>
                     Users
                 </NavLink>
             </p>
@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 {showIcons && <FaCircleInfo/>}
                 <NavLink className={navData =>
                   navData.isActive ? activeStyle : inactiveStyle}
-                         to={infoRoute}>
+                         to={routesConfig.infoRoute}>
                     Info
                 </NavLink>
             </p>
