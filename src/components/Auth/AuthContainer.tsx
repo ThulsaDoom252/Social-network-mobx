@@ -4,7 +4,6 @@ import {Navigate} from 'react-router-dom'
 import Auth from './Auth'
 import {routesConfig} from "../../config/routesConfig";
 
-
 interface authContainerProps {
     smallScreenMode: boolean
     isLogged: boolean

@@ -26,7 +26,6 @@ const Friends: React.FC<FriendsPageProps> = ({
   noFriends,
   noFriendsSearchResults
 }) => {
-  (window as any).s1 = noFriends
   return (
         <>
             {(noFriends || noFriendsSearchResults) &&
@@ -211,7 +210,6 @@ const Friends: React.FC<FriendsPageProps> = ({
                 })}
             </div>
         </>
-
   )
 }
 

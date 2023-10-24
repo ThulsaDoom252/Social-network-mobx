@@ -6,6 +6,7 @@ export const instance = axios.create({
     withCredentials: true,
     baseURL: appConfig.baseUrl,
 })
+
 export const usersApi = {
     //toDo: add query param to search users by name
     getUsers: async (count: number = 10, page: number = 1) => {
